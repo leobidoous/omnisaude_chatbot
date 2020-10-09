@@ -8,9 +8,9 @@ class OmnisaudeChatbot {
 
   static Future<String> get platformVersion async {
     String _version;
-    try{
+    try {
       return await _channel.invokeMethod('getPlatformVersion');
-    } catch(e) {
+    } catch (e) {
       return _version;
     }
   }
