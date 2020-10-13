@@ -1,6 +1,6 @@
 name: omnisaude_chatbot
 description: Pacote de integração do chatbot para aplicativos móveis e sistemas Web.
-version: 0.0.2
+version: 0.0.4
 author: leonardobido.me
 homepage: "https://www.omnisaude.co/"
 
@@ -10,8 +10,9 @@ environment:
 
 dependencies:
   dio: ^3.0.10
-  flutter_mobx: ^1.1.0+2
   mobx: ^1.2.1+2
+  intl: ^0.16.1
+  flutter_mobx: ^1.1.0+2
   flutter_modular: ^2.0.1
 
   photo_view: ^0.10.2
@@ -42,13 +43,13 @@ dev_dependencies:
     sdk: flutter
 
 
+
 flutter:
   uses-material-design: true
 
   assets:
-    - images/avatar/
-    - images/shared/
-
+    - assets/avatar/
+    - assets/shared/
 
   plugin:
     platforms:
@@ -57,3 +58,11 @@ flutter:
         pluginClass: OmnisaudeChatbotPlugin
       ios:
         pluginClass: OmnisaudeChatbotPlugin
+
+vars:
+  clean: flutter clean
+  get: flutter pub get
+  runner: flutter pub run build_runner
+scripts:
+  mobx_build: $clean & $get & $runner build --delete-conflicting-outputs
+  mobx_watch: $clean & $get & $runner watch --delete-conflicting-outputs

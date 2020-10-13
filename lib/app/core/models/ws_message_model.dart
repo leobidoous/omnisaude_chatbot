@@ -1,4 +1,4 @@
-import 'package:omnisaude_chatbot/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 
 class WsMessage {
   String datetime;
