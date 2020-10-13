@@ -200,25 +200,25 @@ class MessageContent {
 }
 
 class FileContent {
-  String fileType;
+  ContentFileType fileType;
   String name;
-  String url;
+  String value;
   String comment;
 
-  FileContent({this.fileType, this.name, this.url, this.comment});
+  FileContent({this.fileType, this.name, this.value, this.comment});
 
   FileContent.fromJson(Map<String, dynamic> json) {
-    fileType = json['fileType'];
+    fileType = contentFileTypeValues.map[json["fileType"]];
     name = json['name'];
-    url = json['url'];
+    value = json['value'];
     comment = json['comment'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fileType'] = this.fileType;
+    data['fileType'] = messageTypeValues.reverse[this.fileType];
     data['name'] = this.name;
-    data['url'] = this.url;
+    data['value'] = this.value;
     data['comment'] = this.comment;
     return data;
   }

@@ -7,6 +7,7 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:universal_html/html.dart';
 import 'package:web_socket_channel/html.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebConnection extends Disposable {
   final String _url;
@@ -65,6 +66,8 @@ class WebConnection extends Disposable {
   }
 
   String getUserPeer() => _userPeer;
+
+  WebSocketSink getStreamChannel() => _channel?.sink;
 
   Future<void> onCloseSession() async {
     try {

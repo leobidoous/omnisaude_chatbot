@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -39,6 +40,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
+
+    return _chooseInputContent(_message);
     TextInputType textInputType = TextInputType.text;
     List<MaskTextInputFormatter> textInputMask;
     Map<String, RegExp> _filter;
@@ -148,6 +151,125 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _chooseInputContent(WsMessage message) {
+    if (message.inputContent != null) {
+      if (message.inputContent.inputType == InputType.DATE) {
+        return _panelSendDateContent();
+      } else if (message.inputContent.inputType == InputType.TEXT) {
+        return _panelSendTextContent();
+      }
+      return Container();
+    } else if (message.uploadContent != null) {
+      return _panelSendFileContent();
+    } else if (message.switchContent != null) {
+      return _panelSendOptionContent();
+    }
+    return Container();
+  }
+
+  Widget _panelSendTextContent() {
+    return Container();
+  }
+
+  Widget _panelSendDateContent() {
+    return Container();
+  }
+
+  Widget _panelSendFileContent() {
+    if (kIsWeb) {
+      return Row(
+        children: [
+          _btnContent(_btnSendFile(), "Escolher arquivo"),
+          SizedBox(width: 10.0),
+          _btnContent(_btnSendMessage(), "Enviar"),
+        ],
+      );
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.grey.shade200,
+      ),
+      padding: EdgeInsets.all(5.0),
+      margin: EdgeInsets.all(5.0),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.white,
+            ),
+            child: _textFormField(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(child: _btnSendFile()),
+              SizedBox(width: 10.0),
+              _btnSendMessage(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _panelSendOptionContent() {
+    return Container();
+  }
+
+  Function test() {
+    print("teste");
+  }
+
+  Widget _textFormField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 110.0, 10.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(width: 0.5),
+        ),
+      ),
+    );
+  }
+
+  Widget _btnContent(Widget child, String label) {
+    return FlatButton(
+      onPressed: test,
+      color: Colors.red,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Row(
+        children: [
+          Text(label),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _btnSendMessage() {
+    return IconButton(
+      onPressed: test,
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.comfortable,
+      icon: Icon(Icons.send_rounded),
+    );
+  }
+
+  Widget _btnSendFile() {
+    return IconButton(
+      onPressed: test,
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.standard,
+      icon: Icon(Icons.attach_file_rounded),
     );
   }
 

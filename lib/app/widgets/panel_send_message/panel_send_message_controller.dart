@@ -6,7 +6,6 @@ class PanelSendMessageController = _PanelSendMessageControllerBase
     with _$PanelSendMessageController;
 
 abstract class _PanelSendMessageControllerBase with Store {
-
   @observable
   bool inputEnabled = true;
 }

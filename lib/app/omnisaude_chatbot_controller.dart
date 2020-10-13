@@ -12,7 +12,10 @@ class OmnisaudeChatbot = _OmnisaudeChatbotControllerBase
 
 abstract class _OmnisaudeChatbotControllerBase with Store {
   Widget chooseWidgetToRender(
-      WsMessage message, String userPeer, bool isLastMessage) {
+    WsMessage message,
+    String userPeer,
+    bool isLastMessage,
+  ) {
     return ChooseWidgetToRenderWidget(
       message: message,
       userPeer: userPeer,
@@ -21,7 +24,9 @@ abstract class _OmnisaudeChatbotControllerBase with Store {
   }
 
   Widget panelSendMessage(
-      WsMessage message, Future<void> Function(WsMessage) onSendMessage) {
+    WsMessage message,
+    Future<void> Function(WsMessage) onSendMessage,
+  ) {
     if (message == null) message = WsMessage();
     return PanelSendMessageWidget(
       message: message,

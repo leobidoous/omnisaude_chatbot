@@ -17,7 +17,7 @@ abstract class _HomeControllerBase with Store {
   static String _avatarUrl =
       "https://img.icons8.com/color/2x/user-male-skin-type-4.png";
 
-  final OmnisaudeChatbot omnisaudeChatbot = OmnisaudeChatbot();
+  OmnisaudeChatbot omnisaudeChatbot = OmnisaudeChatbot();
   final MobileConnection mobileConnection = MobileConnection(
     _url,
     _username,

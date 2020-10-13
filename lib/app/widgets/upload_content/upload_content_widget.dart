@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/file_picker_service.dart';
 import 'package:omnisaude_chatbot/app/widgets/avatar/avatar_widget.dart';
 import 'package:omnisaude_chatbot/app/widgets/datetime_on_message/datetime_on_message_widget.dart';
 
 class UploadContentWidget extends StatefulWidget {
+  final Future<void> Function(WsMessage) onSendMessage;
   final WsMessage message;
   final String peer;
   final bool enabled;
 
   const UploadContentWidget(
       {Key key,
+      @required this.onSendMessage,
       @required this.message,
       @required this.peer,
       @required this.enabled})
@@ -91,10 +94,27 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
   Future<void> _onChooseFiles() async {
     try {
       final FilePickerService _service = FilePickerService();
-      _service.getFile();
+      await _service.getFile();
+      _onSendMessage();
       _service.dispose();
     } catch (e) {
       print(e);
     }
   }
+
+  Future<void> _onSendMessage() async {
+    try {
+      final WsMessage _message = WsMessage(
+        fileContent: FileContent(
+          comment: "",
+          value: "",
+          fileType: ContentFileType.ANY,
+        ),
+      );
+      widget.onSendMessage(_message);
+    } catch (e) {
+      print(e);
+    }
+  }
+
 }

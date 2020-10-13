@@ -10,6 +10,7 @@ import 'package:omnisaude_chatbot/app/widgets/avatar/avatar_widget.dart';
 import 'input_content_controller.dart';
 
 class InputContentWidget extends StatefulWidget {
+  final Future<void> Function(WsMessage) onSendMessage;
   final InputContent message;
   final String peer;
 
@@ -20,6 +21,7 @@ class InputContentWidget extends StatefulWidget {
 
   const InputContentWidget(
       {Key key,
+      @required this.onSendMessage,
       @required this.message,
       @required this.peer,
       @required this.firstDate,
