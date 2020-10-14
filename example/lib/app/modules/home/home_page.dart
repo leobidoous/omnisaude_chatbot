@@ -59,6 +59,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
           ],
         ),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Observer(
         builder: (context) {
           if (controller.messages.isEmpty) {

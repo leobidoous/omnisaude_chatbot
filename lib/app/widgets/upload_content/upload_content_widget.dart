@@ -94,7 +94,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
   Future<void> _onChooseFiles() async {
     try {
       final FilePickerService _service = FilePickerService();
-      await _service.getFile();
+      await _service.openFileStorage();
       _onSendMessage();
       _service.dispose();
     } catch (e) {

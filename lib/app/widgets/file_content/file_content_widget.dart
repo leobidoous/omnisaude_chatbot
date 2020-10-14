@@ -16,6 +16,9 @@ class FileContentWidget extends StatefulWidget {
 class _FileContentWidgetState extends State<FileContentWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      height: 100.0,
+      color: Colors.grey,
+    );
   }
 }

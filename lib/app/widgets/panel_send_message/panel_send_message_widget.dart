@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:omnisaude_chatbot/app/core/constants/constants.dart';
+import 'package:intl/intl.dart';
+import 'package:mime/mime.dart';
+import 'package:omnisaude_chatbot/app/components/components.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/services/datetime_picker_service.dart';
+import 'package:omnisaude_chatbot/app/core/services/file_picker_service.dart';
 import 'package:omnisaude_chatbot/app/widgets/panel_send_message/panel_send_message_controller.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
@@ -40,248 +45,202 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
-
-    return _chooseInputContent(_message);
-    TextInputType textInputType = TextInputType.text;
-    List<MaskTextInputFormatter> textInputMask;
-    Map<String, RegExp> _filter;
-    _controller.inputEnabled = false;
+    _controller.dateEnabled = false;
+    _controller.textEnabled = false;
+    _controller.attachEnabled = false;
 
     if (_message.inputContent != null) {
-      switch (_message.inputContent.keyboardType) {
-        case KeyboardType.DATE:
-          textInputType = TextInputType.datetime;
-          break;
-        case KeyboardType.EMAIL:
-          _controller.inputEnabled = true;
-          _messageFocus.requestFocus();
-          textInputType = TextInputType.emailAddress;
-          break;
-        case KeyboardType.NUMBER:
-          _controller.inputEnabled = true;
-          _messageFocus.requestFocus();
-          textInputType = TextInputType.number;
-          break;
-        case KeyboardType.TEXT:
-          _controller.inputEnabled = true;
-          _messageFocus.requestFocus();
-          textInputType = TextInputType.text;
-          break;
-        default:
-          _controller.inputEnabled = true;
-          _messageFocus.requestFocus();
-          textInputType = TextInputType.text;
-          break;
+      if (_message.inputContent.inputType == InputType.DATE) {
+        _controller.dateEnabled = true;
+      } else if (_message.inputContent.inputType == InputType.TEXT) {
+        _controller.textEnabled = true;
       }
-      if (_message.inputContent.mask != null) {
-        switch (_message.inputContent.keyboardType) {
-          case KeyboardType.NUMBER:
-            _filter = filterNUMBERS;
-            break;
-          case KeyboardType.TEXT:
-            _filter = filterLETTERS;
-            break;
-          default:
-            _filter = null;
-            break;
-        }
-        textInputMask = List<MaskTextInputFormatter>()
-          ..add(
-            MaskTextInputFormatter(
-              mask: _message.inputContent.mask,
-              filter: _filter,
-            ),
-          );
-      }
+    } else if (_message.uploadContent != null) {
+      _controller.attachEnabled = true;
+    } else if (_message.switchContent != null) {
+      return Container();
     }
+    return _panelSendMessage(_message);
+  }
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(5.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.0),
-          child: Container(
-            decoration: BoxDecoration(color: Colors.grey.shade300),
-            padding: const EdgeInsets.all(10.0),
-            child: Observer(
-              builder: (BuildContext context) {
-                return Opacity(
-                  opacity: _controller.inputEnabled ? 1.0 : 0.4,
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CupertinoTextField(
-                        maxLines: 5,
-                        minLines: 1,
-                        autocorrect: true,
-                        focusNode: _messageFocus,
-                        controller: _messageText,
-                        keyboardType: textInputType,
-                        inputFormatters: textInputMask,
-                        enabled: _controller.inputEnabled,
-                        textInputAction: TextInputAction.send,
-                        textCapitalization: TextCapitalization.sentences,
-                        padding: EdgeInsets.fromLTRB(10.0, 10.0, 40.0, 10.0),
-                        placeholder: "Digite sua mensagem aqui",
-                        onSubmitted: (String input) async =>
-                            await _onSendMessage(
-                          input,
+  Widget _panelSendMessage(WsMessage message) {
+    return Container(
+      color: Theme.of(context).cardColor,
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      child: Observer(
+        builder: (context) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              IgnorePointer(
+                ignoring: !_controller.dateEnabled,
+                child: Opacity(
+                  opacity: _controller.dateEnabled ? 1.0 : 0.1,
+                  child: IconButton(
+                    iconSize: 30.0,
+                    onPressed: _onShowDatePicker,
+                    padding: EdgeInsets.zero,
+                    color: Theme.of(context).textTheme.headline1.color,
+                    icon: Icon(Icons.date_range_rounded),
+                  ),
+                ),
+              ),
+              IgnorePointer(
+                ignoring: !_controller.attachEnabled,
+                child: Opacity(
+                  opacity: _controller.attachEnabled ? 1.0 : 0.5,
+                  child: PopupMenuButton<UploadInputType>(
+                    onSelected: (UploadInputType type) async {
+                      await _onSelectFile(type, message);
+                    },
+                    elevation: 0.0,
+                    offset: Offset(0.0, -175.0),
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    icon: Icon(
+                      Icons.attach_file_rounded,
+                      color: Theme.of(context).textTheme.headline1.color,
+                      size: 30.0,
+                    ),
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context) => <PopupMenuEntry<UploadInputType>>[
+                      PopupMenuItem<UploadInputType>(
+                        value: UploadInputType.CAMERA,
+                        child: Row(
+                          children: [
+                            Icon(Icons.camera_alt_rounded),
+                            SizedBox(width: 10.0),
+                            Text('Câmera'),
+                          ],
                         ),
                       ),
-                      IgnorePointer(
-                        ignoring: !_controller.inputEnabled,
-                        child: IconButton(
-                          onPressed: () async => await _onSendMessage(
-                            _messageText.text,
-                          ),
-                          icon: const Icon(Icons.send_rounded),
-                          padding: EdgeInsets.zero,
-                          hoverColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          visualDensity: VisualDensity.compact,
-                          color: Theme.of(context).primaryColor,
+                      PopupMenuItem<UploadInputType>(
+                        value: UploadInputType.GALERY,
+                        child: Row(
+                          children: [
+                            Icon(Icons.photo_library_rounded),
+                            SizedBox(width: 10.0),
+                            Text('Galeria'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<UploadInputType>(
+                        value: UploadInputType.FILE,
+                        child: Row(
+                          children: [
+                            Icon(Icons.insert_drive_file_rounded),
+                            SizedBox(width: 10.0),
+                            Text('Arquivo'),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _chooseInputContent(WsMessage message) {
-    if (message.inputContent != null) {
-      if (message.inputContent.inputType == InputType.DATE) {
-        return _panelSendDateContent();
-      } else if (message.inputContent.inputType == InputType.TEXT) {
-        return _panelSendTextContent();
-      }
-      return Container();
-    } else if (message.uploadContent != null) {
-      return _panelSendFileContent();
-    } else if (message.switchContent != null) {
-      return _panelSendOptionContent();
-    }
-    return Container();
-  }
-
-  Widget _panelSendTextContent() {
-    return Container();
-  }
-
-  Widget _panelSendDateContent() {
-    return Container();
-  }
-
-  Widget _panelSendFileContent() {
-    if (kIsWeb) {
-      return Row(
-        children: [
-          _btnContent(_btnSendFile(), "Escolher arquivo"),
-          SizedBox(width: 10.0),
-          _btnContent(_btnSendMessage(), "Enviar"),
-        ],
-      );
-    }
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.grey.shade200,
-      ),
-      padding: EdgeInsets.all(5.0),
-      margin: EdgeInsets.all(5.0),
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Colors.white,
-            ),
-            child: _textFormField(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(child: _btnSendFile()),
-              SizedBox(width: 10.0),
-              _btnSendMessage(),
+                ),
+              ),
+              Expanded(
+                child: IgnorePointer(
+                  ignoring: !_controller.textEnabled,
+                  child: Opacity(
+                    opacity: _controller.textEnabled ? 1.0 : 0.5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: Theme.of(context).backgroundColor,
+                      ),
+                      child: TextFormField(
+                        minLines: 1,
+                        maxLines: 5,
+                        autofocus: true,
+                        enabled: _controller.textEnabled,
+                        scrollPhysics: BouncingScrollPhysics(),
+                        textCapitalization: TextCapitalization.sentences,
+                        cursorColor: Theme.of(context).primaryColor,
+                        decoration: InputDecoration(
+                          hintText: "Escreva uma mensagem",
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0,
+                            horizontal: 15.0,
+                          ),
+                          border: generalOutlineInputBorder(),
+                          focusedBorder: generalOutlineInputBorder(),
+                          enabledBorder: generalOutlineInputBorder(),
+                          disabledBorder: generalOutlineInputBorder(),
+                          focusedErrorBorder: generalOutlineInputBorder(),
+                          errorBorder: generalOutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              IgnorePointer(
+                ignoring: !_controller.textEnabled,
+                child: Opacity(
+                  opacity: _controller.textEnabled ? 1.0 : 0.5,
+                  child: IconButton(
+                    iconSize: 30.0,
+                    onPressed: test,
+                    padding: EdgeInsets.zero,
+                    color: Theme.of(context).textTheme.headline1.color,
+                    icon: Icon(Icons.send_rounded),
+                  ),
+                ),
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
-  }
-
-  Widget _panelSendOptionContent() {
-    return Container();
   }
 
   Function test() {
     print("teste");
   }
 
-  Widget _textFormField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 110.0, 10.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(width: 0.5),
+  Future<void> _onShowDatePicker() async {
+    final DatetimePickerService _service = DatetimePickerService();
+    final DateTime _dateTime = await _service.onShowDateTimePicker(context);
+    if (_dateTime != null) {
+      WsMessage _message = WsMessage(
+        messageContent: MessageContent(
+          messageType: MessageType.TEXT,
+          value: DateFormat("dd/MM/yyyy", "pt_BR").format(_dateTime),
         ),
-      ),
-    );
+      );
+      await widget.onSendMessage(_message);
+    }
   }
 
-  Widget _btnContent(Widget child, String label) {
-    return FlatButton(
-      onPressed: test,
-      color: Colors.red,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Row(
-        children: [
-          Text(label),
-          child,
-        ],
-      ),
-    );
-  }
-
-  Widget _btnSendMessage() {
-    return IconButton(
-      onPressed: test,
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.comfortable,
-      icon: Icon(Icons.send_rounded),
-    );
-  }
-
-  Widget _btnSendFile() {
-    return IconButton(
-      onPressed: test,
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.standard,
-      icon: Icon(Icons.attach_file_rounded),
-    );
-  }
-
-  Future<void> _onSendMessage(String message) async {
-    if (message.trim().isEmpty) return;
-    WsMessage _message = WsMessage(
-      messageContent: MessageContent(
-        value: message.trim(),
-      ),
-    );
-    widget.onSendMessage(_message).whenComplete(() {
-      _messageText.clear();
-    });
+  Future<void> _onSelectFile(UploadInputType type, WsMessage message) async {
+    final FilePickerService _filePickerService = FilePickerService();
+    switch (type) {
+      case UploadInputType.GALERY:
+        final File _image = await _filePickerService.openGalery();
+        if (_image == null) break;
+        final String _mimeType = lookupMimeType(_image.path);
+        final String _base64 = UriData.fromBytes(
+          _image.readAsBytesSync(),
+          mimeType: _mimeType,
+        ).toString();
+        WsMessage _message = WsMessage(
+          fileContent: FileContent(
+            fileType: message.uploadContent.fileType,
+            value: _base64,
+            name: "nome qualquer",
+          ),
+        );
+        await widget.onSendMessage(_message);
+        break;
+      case UploadInputType.FILE:
+        await _filePickerService.openFileStorage();
+        break;
+      case UploadInputType.CAMERA:
+        final File _image = await _filePickerService.openCamera();
+        if (_image == null) break;
+        break;
+    }
   }
 }

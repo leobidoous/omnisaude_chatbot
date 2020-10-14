@@ -1,3 +1,4 @@
+enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED }
 enum MessageType { HTML, IMAGE, TEXT }
