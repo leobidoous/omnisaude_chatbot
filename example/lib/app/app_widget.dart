@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class AppWidget extends StatelessWidget {
   @override
@@ -15,7 +15,8 @@ class AppWidget extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [const Locale('pt', 'BR')],
-      themeMode:ThemeMode.light,
+      themeMode: ThemeMode.dark,
+      // themeMode:ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Color(0xFFfd6347),
@@ -39,6 +40,7 @@ class AppWidget extends StatelessWidget {
             fontWeight: FontWeight.w500,
             fontSize: 20.0,
           ),
+          headline6: TextStyle(color: Colors.black),
         ),
       ),
       darkTheme: ThemeData(
@@ -64,6 +66,7 @@ class AppWidget extends StatelessWidget {
             fontWeight: FontWeight.w500,
             fontSize: 20.0,
           ),
+          headline6: TextStyle(color: Colors.grey.shade300),
         ),
       ),
       initialRoute: '/',

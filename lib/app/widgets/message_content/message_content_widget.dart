@@ -77,7 +77,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
                       topRight: Radius.circular(5.0),
                       bottomLeft: Radius.circular(5.0),
                     ),
-                    child: child(message.value, Colors.grey.shade200),
+                    child: child(message.value, Theme.of(context).cardColor),
                   ),
                 ),
                 const SizedBox(height: 1.0),
@@ -131,7 +131,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
                     ),
                     child: child(
                       message.value,
-                      Theme.of(context).primaryColor.withOpacity(0.5),
+                      Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -154,7 +154,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
       padding: const EdgeInsets.all(5.0),
       child: SelectableText(
         "$message",
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+        style: TextStyle(color: Color(0xFFEEEEEE)),
       ),
     );
   }
@@ -165,7 +165,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
       padding: const EdgeInsets.all(5.0),
       child: SelectableText(
         "$message",
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+        style: TextStyle(color: Colors.white),
       ),
     );
   }
@@ -177,7 +177,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
       child: SelectableText(
         "$message",
         style: TextStyle(
-          color: Theme.of(context).textTheme.bodyText1.color,
+          color: Colors.white,
         ),
       ),
     );

@@ -154,6 +154,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
                         minLines: 1,
                         maxLines: 5,
                         autofocus: true,
+                        controller: _messageText,
                         enabled: _controller.textEnabled,
                         scrollPhysics: BouncingScrollPhysics(),
                         textCapitalization: TextCapitalization.sentences,
@@ -182,7 +183,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
                   opacity: _controller.textEnabled ? 1.0 : 0.3,
                   child: IconButton(
                     iconSize: 30.0,
-                    onPressed: test,
+                    onPressed: () => _onSendTextMessage(_messageText.text),
                     padding: EdgeInsets.zero,
                     color: Theme.of(context).textTheme.headline1.color,
                     icon: Icon(Icons.send_rounded),
@@ -196,8 +197,18 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     );
   }
 
-  Function test() {
-    print("teste");
+  Future<void> _onSendTextMessage(String message) async {
+    final DatetimePickerService _service = DatetimePickerService();
+    final DateTime _dateTime = await _service.onShowDateTimePicker(context);
+    if (_dateTime != null) {
+      WsMessage _message = WsMessage(
+        messageContent: MessageContent(
+          messageType: MessageType.TEXT,
+          value: DateFormat("dd/MM/yyyy", "pt_BR").format(_dateTime),
+        ),
+      );
+      await widget.onSendMessage(_message);
+    }
   }
 
   Future<void> _onShowDatePicker() async {
@@ -235,7 +246,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         await widget.onSendMessage(_message);
         break;
       case UploadInputType.FILE:
-        final File _file =await _filePickerService.openFileStorage();
+        final File _file = await _filePickerService.openFileStorage();
         if (_file == null) break;
         final String _mimeType = lookupMimeType(_file.path);
         final String _base64 = UriData.fromBytes(
@@ -254,6 +265,19 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       case UploadInputType.CAMERA:
         final File _image = await _filePickerService.openCamera();
         if (_image == null) break;
+        final String _mimeType = lookupMimeType(_image.path);
+        final String _base64 = UriData.fromBytes(
+          _image.readAsBytesSync(),
+          mimeType: _mimeType,
+        ).toString();
+        WsMessage _message = WsMessage(
+          fileContent: FileContent(
+            fileType: message.uploadContent.fileType,
+            value: _base64,
+            name: "nome qualquer",
+          ),
+        );
+        await widget.onSendMessage(_message);
         break;
     }
   }

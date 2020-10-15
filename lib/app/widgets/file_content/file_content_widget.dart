@@ -44,7 +44,8 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     );
   }
 
-  Widget _userContent(FileContent message, Function(String, Color) child) {
+  Widget _userContent(
+      FileContent message, Function(String, String, String, Color) child) {
     return Container(
       margin: EdgeInsets.only(
         left: MediaQuery.of(context).size.width * 0.2,
@@ -67,7 +68,12 @@ class _FileContentWidgetState extends State<FileContentWidget> {
                       topRight: Radius.circular(5.0),
                       bottomLeft: Radius.circular(5.0),
                     ),
-                    child: child(message.value, Colors.grey.shade200),
+                    child: child(
+                      message.value,
+                      message.name,
+                      message.comment,
+                      Theme.of(context).cardColor,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 1.0),
@@ -90,7 +96,8 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     );
   }
 
-  Widget _botContent(FileContent message, Function(String, Color) child) {
+  Widget _botContent(
+      FileContent message, Function(String, String, String, Color) child) {
     return Container(
       margin: EdgeInsets.only(
         right: MediaQuery.of(context).size.width * 0.2,
@@ -121,7 +128,9 @@ class _FileContentWidgetState extends State<FileContentWidget> {
                     ),
                     child: child(
                       message.value,
-                      Theme.of(context).primaryColor.withOpacity(0.5),
+                      message.name,
+                      message.comment,
+                      Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -138,7 +147,7 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     );
   }
 
-  Widget _imageContent(String url, Color color) {
+  Widget _imageContent(String url, String filename, String comment, Color color) {
     return Container(
       color: color,
       height: 200.0,
@@ -160,38 +169,68 @@ class _FileContentWidgetState extends State<FileContentWidget> {
               ),
             ),
           ),
+          _commentContent(comment),
         ],
       ),
     );
   }
 
-  Widget _pdfContent(String url, Color color) {
+  Widget _pdfContent(String url, String filename, String comment, Color color) {
     return Container(
       color: color,
-      height: 200.0,
       padding: const EdgeInsets.all(5.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
+          Container(
+            height: 200.0,
             child: GestureDetector(
               onTap: () {
                 final ViewDocumentService _service = ViewDocumentService();
                 _service.onViewSingleDocument(context, url);
                 _service.dispose();
               },
-              // child: IgnorePointer(
-              //   ignoring: false,
-              //   child: PDF().cachedFromUrl(
-              //     url,
-              //     placeholder: (double progress) => Center(child: Text('$progress %')),
-              //     errorWidget: (dynamic error) => Center(child: Text(error.toString())),
-              //   ),
-              // ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        PDF().fromUrl(url),
+                        Container(color: Colors.transparent),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(5.0),
+                    color: Theme.of(context).cardColor,
+                    child: Row(
+                      children: [
+                        Icon(Icons.insert_drive_file_rounded),
+                        SizedBox(width: 10.0),
+                        Expanded(
+                          child: Text(
+                            "$filename",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: 10.0),
+                        Icon(Icons.download_rounded),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          _commentContent(comment),
         ],
       ),
     );
+  }
+
+  Widget _commentContent(String comment) {
+    if (comment == null) return Container();
+    else if (comment.trim().isEmpty) return Container();
+    return SelectableText(comment);
   }
 }

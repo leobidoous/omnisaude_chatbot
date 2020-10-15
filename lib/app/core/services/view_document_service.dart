@@ -9,16 +9,42 @@ class ViewDocumentService extends Disposable {
       await showDialog(
           context: context,
           builder: (context) {
-            return PDF().cachedFromUrl(
-              url,
-              placeholder: (double progress) => Center(child: Text('$progress %')),
-              errorWidget: (dynamic error) => Center(child: Text(error.toString())),
+            return Scaffold(
+              body: PDF().cachedFromUrl(
+                url,
+                placeholder: (double progress) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Theme.of(context).cardColor,
+                    ),
+                    padding: EdgeInsets.all(5.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            CircularProgressIndicator(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              strokeWidth: 1.5,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                errorWidget: (dynamic error) =>
+                    Center(child: Text(error.toString())),
+              ),
             );
           });
     } catch (e) {
       print("impossível visualizar a foto unica: $e");
     }
   }
+
 //dispose will be called automatically
   @override
   void dispose() {}

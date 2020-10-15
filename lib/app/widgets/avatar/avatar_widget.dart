@@ -34,34 +34,33 @@ class _AvatarWidgetState extends State<AvatarWidget> {
         width: widget.width,
         height: widget.height,
         placeholder: (BuildContext context, String url) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Theme.of(context).backgroundColor,
+          return Container(
+            color: Theme.of(context).backgroundColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  constraints: BoxConstraints(maxHeight: 30.0, maxWidth: 30.0),
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    strokeWidth: 1.5,
+                  ),
                 ),
-                padding: EdgeInsets.all(5.0),
-                constraints: BoxConstraints(maxHeight: 30.0, maxWidth: 30.0),
-                child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  strokeWidth: 1.5,
-                ),
-              ),
-            ],
+              ],
+            ),
           );
         },
         errorWidget: (BuildContext context, String url, dynamic error) {
           return Container(
-            color: Theme.of(context).backgroundColor,
+            color: Colors.transparent,
             child: Image.asset(widget.imagePath, package: "omnisaude_chatbot"),
           );
         },
         imageBuilder: (BuildContext context, ImageProvider image) {
           return Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: Colors.transparent,
               image: DecorationImage(image: image, fit: widget.boxFit),
             ),
           );

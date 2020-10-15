@@ -43,7 +43,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
-            color: Colors.grey.shade50,
+            color: Theme.of(context).cardColor,
           ),
           padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
           margin: EdgeInsets.symmetric(vertical: 2.5),

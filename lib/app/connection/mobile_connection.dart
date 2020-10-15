@@ -40,7 +40,7 @@ class MobileConnection extends Disposable {
       });
       return _controller;
     } catch (e) {
-      print("Erro ao iniciar a conexão: $e");
+      print("Erro ao iniciar a conexão no package: $e");
       throw e;
     }
   }
