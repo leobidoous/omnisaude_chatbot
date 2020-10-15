@@ -15,8 +15,8 @@ class AppWidget extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [const Locale('pt', 'BR')],
-      themeMode: ThemeMode.dark,
-      // themeMode:ThemeMode.light,
+      // themeMode: ThemeMode.dark,
+      themeMode:ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Color(0xFFfd6347),
@@ -28,6 +28,7 @@ class AppWidget extends StatelessWidget {
         cardColor: Colors.grey.shade200,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         textTheme: TextTheme(
           bodyText1: TextStyle(
             fontFamily: "Helvetica Neue",
@@ -54,6 +55,7 @@ class AppWidget extends StatelessWidget {
         cardColor: Colors.grey.shade900,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         textTheme: TextTheme(
           bodyText1: TextStyle(
             fontFamily: "Helvetica Neue",

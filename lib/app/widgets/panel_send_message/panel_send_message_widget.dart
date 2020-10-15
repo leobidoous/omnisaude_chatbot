@@ -246,21 +246,22 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         await widget.onSendMessage(_message);
         break;
       case UploadInputType.FILE:
+        // await _filePickerService.openWebFileStorage();
         final File _file = await _filePickerService.openFileStorage();
-        if (_file == null) break;
-        final String _mimeType = lookupMimeType(_file.path);
-        final String _base64 = UriData.fromBytes(
-          _file.readAsBytesSync(),
-          mimeType: _mimeType,
-        ).toString();
-        WsMessage _message = WsMessage(
-          fileContent: FileContent(
-            fileType: message.uploadContent.fileType,
-            value: _base64,
-            name: "nome qualquer",
-          ),
-        );
-        await widget.onSendMessage(_message);
+        // if (_file == null) break;
+        // final String _mimeType = lookupMimeType(_file.path);
+        // final String _base64 = UriData.fromBytes(
+        //   _file.readAsBytesSync(),
+        //   mimeType: _mimeType,
+        // ).toString();
+        // WsMessage _message = WsMessage(
+        //   fileContent: FileContent(
+        //     fileType: message.uploadContent.fileType,
+        //     value: _base64,
+        //     name: "nome qualquer",
+        //   ),
+        // );
+        // await widget.onSendMessage(_message);
         break;
       case UploadInputType.CAMERA:
         final File _image = await _filePickerService.openCamera();
