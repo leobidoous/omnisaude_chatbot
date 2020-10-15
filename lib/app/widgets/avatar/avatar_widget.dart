@@ -9,6 +9,7 @@ class AvatarWidget extends StatefulWidget {
   final double radius;
   final String imagePath;
   final String url;
+  final BoxFit boxFit;
 
   const AvatarWidget(
       {Key key,
@@ -16,7 +17,8 @@ class AvatarWidget extends StatefulWidget {
       this.width,
       this.imagePath: "assets/avatar/bot.png",
       this.url,
-      this.radius: 0.0})
+      this.radius: 0.0,
+      this.boxFit: BoxFit.fill})
       : super(key: key);
 
   @override
@@ -32,16 +34,22 @@ class _AvatarWidgetState extends State<AvatarWidget> {
         width: widget.width,
         height: widget.height,
         placeholder: (BuildContext context, String url) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Theme.of(context).backgroundColor,
-            ),
-            padding: EdgeInsets.all(5.0),
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-              strokeWidth: 1.5,
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Theme.of(context).backgroundColor,
+                ),
+                padding: EdgeInsets.all(5.0),
+                constraints: BoxConstraints(maxHeight: 30.0, maxWidth: 30.0),
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  strokeWidth: 1.5,
+                ),
+              ),
+            ],
           );
         },
         errorWidget: (BuildContext context, String url, dynamic error) {
@@ -54,7 +62,7 @@ class _AvatarWidgetState extends State<AvatarWidget> {
           return Container(
             decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              image: DecorationImage(image: image, fit: BoxFit.fill),
+              image: DecorationImage(image: image, fit: widget.boxFit),
             ),
           );
         },

@@ -75,7 +75,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
               IgnorePointer(
                 ignoring: !_controller.dateEnabled,
                 child: Opacity(
-                  opacity: _controller.dateEnabled ? 1.0 : 0.1,
+                  opacity: _controller.dateEnabled ? 1.0 : 0.3,
                   child: IconButton(
                     iconSize: 30.0,
                     onPressed: _onShowDatePicker,
@@ -88,7 +88,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
               IgnorePointer(
                 ignoring: !_controller.attachEnabled,
                 child: Opacity(
-                  opacity: _controller.attachEnabled ? 1.0 : 0.5,
+                  opacity: _controller.attachEnabled ? 1.0 : 0.3,
                   child: PopupMenuButton<UploadInputType>(
                     onSelected: (UploadInputType type) async {
                       await _onSelectFile(type, message);
@@ -144,7 +144,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
                 child: IgnorePointer(
                   ignoring: !_controller.textEnabled,
                   child: Opacity(
-                    opacity: _controller.textEnabled ? 1.0 : 0.5,
+                    opacity: _controller.textEnabled ? 1.0 : 0.3,
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.0),
@@ -179,7 +179,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
               IgnorePointer(
                 ignoring: !_controller.textEnabled,
                 child: Opacity(
-                  opacity: _controller.textEnabled ? 1.0 : 0.5,
+                  opacity: _controller.textEnabled ? 1.0 : 0.3,
                   child: IconButton(
                     iconSize: 30.0,
                     onPressed: test,
@@ -235,7 +235,21 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         await widget.onSendMessage(_message);
         break;
       case UploadInputType.FILE:
-        await _filePickerService.openFileStorage();
+        final File _file =await _filePickerService.openFileStorage();
+        if (_file == null) break;
+        final String _mimeType = lookupMimeType(_file.path);
+        final String _base64 = UriData.fromBytes(
+          _file.readAsBytesSync(),
+          mimeType: _mimeType,
+        ).toString();
+        WsMessage _message = WsMessage(
+          fileContent: FileContent(
+            fileType: message.uploadContent.fileType,
+            value: _base64,
+            name: "nome qualquer",
+          ),
+        );
+        await widget.onSendMessage(_message);
         break;
       case UploadInputType.CAMERA:
         final File _image = await _filePickerService.openCamera();

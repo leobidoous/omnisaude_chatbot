@@ -37,8 +37,8 @@ class _ChooseWidgetToRenderWidgetState
       );
     } else if (_message.fileContent != null) {
       return FileContentWidget(
-        message: _message.fileContent,
-        peer: _message.peer,
+        message: _message,
+        userPeer: _userPeer,
       );
     } else if (_message.messageContent != null) {
       return MessageContentWidget(

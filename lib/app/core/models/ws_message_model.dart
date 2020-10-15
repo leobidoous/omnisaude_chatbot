@@ -216,7 +216,7 @@ class FileContent {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fileType'] = messageTypeValues.reverse[this.fileType];
+    data['fileType'] = contentFileTypeValues.reverse[this.fileType];
     data['name'] = this.name;
     data['value'] = this.value;
     data['comment'] = this.comment;
