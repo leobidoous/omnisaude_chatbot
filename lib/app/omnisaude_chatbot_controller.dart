@@ -25,11 +25,13 @@ abstract class _OmnisaudeChatbotControllerBase with Store {
 
   Widget panelSendMessage(
     WsMessage message,
+      Future<void> Function() onScrollListToBottom,
     Future<void> Function(WsMessage) onSendMessage,
   ) {
     if (message == null) message = WsMessage();
     return PanelSendMessageWidget(
       message: message,
+      onScrollListToBottom: onScrollListToBottom,
       onSendMessage: onSendMessage,
     );
   }

@@ -7,13 +7,13 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class WebConnection extends Disposable {
+class Connection extends Disposable {
   final String _url;
   final String _username;
   final String _avatarUrl;
   String _userPeer;
 
-  WebConnection(this._url, this._username, this._avatarUrl);
+  Connection(this._url, this._username, this._avatarUrl);
 
   final StreamController _controller = StreamController<WsMessage>();
   WebSocketChannel _channel;

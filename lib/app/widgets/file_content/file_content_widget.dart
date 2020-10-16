@@ -5,14 +5,13 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/view_document_service.dart';
 import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
 import 'package:omnisaude_chatbot/app/widgets/avatar/avatar_widget.dart';
-import 'package:omnisaude_chatbot/app/widgets/datetime_on_message/datetime_on_message_widget.dart';
 
 class FileContentWidget extends StatefulWidget {
   final WsMessage message;
-  final String userPeer;
+  final Color color;
 
   const FileContentWidget(
-      {Key key, @required this.message, @required this.userPeer})
+      {Key key, @required this.message, @required this.color})
       : super(key: key);
 
   @override
@@ -22,132 +21,30 @@ class FileContentWidget extends StatefulWidget {
 class _FileContentWidgetState extends State<FileContentWidget> {
   @override
   Widget build(BuildContext context) {
-    final WsMessage _message = widget.message;
-    final String _userPeer = widget.userPeer;
-    final String _mimeType = lookupMimeType(_message.fileContent.value);
-    if (lookupMimeType(_message.fileContent.value).contains("image")) {
-      if (_message.peer == _userPeer) {
-        return _userContent(_message.fileContent, _imageContent);
-      } else {
-        return _botContent(_message.fileContent, _imageContent);
-      }
+    final FileContent _message = widget.message.fileContent;
+    final String _mimeType = lookupMimeType(_message.value);
+    final Color _color = widget.color;
+
+    if (lookupMimeType(_message.value).contains("image")) {
+      return _imageContent(
+        _message.value,
+        _message.name,
+        _message.comment,
+        _color,
+      );
     } else if (_mimeType == "application/pdf") {
-      if (_message.peer == _userPeer) {
-        return _userContent(_message.fileContent, _pdfContent);
-      } else {
-        return _botContent(_message.fileContent, _pdfContent);
-      }
+      return _pdfContent(
+        _message.value,
+        _message.name,
+        _message.comment,
+        _color,
+      );
     }
-    return Container(
-      height: 100.0,
-      color: Colors.grey,
-    );
+    return Container();
   }
 
-  Widget _userContent(
-      FileContent message, Function(String, String, String, Color) child) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width * 0.2,
-        bottom: 5.0,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(5.0),
-                    ),
-                    child: child(
-                      message.value,
-                      message.name,
-                      message.comment,
-                      Theme.of(context).cardColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(
-                  dateTime: DateTime.parse(widget.message.datetime),
-                  message: widget.message,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10.0),
-          AvatarWidget(
-            url: widget.message.avatarUrl,
-            width: 30.0,
-            height: 30.0,
-            radius: 10.0,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _botContent(
-      FileContent message, Function(String, String, String, Color) child) {
-    return Container(
-      margin: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.2,
-        bottom: 5.0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const AvatarWidget(
-            width: 30.0,
-            height: 30.0,
-            radius: 10.0,
-          ),
-          const SizedBox(width: 10.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0),
-                      bottomRight: Radius.circular(5.0),
-                    ),
-                    child: child(
-                      message.value,
-                      message.name,
-                      message.comment,
-                      Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(
-                  dateTime: DateTime.parse(widget.message.datetime),
-                  message: widget.message,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _imageContent(String url, String filename, String comment, Color color) {
+  Widget _imageContent(
+      String url, String filename, String comment, Color color) {
     return Container(
       color: color,
       height: 200.0,
@@ -229,7 +126,8 @@ class _FileContentWidgetState extends State<FileContentWidget> {
   }
 
   Widget _commentContent(String comment) {
-    if (comment == null) return Container();
+    if (comment == null)
+      return Container();
     else if (comment.trim().isEmpty) return Container();
     return SelectableText(comment);
   }

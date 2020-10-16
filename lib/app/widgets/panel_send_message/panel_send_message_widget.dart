@@ -15,10 +15,11 @@ import 'package:omnisaude_chatbot/app/widgets/panel_send_message/panel_send_mess
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage message;
+  final Future<void> Function() onScrollListToBottom;
   final Future<void> Function(WsMessage) onSendMessage;
 
   const PanelSendMessageWidget(
-      {Key key, @required this.message, @required this.onSendMessage})
+      {Key key, @required this.message, @required this.onScrollListToBottom, @required this.onSendMessage})
       : super(key: key);
 
   @override
@@ -32,6 +33,11 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   @override
   void initState() {
+    _messageFocus.addListener(() {
+      if (_messageFocus.hasFocus) {
+        widget.onScrollListToBottom();
+      }
+    });
     super.initState();
   }
 
@@ -154,6 +160,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
                         minLines: 1,
                         maxLines: 5,
                         autofocus: true,
+                        focusNode: _messageFocus,
                         controller: _messageText,
                         enabled: _controller.textEnabled,
                         scrollPhysics: BouncingScrollPhysics(),
@@ -198,16 +205,16 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   }
 
   Future<void> _onSendTextMessage(String message) async {
-    final DatetimePickerService _service = DatetimePickerService();
-    final DateTime _dateTime = await _service.onShowDateTimePicker(context);
-    if (_dateTime != null) {
+    if (message.trim().isNotEmpty) {
       WsMessage _message = WsMessage(
         messageContent: MessageContent(
           messageType: MessageType.TEXT,
-          value: DateFormat("dd/MM/yyyy", "pt_BR").format(_dateTime),
+          value: message.trim(),
         ),
       );
-      await widget.onSendMessage(_message);
+      await widget
+          .onSendMessage(_message)
+          .whenComplete(() => _messageText.clear());
     }
   }
 
@@ -246,22 +253,21 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         await widget.onSendMessage(_message);
         break;
       case UploadInputType.FILE:
-        // await _filePickerService.openWebFileStorage();
         final File _file = await _filePickerService.openFileStorage();
-        // if (_file == null) break;
-        // final String _mimeType = lookupMimeType(_file.path);
-        // final String _base64 = UriData.fromBytes(
-        //   _file.readAsBytesSync(),
-        //   mimeType: _mimeType,
-        // ).toString();
-        // WsMessage _message = WsMessage(
-        //   fileContent: FileContent(
-        //     fileType: message.uploadContent.fileType,
-        //     value: _base64,
-        //     name: "nome qualquer",
-        //   ),
-        // );
-        // await widget.onSendMessage(_message);
+        if (_file == null) break;
+        final String _mimeType = lookupMimeType(_file.path);
+        final String _base64 = UriData.fromBytes(
+          _file.readAsBytesSync(),
+          mimeType: _mimeType,
+        ).toString();
+        WsMessage _message = WsMessage(
+          fileContent: FileContent(
+            fileType: message.uploadContent.fileType,
+            value: _base64,
+            name: "nome qualquer",
+          ),
+        );
+        await widget.onSendMessage(_message);
         break;
       case UploadInputType.CAMERA:
         final File _image = await _filePickerService.openCamera();

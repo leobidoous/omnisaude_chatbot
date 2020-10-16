@@ -22,6 +22,7 @@ dependencies:
   path_provider: ^1.6.18
   universal_html: ^1.2.3
   image_picker: ^0.6.7+11
+  flutter_html: ^1.0.2
   carousel_slider: ^2.3.1
   flutter_slidable: ^0.5.7
   web_socket_channel: ^1.1.0

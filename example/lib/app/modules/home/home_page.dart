@@ -24,14 +24,48 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(child: _gridChatsContent()),
-          _buttonsContent(),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(child: _gridChatsContent()),
+            Observer(
+              builder: (context) {
+                final _enabled = controller.chatSelected != null;
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
+                  child: FlatButton(
+                    onPressed: _enabled
+                        ? () async {
+                            await Navigator.pushNamed(
+                              context,
+                              "/chat/${controller.chatSelected?.id}/",
+                            );
+                            controller.chatSelected = null;
+                          }
+                        : null,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
+                    color: Theme.of(context).primaryColor,
+                    padding: EdgeInsets.symmetric(vertical: 25.0),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    child: Text(
+                      "Iniciar chat",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.headline1.color,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -42,12 +76,22 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       color: Theme.of(context).primaryColor,
       child: Observer(
         builder: (context) {
-          if (controller.chatBots.results.isEmpty) return Container();
+          if (controller.chatBots.results.isEmpty)
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.refresh_rounded),
+                  onPressed: () async => await controller.onGetChatBots(),
+                ),
+                Text("Recarregar", textAlign: TextAlign.center),
+              ],
+            );
           return GridView.builder(
             physics: AlwaysScrollableScrollPhysics(),
-            controller: ScrollController(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
+              crossAxisCount: 5,
               mainAxisSpacing: 7.5,
               crossAxisSpacing: 7.5,
             ),
@@ -68,7 +112,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color:_selected ? Theme.of(context).primaryColor : Theme.of(context).cardColor,
+          color: _selected
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).cardColor,
         ),
         child: IconButton(
           onPressed: () {
@@ -78,51 +124,5 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         ),
       );
     });
-  }
-
-  Widget _buttonsContent() {
-    return Observer(
-      builder: (context) {
-        final _enabled = controller.chatSelected != null;
-        print(controller.chatSelected?.toJson());
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _flatButton(
-              _enabled ? () => Navigator.pushNamed(context, "/mobile") : null,
-              "Mobile",
-            ),
-            _flatButton(
-              _enabled ? () => Navigator.pushNamed(context, "/web") : null,
-              "Web",
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _flatButton(Function onPressed, String label) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
-      child: FlatButton(
-        onPressed: onPressed,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(vertical: 25.0),
-        visualDensity: VisualDensity.compact,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.headline1.color,
-          ),
-        ),
-      ),
-    );
   }
 }
