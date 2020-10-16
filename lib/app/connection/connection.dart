@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
-import 'package:universal_html/html.dart';
-import 'package:web_socket_channel/html.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -18,13 +16,11 @@ class WebConnection extends Disposable {
   WebConnection(this._url, this._username, this._avatarUrl);
 
   final StreamController _controller = StreamController<WsMessage>();
-  HtmlWebSocketChannel _channel;
-  WebSocket _webSocket;
+  WebSocketChannel _channel;
 
   Future<StreamController> onInitSession() async {
     try {
-      _webSocket = WebSocket(_url);
-      _channel = HtmlWebSocketChannel(_webSocket);
+      _channel = WebSocketChannel.connect(Uri.parse(_url));
 
       _channel.stream.listen((event) {
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
@@ -67,12 +63,10 @@ class WebConnection extends Disposable {
 
   String getUserPeer() => _userPeer;
 
-  WebSocketSink getStreamChannel() => _channel?.sink;
-
   Future<void> onCloseSession() async {
     try {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
-      _webSocket.close();
+      _channel.sink.close();
       _controller.close();
       print("\t--: CONEXÃO ENCERRADA");
     } catch (e) {
