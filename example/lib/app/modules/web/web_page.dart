@@ -151,7 +151,7 @@ class _WebPageState extends ModularState<WebPage, WebController> {
                     itemBuilder: (BuildContext context, int index) {
                       return controller.omnisaudeChatbot.chooseWidgetToRender(
                         controller.messages[index],
-                        controller.mobileConnection.getUserPeer(),
+                        controller.webConnection.getUserPeer(),
                         controller.messages.last == controller.messages[index],
                       );
                     },
@@ -160,7 +160,7 @@ class _WebPageState extends ModularState<WebPage, WebController> {
               ),
               controller.omnisaudeChatbot.panelSendMessage(
                 controller.messages.last,
-                controller.mobileConnection.onSendMessage,
+                controller.webConnection.onSendMessage,
               ),
             ],
           );

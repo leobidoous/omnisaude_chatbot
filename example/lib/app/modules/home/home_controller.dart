@@ -10,7 +10,7 @@ class HomeController = _HomeControllerBase with _$HomeController;
 abstract class _HomeControllerBase with Store {
 
   @observable
-  Result chatBots;
+  Result chatBots = Result()..results = List();
   @observable
   ChatBot chatSelected;
 

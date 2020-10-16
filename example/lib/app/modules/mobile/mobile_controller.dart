@@ -7,6 +7,8 @@ import 'package:omnisaude_chatbot/app/connection/mobile_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/omnisaude_chatbot_controller.dart';
+import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
+import 'package:omnisaude_chatbot_example/app/modules/home/home_controller.dart';
 
 part 'mobile_controller.g.dart';
 
@@ -14,18 +16,14 @@ part 'mobile_controller.g.dart';
 class MobileController = _MobileControllerBase with _$MobileController;
 
 abstract class _MobileControllerBase with Store {
-  static String _url =
-      "wss://dev.saudemobi.com/ws/chat/f507cfbe-e1c0-4143-a4f8-f2f46f4d1564/";
-  static String _username = "Test User";
-  static String _avatarUrl =
-      "https://img.icons8.com/color/2x/user-male-skin-type-4.png";
+
+  static HomeController homeController = Modular.get<HomeController>();
+  static String _username = USERNAME;
+  static String _avatarUrl = AVATAR_URL;
 
   OmnisaudeChatbot omnisaudeChatbot = OmnisaudeChatbot();
-  final MobileConnection mobileConnection = MobileConnection(
-    _url,
-    _username,
-    _avatarUrl,
-  );
+  MobileConnection mobileConnection;
+
   final ScrollController scrollController = ScrollController();
 
   StreamController streamController;
@@ -39,6 +37,11 @@ abstract class _MobileControllerBase with Store {
 
   Future<void> onInitAndListenStream() async {
     try {
+      mobileConnection = MobileConnection(
+        "wss://dev.saudemobi.com/ws/chat/${homeController.chatSelected.id}/",
+        _username,
+        _avatarUrl,
+      );
       streamController = await mobileConnection.onInitSession();
       streamController.stream.listen((message) {
         messages.add(message);

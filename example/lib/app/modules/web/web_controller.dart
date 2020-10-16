@@ -17,17 +17,11 @@ class WebController = _WebControllerBase with _$WebController;
 
 abstract class _WebControllerBase with Store {
   static HomeController homeController = Modular.get<HomeController>();
-  static String _url;
-      // "wss://dev.saudemobi.com/ws/chat/${homeController.chatSelected.id}/";
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
   OmnisaudeChatbot omnisaudeChatbot = OmnisaudeChatbot();
-  final WebConnection mobileConnection = WebConnection(
-    _url,
-    _username,
-    _avatarUrl,
-  );
+  WebConnection webConnection;
   final ScrollController scrollController = ScrollController();
 
   StreamController streamController;
@@ -41,7 +35,12 @@ abstract class _WebControllerBase with Store {
 
   Future<void> onInitAndListenStream() async {
     try {
-      streamController = await mobileConnection.onInitSession();
+      webConnection = WebConnection(
+        "wss://dev.saudemobi.com/ws/chat/${homeController.chatSelected.id}/",
+        _username,
+        _avatarUrl,
+      );
+      streamController = await webConnection.onInitSession();
       streamController.stream.listen((message) {
         messages.add(message);
         _onScrollListToBottom();
@@ -75,6 +74,6 @@ abstract class _WebControllerBase with Store {
 
   void dispose() {
     streamController.close();
-    mobileConnection.dispose();
+    webConnection.dispose();
   }
 }
