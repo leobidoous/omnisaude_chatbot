@@ -116,15 +116,19 @@ class UploadContent {
 }
 
 class SwitchContent {
-  String switchType;
+  SwitchType switchType;
+  RenderType renderType;
+  bool multiSelection;
   String componentId;
   Layout layout;
   List<Options> options;
 
-  SwitchContent({this.switchType, this.componentId, this.layout, this.options});
+  SwitchContent({this.switchType, this.renderType, this.multiSelection, this.componentId, this.layout, this.options});
 
   SwitchContent.fromJson(Map<String, dynamic> json) {
-    switchType = json['switchType'];
+    switchType = switchTypeValues.map[json["switchType"]];
+    renderType = renderTypeValues.map[json["renderType"]];
+    multiSelection = json['multiSelection'];
     componentId = json['componentId'];
     layout = layoutValues.map[json["layout"]];
     if (json['options'] != null) {
@@ -137,7 +141,9 @@ class SwitchContent {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['switchType'] = this.switchType;
+    data['switchType'] = switchTypeValues.reverse[this.switchType];
+    data['renderType'] = renderTypeValues.reverse[this.renderType];
+    data['multiSelection'] = this.multiSelection;
     data['componentId'] = this.componentId;
     data['layout'] = layoutValues.reverse[this.layout];
     if (this.options != null) {
@@ -180,7 +186,7 @@ class MessageContent {
   String value;
 
   /// Component [extras] representa o atributo de resposta para uma seleção
-  /// de uma [Options] no modelo de [SwitchContent].
+  /// de uma lista de [Options] no modelo de [SwitchContent].
   Map<String, dynamic> extras;
 
   MessageContent({this.messageType, this.value, this.extras});

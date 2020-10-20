@@ -1,5 +1,6 @@
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
+enum RenderType { LIST, SEARCH }
 enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED }
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
@@ -12,6 +13,11 @@ final layoutValues = EnumValues({
   "button": Layout.BUTTON,
   "card": Layout.CARD,
   "image_card": Layout.IMAGE_CARD
+});
+
+final renderTypeValues = EnumValues({
+  "list": RenderType.LIST,
+  "search": RenderType.SEARCH
 });
 
 final messageTypeValues = EnumValues({

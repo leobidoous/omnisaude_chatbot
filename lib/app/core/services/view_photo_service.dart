@@ -9,26 +9,40 @@ class ViewPhotoService extends Disposable {
       await showDialog(
           context: context,
           builder: (context) {
-            return PhotoView(
-              imageProvider: NetworkImage(url),
-              loadingBuilder: (context, image) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Theme.of(context).cardColor,
-                  ),
-                  padding: EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        strokeWidth: 1.5,
+            return SafeArea(
+              child: Scaffold(
+                backgroundColor: Colors.black87,
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: PhotoView(
+                        imageProvider: NetworkImage(url),
+                        loadingBuilder: (context, image) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                strokeWidth: 1.5,
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                  ],
+                ),
+              ),
             );
           });
     } catch (e) {

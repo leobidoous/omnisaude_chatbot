@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/html_parser.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
@@ -32,6 +31,8 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
         return _textContent(_message.value, _color);
       case MessageType.IMAGE:
         return _imageContent(_message.value, _color);
+      // default:
+      //   return _textContent(_message.value, _color);
     }
     return Container();
   }
@@ -48,12 +49,9 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   }
 
   Widget _imageContent(String url, Color color) {
-    double _width;
-    if (kIsWeb) _width = 300.0;
     return Container(
       color: color,
-      height: 200.0,
-      width: _width,
+      constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,32 +78,10 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   Widget _htmlContent(String message, Color color) {
     return Container(
       color: color,
-      padding: EdgeInsets.all(5.0),
+      // padding: EdgeInsets.all(5.0),
       child: Column(
         children: [
-          Html(
-            data: message,
-            customRender: {
-              "flutter": (RenderContext context, Widget child, attributes, _) {
-                return FlutterLogo(
-                  style: (attributes['horizontal'] != null)
-                      ? FlutterLogoStyle.horizontal
-                      : FlutterLogoStyle.markOnly,
-                  textColor: context.style.color,
-                  size: context.style.fontSize.size * 5,
-                );
-              },
-            },
-            onLinkTap: (url) {
-              print("Opening $url...");
-            },
-            onImageTap: (src) {
-              print(src);
-            },
-            onImageError: (exception, stackTrace) {
-              print(exception);
-            },
-          ),
+          Html(data: message),
         ],
       ),
     );

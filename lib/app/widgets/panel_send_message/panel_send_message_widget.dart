@@ -19,7 +19,10 @@ class PanelSendMessageWidget extends StatefulWidget {
   final Future<void> Function(WsMessage) onSendMessage;
 
   const PanelSendMessageWidget(
-      {Key key, @required this.message, @required this.onScrollListToBottom, @required this.onSendMessage})
+      {Key key,
+      @required this.message,
+      @required this.onScrollListToBottom,
+      @required this.onSendMessage})
       : super(key: key);
 
   @override
@@ -35,7 +38,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   void initState() {
     _messageFocus.addListener(() {
       if (_messageFocus.hasFocus) {
-        widget.onScrollListToBottom();
+        Future.delayed(Duration(milliseconds: 100)).whenComplete(() {
+          widget.onScrollListToBottom();
+        });
       }
     });
     super.initState();
@@ -78,125 +83,10 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              IgnorePointer(
-                ignoring: !_controller.dateEnabled,
-                child: Opacity(
-                  opacity: _controller.dateEnabled ? 1.0 : 0.3,
-                  child: IconButton(
-                    iconSize: 30.0,
-                    onPressed: _onShowDatePicker,
-                    padding: EdgeInsets.zero,
-                    color: Theme.of(context).textTheme.headline1.color,
-                    icon: Icon(Icons.date_range_rounded),
-                  ),
-                ),
-              ),
-              IgnorePointer(
-                ignoring: !_controller.attachEnabled,
-                child: Opacity(
-                  opacity: _controller.attachEnabled ? 1.0 : 0.3,
-                  child: PopupMenuButton<UploadInputType>(
-                    onSelected: (UploadInputType type) async {
-                      await _onSelectFile(type, message);
-                    },
-                    elevation: 0.0,
-                    offset: Offset(0.0, -175.0),
-                    color: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    icon: Icon(
-                      Icons.attach_file_rounded,
-                      color: Theme.of(context).textTheme.headline1.color,
-                      size: 30.0,
-                    ),
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context) => <PopupMenuEntry<UploadInputType>>[
-                      PopupMenuItem<UploadInputType>(
-                        value: UploadInputType.CAMERA,
-                        child: Row(
-                          children: [
-                            Icon(Icons.camera_alt_rounded),
-                            SizedBox(width: 10.0),
-                            Text('Câmera'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<UploadInputType>(
-                        value: UploadInputType.GALERY,
-                        child: Row(
-                          children: [
-                            Icon(Icons.photo_library_rounded),
-                            SizedBox(width: 10.0),
-                            Text('Galeria'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<UploadInputType>(
-                        value: UploadInputType.FILE,
-                        child: Row(
-                          children: [
-                            Icon(Icons.insert_drive_file_rounded),
-                            SizedBox(width: 10.0),
-                            Text('Arquivo'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: IgnorePointer(
-                  ignoring: !_controller.textEnabled,
-                  child: Opacity(
-                    opacity: _controller.textEnabled ? 1.0 : 0.3,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0),
-                        color: Theme.of(context).backgroundColor,
-                      ),
-                      child: TextFormField(
-                        minLines: 1,
-                        maxLines: 5,
-                        autofocus: true,
-                        focusNode: _messageFocus,
-                        controller: _messageText,
-                        enabled: _controller.textEnabled,
-                        scrollPhysics: BouncingScrollPhysics(),
-                        textCapitalization: TextCapitalization.sentences,
-                        cursorColor: Theme.of(context).primaryColor,
-                        decoration: InputDecoration(
-                          hintText: "Escreva uma mensagem",
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0,
-                            horizontal: 15.0,
-                          ),
-                          border: generalOutlineInputBorder(),
-                          focusedBorder: generalOutlineInputBorder(),
-                          enabledBorder: generalOutlineInputBorder(),
-                          disabledBorder: generalOutlineInputBorder(),
-                          focusedErrorBorder: generalOutlineInputBorder(),
-                          errorBorder: generalOutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              IgnorePointer(
-                ignoring: !_controller.textEnabled,
-                child: Opacity(
-                  opacity: _controller.textEnabled ? 1.0 : 0.3,
-                  child: IconButton(
-                    iconSize: 30.0,
-                    onPressed: () => _onSendTextMessage(_messageText.text),
-                    padding: EdgeInsets.zero,
-                    color: Theme.of(context).textTheme.headline1.color,
-                    icon: Icon(Icons.send_rounded),
-                  ),
-                ),
-              ),
+              _btnShowDatePickerContent(),
+              _btnSelectFileContent(message),
+              Expanded(child: _textFormFieldContent()),
+              _btnSendTextMessageContent(),
             ],
           );
         },
@@ -204,18 +94,136 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     );
   }
 
-  Future<void> _onSendTextMessage(String message) async {
-    if (message.trim().isNotEmpty) {
-      WsMessage _message = WsMessage(
-        messageContent: MessageContent(
-          messageType: MessageType.TEXT,
-          value: message.trim(),
+  Widget _btnShowDatePickerContent() {
+    return IgnorePointer(
+      ignoring: !_controller.dateEnabled,
+      child: Opacity(
+        opacity: _controller.dateEnabled ? 1.0 : 0.3,
+        child: IconButton(
+          iconSize: 30.0,
+          onPressed: _onShowDatePicker,
+          padding: EdgeInsets.zero,
+          color: Theme.of(context).textTheme.headline1.color,
+          icon: Icon(Icons.date_range_rounded),
         ),
-      );
-      await widget
-          .onSendMessage(_message)
-          .whenComplete(() => _messageText.clear());
-    }
+      ),
+    );
+  }
+
+  Widget _btnSelectFileContent(WsMessage message) {
+    return IgnorePointer(
+      ignoring: !_controller.attachEnabled,
+      child: Opacity(
+        opacity: _controller.attachEnabled ? 1.0 : 0.3,
+        child: PopupMenuButton<UploadInputType>(
+          onSelected: (UploadInputType type) async {
+            await _onSelectFile(type, message);
+          },
+          elevation: 0.0,
+          offset: Offset(0.0, -175.0),
+          color: Theme.of(context).cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          icon: Icon(
+            Icons.attach_file_rounded,
+            color: Theme.of(context).textTheme.headline1.color,
+            size: 30.0,
+          ),
+          padding: EdgeInsets.zero,
+          itemBuilder: (context) => <PopupMenuEntry<UploadInputType>>[
+            PopupMenuItem<UploadInputType>(
+              value: UploadInputType.CAMERA,
+              child: Row(
+                children: [
+                  Icon(Icons.camera_alt_rounded),
+                  SizedBox(width: 10.0),
+                  Text('Câmera'),
+                ],
+              ),
+            ),
+            PopupMenuItem<UploadInputType>(
+              value: UploadInputType.GALERY,
+              child: Row(
+                children: [
+                  Icon(Icons.photo_library_rounded),
+                  SizedBox(width: 10.0),
+                  Text('Galeria'),
+                ],
+              ),
+            ),
+            PopupMenuItem<UploadInputType>(
+              value: UploadInputType.FILE,
+              child: Row(
+                children: [
+                  Icon(Icons.insert_drive_file_rounded),
+                  SizedBox(width: 10.0),
+                  Text('Arquivo'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _textFormFieldContent() {
+    return IgnorePointer(
+      ignoring: !_controller.textEnabled,
+      child: Opacity(
+        opacity: _controller.textEnabled ? 1.0 : 0.3,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Theme.of(context).backgroundColor,
+          ),
+          child: TextFormField(
+            minLines: 1,
+            maxLines: 5,
+            autofocus: true,
+            focusNode: _messageFocus,
+            controller: _messageText,
+            enabled: _controller.textEnabled,
+            onTap: widget.onScrollListToBottom,
+            textInputAction: TextInputAction.send,
+            scrollPhysics: BouncingScrollPhysics(),
+            cursorColor: Theme.of(context).primaryColor,
+            textCapitalization: TextCapitalization.sentences,
+            onFieldSubmitted: (String input) => _onSendTextMessage(input),
+            decoration: InputDecoration(
+              hintText: "Escreva uma mensagem",
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 15.0,
+                horizontal: 15.0,
+              ),
+              border: generalOutlineInputBorder(),
+              focusedBorder: generalOutlineInputBorder(),
+              enabledBorder: generalOutlineInputBorder(),
+              disabledBorder: generalOutlineInputBorder(),
+              focusedErrorBorder: generalOutlineInputBorder(),
+              errorBorder: generalOutlineInputBorder(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _btnSendTextMessageContent() {
+    return IgnorePointer(
+      ignoring: !_controller.textEnabled,
+      child: Opacity(
+        opacity: _controller.textEnabled ? 1.0 : 0.3,
+        child: IconButton(
+          iconSize: 30.0,
+          onPressed: () => _onSendTextMessage(_messageText.text),
+          padding: EdgeInsets.zero,
+          color: Theme.of(context).textTheme.headline1.color,
+          icon: Icon(Icons.send_rounded),
+        ),
+      ),
+    );
   }
 
   Future<void> _onShowDatePicker() async {
@@ -286,6 +294,20 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         );
         await widget.onSendMessage(_message);
         break;
+    }
+  }
+
+  Future<void> _onSendTextMessage(String message) async {
+    if (message.trim().isNotEmpty) {
+      WsMessage _message = WsMessage(
+        messageContent: MessageContent(
+          messageType: MessageType.TEXT,
+          value: message.trim(),
+        ),
+      );
+      await widget
+          .onSendMessage(_message)
+          .whenComplete(() => _messageText.clear());
     }
   }
 }

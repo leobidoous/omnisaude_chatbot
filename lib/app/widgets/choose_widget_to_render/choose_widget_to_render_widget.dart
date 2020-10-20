@@ -28,11 +28,11 @@ class _ChooseWidgetToRenderWidgetState
     extends State<ChooseWidgetToRenderWidget> {
   @override
   Widget build(BuildContext context) {
-    final WsMessage _message = widget.message;
     final String _userPeer = widget.userPeer;
+    final WsMessage _message = widget.message;
     final bool _enabled = widget.isLastMessage;
-    final Color _botColor = Theme.of(context).primaryColor;
     final Color _userColor = Theme.of(context).cardColor;
+    final Color _botColor = Theme.of(context).primaryColor;
 
     if (_message.eventContent != null) {
       return EventContentWidget(

@@ -13,26 +13,19 @@ class ViewDocumentService extends Disposable {
               body: PDF().cachedFromUrl(
                 url,
                 placeholder: (double progress) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Theme.of(context).cardColor,
-                    ),
-                    padding: EdgeInsets.all(5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            CircularProgressIndicator(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              strokeWidth: 1.5,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            strokeWidth: 1.5,
+                          ),
+                        ],
+                      ),
+                    ],
                   );
                 },
                 errorWidget: (dynamic error) =>
