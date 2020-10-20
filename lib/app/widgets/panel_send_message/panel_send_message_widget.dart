@@ -7,6 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:omnisaude_chatbot/app/components/components.dart';
+import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/datetime_picker_service.dart';
@@ -15,14 +16,12 @@ import 'package:omnisaude_chatbot/app/widgets/panel_send_message/panel_send_mess
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage message;
-  final Future<void> Function() onScrollListToBottom;
-  final Future<void> Function(WsMessage) onSendMessage;
+  final Connection connection;
 
   const PanelSendMessageWidget(
       {Key key,
       @required this.message,
-      @required this.onScrollListToBottom,
-      @required this.onSendMessage})
+      @required this.connection})
       : super(key: key);
 
   @override
@@ -36,13 +35,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   @override
   void initState() {
-    _messageFocus.addListener(() {
-      if (_messageFocus.hasFocus) {
-        Future.delayed(Duration(milliseconds: 100)).whenComplete(() {
-          widget.onScrollListToBottom();
-        });
-      }
-    });
     super.initState();
   }
 
@@ -185,9 +177,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             focusNode: _messageFocus,
             controller: _messageText,
             enabled: _controller.textEnabled,
-            onTap: widget.onScrollListToBottom,
-            textInputAction: TextInputAction.send,
             scrollPhysics: BouncingScrollPhysics(),
+            textInputAction: TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: TextCapitalization.sentences,
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
@@ -236,7 +227,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           value: DateFormat("dd/MM/yyyy", "pt_BR").format(_dateTime),
         ),
       );
-      await widget.onSendMessage(_message);
+      await widget.connection.onSendMessage(_message);
     }
   }
 
@@ -258,7 +249,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             name: "nome qualquer",
           ),
         );
-        await widget.onSendMessage(_message);
+        await widget.connection.onSendMessage(_message);
         break;
       case UploadInputType.FILE:
         final File _file = await _filePickerService.openFileStorage();
@@ -275,7 +266,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             name: "nome qualquer",
           ),
         );
-        await widget.onSendMessage(_message);
+        await widget.connection.onSendMessage(_message);
         break;
       case UploadInputType.CAMERA:
         final File _image = await _filePickerService.openCamera();
@@ -292,7 +283,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             name: "nome qualquer",
           ),
         );
-        await widget.onSendMessage(_message);
+        await widget.connection.onSendMessage(_message);
         break;
     }
   }
@@ -306,7 +297,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         ),
       );
       await widget
-          .onSendMessage(_message)
+          .connection.onSendMessage(_message)
           .whenComplete(() => _messageText.clear());
     }
   }

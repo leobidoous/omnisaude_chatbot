@@ -20,7 +20,7 @@ class HomeRepository extends Disposable {
       Response _response = await _dio.get("/bot/");
       return Result.fromJson(_response.data);
     } on DioError catch (e) {
-      print("Repository: Erro ao verificar token. $e");
+      print("Repository: Erro ao buscar bots. $e");
       throw e;
     }
   }

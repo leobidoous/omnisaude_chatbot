@@ -12,13 +12,13 @@ mixin _$HomeController on _HomeControllerBase, Store {
   final _$chatBotsAtom = Atom(name: '_HomeControllerBase.chatBots');
 
   @override
-  Result get chatBots {
+  dynamic get chatBots {
     _$chatBotsAtom.reportRead();
     return super.chatBots;
   }
 
   @override
-  set chatBots(Result value) {
+  set chatBots(dynamic value) {
     _$chatBotsAtom.reportWrite(value, super.chatBots, () {
       super.chatBots = value;
     });
@@ -27,13 +27,13 @@ mixin _$HomeController on _HomeControllerBase, Store {
   final _$chatSelectedAtom = Atom(name: '_HomeControllerBase.chatSelected');
 
   @override
-  ChatBot get chatSelected {
+  dynamic get chatSelected {
     _$chatSelectedAtom.reportRead();
     return super.chatSelected;
   }
 
   @override
-  set chatSelected(ChatBot value) {
+  set chatSelected(dynamic value) {
     _$chatSelectedAtom.reportWrite(value, super.chatSelected, () {
       super.chatSelected = value;
     });

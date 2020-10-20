@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/widgets/avatar/avatar_widget.dart';
 import 'package:omnisaude_chatbot/app/widgets/datetime_on_message/datetime_on_message_widget.dart';
@@ -8,15 +9,15 @@ import 'package:omnisaude_chatbot/app/widgets/message_content/message_content_wi
 import 'package:omnisaude_chatbot/app/widgets/switch_content/switch_content_widget.dart';
 
 class ChooseWidgetToRenderWidget extends StatefulWidget {
+  final bool enabled;
   final WsMessage message;
-  final String userPeer;
-  final bool isLastMessage;
+  final Connection connection;
 
   const ChooseWidgetToRenderWidget(
       {Key key,
       @required this.message,
-      @required this.userPeer,
-      @required this.isLastMessage})
+      @required this.connection,
+      @required this.enabled})
       : super(key: key);
 
   @override
@@ -28,11 +29,14 @@ class _ChooseWidgetToRenderWidgetState
     extends State<ChooseWidgetToRenderWidget> {
   @override
   Widget build(BuildContext context) {
-    final String _userPeer = widget.userPeer;
+    final bool _enabled = widget.enabled;
     final WsMessage _message = widget.message;
-    final bool _enabled = widget.isLastMessage;
+    final Connection _connection = widget.connection;
     final Color _userColor = Theme.of(context).cardColor;
     final Color _botColor = Theme.of(context).primaryColor;
+    final String _userPeer = widget.connection.getUserPeer();
+
+    print(_enabled);
 
     if (_message.eventContent != null) {
       return EventContentWidget(
@@ -61,12 +65,51 @@ class _ChooseWidgetToRenderWidgetState
         _message,
         MessageContentWidget(message: _message, color: _botColor),
       );
-    } else if (_message.switchContent != null) {
-      return SwitchContentWidget(
-        message: _message.switchContent,
-        peer: _message.peer,
-        enabled: _enabled,
-      );
+    // } else if (_message.switchContent != null) {
+    //   return Container(
+    //     margin: EdgeInsets.only(bottom: 5.0),
+    //     child: Row(
+    //       mainAxisAlignment: MainAxisAlignment.start,
+    //       crossAxisAlignment: CrossAxisAlignment.end,
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         AvatarWidget(
+    //           url: _message.avatarUrl,
+    //           width: 30.0,
+    //           height: 30.0,
+    //           radius: 10.0,
+    //         ),
+    //         const SizedBox(width: 10.0),
+    //         Expanded(
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: [
+    //               Flexible(
+    //                 child: ClipRRect(
+    //                   borderRadius: BorderRadius.only(
+    //                     topLeft: Radius.circular(5.0),
+    //                     topRight: Radius.circular(5.0),
+    //                     bottomRight: Radius.circular(5.0),
+    //                   ),
+    //                   child: SwitchContentWidget(
+    //                     message: _message,
+    //                     color: _botColor,
+    //                     connection: _connection,
+    //                   ),
+    //                 ),
+    //               ),
+    //               const SizedBox(height: 1.0),
+    //               DatetimeOnMessageWidget(
+    //                 dateTime: DateTime.parse(_message.datetime),
+    //                 message: _message,
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   );
     }
     return Container();
   }

@@ -119,22 +119,27 @@ class SwitchContent {
   SwitchType switchType;
   RenderType renderType;
   bool multiSelection;
-  String componentId;
+  bool selected;
   Layout layout;
-  List<Options> options;
+  List<Option> options;
 
-  SwitchContent({this.switchType, this.renderType, this.multiSelection, this.componentId, this.layout, this.options});
+  SwitchContent(
+      {this.switchType,
+      this.renderType,
+      this.multiSelection,
+      this.selected: false,
+      this.layout,
+      this.options});
 
   SwitchContent.fromJson(Map<String, dynamic> json) {
     switchType = switchTypeValues.map[json["switchType"]];
     renderType = renderTypeValues.map[json["renderType"]];
     multiSelection = json['multiSelection'];
-    componentId = json['componentId'];
     layout = layoutValues.map[json["layout"]];
     if (json['options'] != null) {
-      options = new List<Options>();
+      options = new List<Option>();
       json['options'].forEach((v) {
-        options.add(new Options.fromJson(v));
+        options.add(new Option.fromJson(v));
       });
     }
   }
@@ -144,7 +149,6 @@ class SwitchContent {
     data['switchType'] = switchTypeValues.reverse[this.switchType];
     data['renderType'] = renderTypeValues.reverse[this.renderType];
     data['multiSelection'] = this.multiSelection;
-    data['componentId'] = this.componentId;
     data['layout'] = layoutValues.reverse[this.layout];
     if (this.options != null) {
       data['options'] = this.options.map((v) => v.toJson()).toList();
@@ -153,21 +157,19 @@ class SwitchContent {
   }
 }
 
-class Options {
+class Option {
   String id;
   String title;
   String subtitle;
   String image;
-  String value;
 
-  Options({this.id, this.title, this.subtitle, this.image, this.value});
+  Option({this.id, this.title, this.subtitle, this.image});
 
-  Options.fromJson(Map<String, dynamic> json) {
+  Option.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     subtitle = json['subtitle'];
     image = json['image'];
-    value = json['value'];
   }
 
   Map<String, dynamic> toJson() {
@@ -176,7 +178,6 @@ class Options {
     data['title'] = this.title;
     data['subtitle'] = this.subtitle;
     data['image'] = this.image;
-    data['value'] = this.value;
     return data;
   }
 }
@@ -186,7 +187,7 @@ class MessageContent {
   String value;
 
   /// Component [extras] representa o atributo de resposta para uma seleção
-  /// de uma lista de [Options] no modelo de [SwitchContent].
+  /// de uma lista de [Option] no modelo de [SwitchContent].
   Map<String, dynamic> extras;
 
   MessageContent({this.messageType, this.value, this.extras});

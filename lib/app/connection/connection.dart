@@ -28,7 +28,7 @@ class Connection extends Disposable {
           _userPeer = _message.eventContent.message;
         }
         _controller.sink.add(_message);
-        onMessageReceived(_message);
+        _onMessageReceived(_message);
       }, onError: (onError) {
         print("Erro de conexão: $onError");
       }, onDone: () {
@@ -41,7 +41,7 @@ class Connection extends Disposable {
     }
   }
 
-  Future<void> onMessageReceived(WsMessage message) async {
+  Future<void> _onMessageReceived(WsMessage message) async {
     try {
       print("-----> ### MENSAGEM RECEBIDA: ${message.toJson()}\n");
     } catch (e) {
@@ -63,7 +63,7 @@ class Connection extends Disposable {
 
   String getUserPeer() => _userPeer;
 
-  Future<void> onCloseSession() async {
+  Future<void> _onCloseSession() async {
     try {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
@@ -76,6 +76,6 @@ class Connection extends Disposable {
 
   @override
   void dispose() {
-    onCloseSession();
+    _onCloseSession();
   }
 }

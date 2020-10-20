@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
@@ -81,7 +82,10 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
       // padding: EdgeInsets.all(5.0),
       child: Column(
         children: [
-          Html(data: message),
+          Html(
+            data: message,
+            style: {"html": Style(color: Colors.black87)},
+          ),
         ],
       ),
     );

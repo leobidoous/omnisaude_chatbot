@@ -5,7 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
-import 'package:omnisaude_chatbot/app/omnisaude_chatbot_controller.dart';
+import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
 import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
 import 'package:omnisaude_chatbot/app/connection/connection.dart';
 
@@ -18,8 +18,8 @@ abstract class _ChatControllerBase with Store {
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
-  OmnisaudeChatbot omnisaudeChatbot = OmnisaudeChatbot();
   Connection connection;
+  OmnisaudeChatbot omnisaudeChatbot;
   final ScrollController scrollController = ScrollController();
 
   StreamController streamController;
@@ -34,10 +34,11 @@ abstract class _ChatControllerBase with Store {
   Future<void> onInitAndListenStream(String idChat) async {
     try {
       connection = Connection(
-        "wss://dev.saudemobi.com/ws/chat/$idChat/",
+        "$WSS_BASE_URL/ws/chat/$idChat/",
         _username,
         _avatarUrl,
       );
+      omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
       streamController = await connection.onInitSession();
       streamController.stream.listen((message) {
         messages.add(message);
@@ -71,6 +72,7 @@ abstract class _ChatControllerBase with Store {
   }
 
   void dispose() {
+    omnisaudeChatbot.dispose();
     streamController.close();
     connection.dispose();
   }

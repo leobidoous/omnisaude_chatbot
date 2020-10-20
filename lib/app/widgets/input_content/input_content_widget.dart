@@ -137,6 +137,7 @@ class _InputContentWidgetState
                   "pt_BR",
                 ).format(controller.dateTimeSelected);
                 _cancel();
+                print(_date);
               };
             } else {
               _confirm = null;

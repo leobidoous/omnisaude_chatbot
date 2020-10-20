@@ -6,5 +6,4 @@ class SwitchContentController = _SwitchContentControllerBase
     with _$SwitchContentController;
 
 abstract class _SwitchContentControllerBase with Store {
-
 }
