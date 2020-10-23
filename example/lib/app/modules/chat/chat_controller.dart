@@ -72,6 +72,7 @@ abstract class _ChatControllerBase with Store {
   }
 
   void dispose() {
+    scrollController.dispose();
     omnisaudeChatbot.dispose();
     streamController.close();
     connection.dispose();

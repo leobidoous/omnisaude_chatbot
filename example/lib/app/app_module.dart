@@ -1,4 +1,5 @@
 import 'package:omnisaude_chatbot_example/app/modules/chat/chat_module.dart';
+import 'package:omnisaude_chatbot_example/app/modules/video_call/video_call_module.dart';
 
 import 'app_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -16,6 +17,7 @@ class AppModule extends MainModule {
   List<ModularRouter> get routers => [
         ModularRouter(Modular.initialRoute, module: HomeModule()),
         ModularRouter("/chat", module: ChatModule()),
+        ModularRouter("/video_call", module: VideoCallModule()),
       ];
 
   @override

@@ -1,7 +1,7 @@
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum RenderType { LIST, SEARCH }
-enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED }
+enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED, NLU_START, NLU_END }
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
 enum KeyboardType { DATE, EMAIL, NUMBER, TEXT }
@@ -38,7 +38,9 @@ final eventTypeValues = EnumValues({
   "typing": EventType.TYPING,
   "system": EventType.SYSTEM,
   "connected": EventType.CONNECTED,
-  "human_attendance": EventType.HUMAN_ATTENDANCE
+  "human_attendance": EventType.HUMAN_ATTENDANCE,
+  "nlu_start": EventType.NLU_START,
+  "nlu_end": EventType.NLU_END
 });
 
 final contentFileTypeValues = EnumValues({

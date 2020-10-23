@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import 'chat_controller.dart';
 
 class ChatPage extends StatefulWidget {
@@ -32,6 +33,7 @@ class _ChatPageState extends ModularState<ChatPage, ChatController> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -50,10 +52,7 @@ class _ChatPageState extends ModularState<ChatPage, ChatController> {
                 }
                 return Text(
                   "${controller.botUsername}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12.0,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
                 );
               },
             ),
@@ -103,7 +102,8 @@ class _ChatPageState extends ModularState<ChatPage, ChatController> {
                                     height: 50.0,
                                     alignment: Alignment.center,
                                     child: Theme(
-                                      data: ThemeData(brightness: Brightness.dark),
+                                      data: ThemeData(
+                                          brightness: Brightness.dark),
                                       child: CupertinoActivityIndicator(
                                         animating: true,
                                         radius: 15.0,
@@ -133,23 +133,23 @@ class _ChatPageState extends ModularState<ChatPage, ChatController> {
                   children: <Widget>[
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                        onTap: () =>
+                            FocusScope.of(context).requestFocus(FocusNode()),
                         child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemCount: controller.messages.length,
                           controller: controller.scrollController,
                           padding: EdgeInsets.all(5.0),
                           itemBuilder: (BuildContext context, int index) {
-                            return controller.omnisaudeChatbot.chooseWidgetToRender(
+                            return controller.omnisaudeChatbot
+                                .chooseWidgetToRender(
                               controller.messages[index],
-                              controller.messages.last == controller.messages[index],
+                              controller.messages.last ==
+                                  controller.messages[index],
                             );
                           },
                         ),
                       ),
-                    ),
-                    controller.omnisaudeChatbot.panelChooseSwitchOption(
-                      controller.messages.last,
                     ),
                     controller.omnisaudeChatbot.panelSendMessage(
                       controller.messages.last,
