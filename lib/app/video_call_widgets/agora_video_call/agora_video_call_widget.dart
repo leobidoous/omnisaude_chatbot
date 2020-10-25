@@ -66,7 +66,7 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
   Widget _videoCallRender() {
     return Observer(
       builder: (context) {
-        if (!_controller.canInitCall) return _givePermissionsWidget();
+        // if (!_controller.canInitCall) return _givePermissionsWidget();
         _controller.initVideoCall();
         return Scaffold(
           backgroundColor: Theme.of(context).secondaryHeaderColor,
