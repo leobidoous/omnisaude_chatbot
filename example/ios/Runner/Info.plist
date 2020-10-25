@@ -39,7 +39,33 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSAppleMusicUsageDescription</key>
+    <string>Precisamos ter acesso à galeria para envio e armazenamento</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Precisamos ter acesso à câmera para que consiga enviar fotos, vídeos e realizar ligações</string>
+    <key>NSContactsUsageDescription</key>
+    <string>Precisamos ter acesso aos contatos para otimizar os serviços oferecidos</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Precisamos ter acesso à sua localização enquanto usa o aplicativo para otimizar os serviços oferecidos</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Precisamos ter acesso à sua localização enquanto usa o aplicativo para otimizar os serviços oferecidos</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Precisamos ter acesso à sua localização enquanto usa o aplicativo para otimizar os serviços oferecidos</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Precisamos ter acesso à sua localização enquanto usa o aplicativo para otimizar os serviços oferecidos</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Precisamos ter acesso ao microfone para que possa enviar áudios e realizar ligações</string>
+    <key>NSMotionUsageDescription</key>
+    <string>Precisamos ter acesso ao movimento do aparelho para otimizar os serviços oferecidos</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Precisamos ter acesso às fotos para envio e armazenamento</string>
+    <key>NSRemindersUsageDescription</key>
+    <string>Precisamos ter acesso aos lembretes para que possa agendar seus compromissos</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Precisamos ter acesso à fala para que consiga enviar áudios</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>

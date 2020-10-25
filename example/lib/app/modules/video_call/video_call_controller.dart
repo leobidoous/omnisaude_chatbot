@@ -9,7 +9,7 @@ part 'video_call_controller.g.dart';
 class VideoCallController = _VideoCallControllerBase with _$VideoCallController;
 
 abstract class _VideoCallControllerBase with Store {
-  final OmnisaudeVideoCall omnisaudeVideoCall = OmnisaudeVideoCall(10.0, 20.0);
+  final OmnisaudeVideoCall omnisaudeVideoCall = OmnisaudeVideoCall(0.0, 0.0);
 
   Future<void> onInitChat(BuildContext context) async {
     await omnisaudeVideoCall.onShowAgoraVideoCall(context);

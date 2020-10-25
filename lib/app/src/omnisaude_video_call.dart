@@ -10,22 +10,27 @@ class OmnisaudeVideoCall extends Disposable {
 
   Future<void> onShowAgoraVideoCall(BuildContext context) async {
     try {
-      await showDialog(context: context, builder: (context) {
-        return Padding(
-          padding: EdgeInsets.all(_padding),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(_radius),
-            child: Scaffold(
-              backgroundColor: Theme.of(context).backgroundColor,
-              body: AgoraVideoCallWidget(),
+      await showDialog(
+        context: context,
+        useSafeArea: false,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(_padding),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(_radius),
+              child: Scaffold(
+                backgroundColor: Theme.of(context).backgroundColor,
+                body: AgoraVideoCallWidget(),
+              ),
             ),
-          ),
-        );
-      });
-    } catch(e) {
+          );
+        },
+      );
+    } catch (e) {
       print("Erro ao mostrar conteudo da video chamada: $e");
     }
   }
+
   @override
   void dispose() {}
 }

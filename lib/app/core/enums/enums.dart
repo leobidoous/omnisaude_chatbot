@@ -7,6 +7,7 @@ enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
 enum KeyboardType { DATE, EMAIL, NUMBER, TEXT }
 enum InputType { DATE, TEXT }
 enum ContentFileType { CUSTOM, IMAGE, PDF, ANY }
+enum CameraType { FRONT, BACK }
 
 final layoutValues = EnumValues({
   "avatar_card": Layout.AVATAR_CARD,

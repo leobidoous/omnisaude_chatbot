@@ -1,4 +1,10 @@
 PODS:
+  - agora_rtc_engine (3.1.3):
+    - AgoraRtcEngine_iOS_Crypto (= 3.1.2)
+    - Flutter
+  - AgoraRtcEngine_iOS_Crypto (3.1.2)
+  - camera (0.0.1):
+    - Flutter
   - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -34,8 +40,13 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_pdfview (1.0.2):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -44,6 +55,8 @@ PODS:
   - omnisaude_chatbot (0.0.1):
     - Flutter
   - path_provider (0.0.1):
+    - Flutter
+  - "permission_handler (5.0.1+1)":
     - Flutter
   - screen (0.0.1):
     - Flutter
@@ -56,6 +69,7 @@ PODS:
     - Flutter
     - FMDB (~> 2.7.2)
   - SwiftyGif (5.3.0)
+  - Toast (4.0.0)
   - video_player (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -64,12 +78,17 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
+  - camera (from `.symlinks/plugins/camera/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - omnisaude_chatbot (from `.symlinks/plugins/omnisaude_chatbot/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -79,25 +98,37 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AgoraRtcEngine_iOS_Crypto
     - DKImagePickerController
     - DKPhotoGallery
     - FMDB
     - SDWebImage
     - SwiftyGif
+    - Toast
 
 EXTERNAL SOURCES:
+  agora_rtc_engine:
+    :path: ".symlinks/plugins/agora_rtc_engine/ios"
+  camera:
+    :path: ".symlinks/plugins/camera/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_pdfview:
     :path: ".symlinks/plugins/flutter_pdfview/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   omnisaude_chatbot:
     :path: ".symlinks/plugins/omnisaude_chatbot/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
   shared_preferences:
@@ -112,24 +143,31 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  agora_rtc_engine: 5efb18877a0423b88081edb1b8625db6625fd43c
+  AgoraRtcEngine_iOS_Crypto: 42a7a2142317c588f1b5c2e74b98fd01d73f8f60
+  camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   omnisaude_chatbot: 2b3884291ffe5553681d048d61865679a2e25cf6
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
 
 COCOAPODS: 1.9.3

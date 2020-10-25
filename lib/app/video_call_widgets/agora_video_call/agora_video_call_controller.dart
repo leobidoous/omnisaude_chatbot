@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 import 'package:omnisaude_chatbot/app/core/constants/constants.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 part 'agora_video_call_controller.g.dart';
@@ -24,6 +29,18 @@ abstract class _AgoraVideoCallControllerBase with Store {
   bool hasMicrophonePermission = false;
   @observable
   bool hasStorePermission = false;
+  @observable
+  bool switchVideos = false;
+  @observable
+  bool videoEnabled = true;
+  @observable
+  bool audioEnabled = true;
+  @observable
+  CameraType cameraType = CameraType.FRONT;
+  @observable
+  bool fullScreen = true;
+  @observable
+  Alignment insideVideoAlignment = Alignment.topLeft;
 
   Future<void> onCheckPermissionsToInitCall() async {
     try {
@@ -85,11 +102,13 @@ abstract class _AgoraVideoCallControllerBase with Store {
     print('joinChannelSuccess $channel $uid');
     uidUser = uid;
     if (!usersOnline.contains(uidUser)) usersOnline.add(uidUser);
+    if (usersOnline.length > 1) changeFullScreenMode();
   }
 
   void userJoined(int uid, int elapsed) {
     print('userJoined $uid');
     usersOnline.add(uid);
+    changeFullScreenMode();
   }
 
   void userOffline(int uid, UserOfflineReason reason) {
@@ -97,7 +116,63 @@ abstract class _AgoraVideoCallControllerBase with Store {
     usersOnline.remove(uid);
   }
 
+  void calculateAlignment(BuildContext context, DraggableDetails details) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+    if (details.offset.dy > _height / 2) {
+      if (details.offset.dx > _width / 2) {
+        insideVideoAlignment = Alignment.bottomRight;
+      } else {
+        insideVideoAlignment = Alignment.bottomLeft;
+      }
+    } else {
+      if (details.offset.dx > _width / 2) {
+        insideVideoAlignment = Alignment.topRight;
+      } else {
+        insideVideoAlignment = Alignment.topLeft;
+      }
+    }
+  }
+
+  void changeFullScreenMode() {
+    final Function _hidden = () {
+      if (usersOnline.isEmpty) return;
+      fullScreen = false;
+      SystemChrome.setEnabledSystemUIOverlays([]);
+    };
+    if (fullScreen) {
+      _hidden();
+    } else {
+      SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.bottom, SystemUiOverlay.top],
+      );
+      fullScreen = true;
+      Timer(Duration(milliseconds: 5000), _hidden);
+    }
+  }
+
+  Future<void> onChangeCameraType() async {
+    await rtcEngineClient.switchCamera();
+    if (cameraType == CameraType.FRONT)
+      cameraType = CameraType.BACK;
+    else
+      cameraType = CameraType.FRONT;
+  }
+
+  Future<void> onToggleVideo() async {
+    videoEnabled = !videoEnabled;
+    await rtcEngineClient.enableLocalVideo(videoEnabled);
+  }
+
+  Future<void> onToggleAudio() async {
+    audioEnabled = !audioEnabled;
+    await rtcEngineClient.enableLocalAudio(audioEnabled);
+  }
+
   Future<void> dispose() async {
+    SystemChrome.setEnabledSystemUIOverlays(
+      [SystemUiOverlay.bottom, SystemUiOverlay.top],
+    );
     usersOnline.clear();
     await rtcEngineClient.leaveChannel();
   }
