@@ -94,7 +94,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   Widget _gridChatsContent() {
     return RefreshIndicator(
-      onRefresh: () async => await controller.onGetChatBots(),
+      onRefresh: () async {
+        await controller.onGetChatBots();
+      },
       color: Theme.of(context).primaryColor,
       child: Observer(
         builder: (context) {

@@ -11,6 +11,7 @@ class AvatarWidget extends StatefulWidget {
   final String imagePath;
   final String url;
   final BoxFit boxFit;
+  final bool showIfUrlNone;
 
   const AvatarWidget(
       {Key key,
@@ -19,7 +20,7 @@ class AvatarWidget extends StatefulWidget {
       this.imagePath: "assets/avatar/bot.png",
       this.url,
       this.radius: 0.0,
-      this.boxFit: BoxFit.fill})
+      this.boxFit: BoxFit.fill, this.showIfUrlNone: true})
       : super(key: key);
 
   @override
@@ -29,6 +30,9 @@ class AvatarWidget extends StatefulWidget {
 class _AvatarWidgetState extends State<AvatarWidget> {
   @override
   Widget build(BuildContext context) {
+    if (!widget.showIfUrlNone) {
+      if (widget.url == null) return Container();
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.radius),
       child: CachedNetworkImage(

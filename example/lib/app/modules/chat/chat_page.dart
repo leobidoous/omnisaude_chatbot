@@ -60,105 +60,107 @@ class _ChatPageState extends ModularState<ChatPage, ChatController> {
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              "assets/shared/background_walpaper.png",
-              package: "omnisaude_chatbot",
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/shared/background_walpaper.png",
+                package: "omnisaude_chatbot",
+              ),
+              fit: BoxFit.cover,
+              scale: 0.1,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.headline6.color,
+                BlendMode.difference,
+              ),
             ),
-            fit: BoxFit.cover,
-            scale: 0.1,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).textTheme.headline6.color,
-              BlendMode.difference,
-            ),
+            color: Theme.of(context).backgroundColor,
           ),
-          color: Theme.of(context).backgroundColor,
-        ),
-        child: Stack(
-          children: [
-            Observer(
-              builder: (context) {
-                if (controller.messages.isEmpty) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            elevation: 0.0,
-                            color: Theme.of(context).primaryColor,
-                            child: Container(
-                              padding: EdgeInsets.all(50.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Container(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    alignment: Alignment.center,
-                                    child: Theme(
-                                      data: ThemeData(
-                                          brightness: Brightness.dark),
-                                      child: CupertinoActivityIndicator(
-                                        animating: true,
-                                        radius: 15.0,
+          child: Stack(
+            children: [
+              Observer(
+                builder: (context) {
+                  if (controller.messages.isEmpty) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 0.0,
+                              color: Theme.of(context).primaryColor,
+                              child: Container(
+                                padding: EdgeInsets.all(50.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Container(
+                                      width: 50.0,
+                                      height: 50.0,
+                                      alignment: Alignment.center,
+                                      child: Theme(
+                                        data: ThemeData(
+                                            brightness: Brightness.dark),
+                                        child: CupertinoActivityIndicator(
+                                          animating: true,
+                                          radius: 15.0,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5.0),
-                                  Text(
-                                    "Iniciando chat...",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontStyle: FontStyle.italic,
+                                    SizedBox(height: 5.0),
+                                    Text(
+                                      "Iniciando chat...",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontStyle: FontStyle.italic,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
+                      ],
+                    );
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () =>
+                              FocusScope.of(context).requestFocus(FocusNode()),
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: controller.messages.length,
+                            controller: controller.scrollController,
+                            padding: EdgeInsets.all(5.0),
+                            itemBuilder: (BuildContext context, int index) {
+                              return controller.omnisaudeChatbot
+                                  .chooseWidgetToRender(
+                                controller.messages[index],
+                                controller.messages.last ==
+                                    controller.messages[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      controller.omnisaudeChatbot.panelSendMessage(
+                        controller.messages.last,
                       ),
                     ],
                   );
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () =>
-                            FocusScope.of(context).requestFocus(FocusNode()),
-                        child: ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemCount: controller.messages.length,
-                          controller: controller.scrollController,
-                          padding: EdgeInsets.all(5.0),
-                          itemBuilder: (BuildContext context, int index) {
-                            return controller.omnisaudeChatbot
-                                .chooseWidgetToRender(
-                              controller.messages[index],
-                              controller.messages.last ==
-                                  controller.messages[index],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    controller.omnisaudeChatbot.panelSendMessage(
-                      controller.messages.last,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

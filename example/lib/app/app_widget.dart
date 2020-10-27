@@ -27,6 +27,7 @@ class AppWidget extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
+        accentColor: Colors.deepOrange,
         fontFamily: "Helvetica Neue",
         textTheme: TextTheme(
           headline4: TextStyle(color: Colors.grey.shade300),
@@ -41,6 +42,7 @@ class AppWidget extends StatelessWidget {
         cardColor: Colors.grey.shade800,
         secondaryHeaderColor: Colors.grey.shade900,
         highlightColor: Colors.transparent,
+        accentColor: Colors.deepOrange,
         splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
         fontFamily: "Helvetica Neue",

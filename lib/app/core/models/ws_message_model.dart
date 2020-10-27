@@ -118,7 +118,7 @@ class UploadContent {
 class SwitchContent {
   SwitchType switchType;
   RenderType renderType;
-  bool multiSelection;
+  MultiSelection multiSelection;
   bool selected;
   Layout layout;
   List<Option> options;
@@ -134,7 +134,9 @@ class SwitchContent {
   SwitchContent.fromJson(Map<String, dynamic> json) {
     switchType = switchTypeValues.map[json["switchType"]];
     renderType = renderTypeValues.map[json["renderType"]];
-    multiSelection = json['multiSelection'];
+    multiSelection = json['multiSelection'] != null
+        ? new MultiSelection.fromJson(json['multiSelection'])
+        : null;
     layout = layoutValues.map[json["layout"]];
     if (json['options'] != null) {
       options = new List<Option>();
@@ -148,11 +150,33 @@ class SwitchContent {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['switchType'] = switchTypeValues.reverse[this.switchType];
     data['renderType'] = renderTypeValues.reverse[this.renderType];
-    data['multiSelection'] = this.multiSelection;
+    data['multiSelection'] = this.multiSelection.toJson();
     data['layout'] = layoutValues.reverse[this.layout];
     if (this.options != null) {
       data['options'] = this.options.map((v) => v.toJson()).toList();
     }
+    return data;
+  }
+}
+
+class MultiSelection {
+  bool enabled;
+  int min;
+  int max;
+
+  MultiSelection({this.enabled: false, this.min, this.max});
+
+  MultiSelection.fromJson(Map<String, dynamic> json) {
+    enabled = json['enabled'];
+    min = json['min'];
+    max = json['max'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['enabled'] = this.enabled;
+    data['min'] = this.min;
+    data['max'] = this.max;
     return data;
   }
 }

@@ -17,6 +17,7 @@ abstract class _HomeControllerBase with Store {
   @action
   Future<void> onGetChatBots() async {
     try {
+      chatSelected = null;
       final HomeRepository _repository = HomeRepository();
       chatBots = await _repository.onGetChatBots();
     } on DioError catch(e) {

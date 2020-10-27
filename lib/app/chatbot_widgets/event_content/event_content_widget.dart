@@ -37,27 +37,34 @@ class _EventContentWidgetState extends State<EventContentWidget> {
   }
 
   Widget _systemContent(EventContent message) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Theme.of(context).cardColor,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Theme.of(context).cardColor,
+            ),
+            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+            margin: EdgeInsets.symmetric(vertical: 2.5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info_outline_rounded, color: Colors.white),
+                SizedBox(width: 10.0),
+                Container(
+                    child: Text(
+                  "${message.message}",
+                  style: TextStyle(color: Colors.white),
+                )),
+              ],
+            ),
           ),
-          padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-          margin: EdgeInsets.symmetric(vertical: 2.5),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.info_outline_rounded),
-              SizedBox(width: 10.0),
-              Container(child: Text("${message.message}")),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

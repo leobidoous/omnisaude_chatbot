@@ -52,6 +52,11 @@ class _ChooseWidgetToRenderWidgetState
         FileContentWidget(message: _message, color: _botColor),
       );
     } else if (_message.messageContent != null) {
+      /**
+       * Verificar se o conteúdo da mensagem é vazio,
+       * assim retiro a exibição do componente
+       */
+      if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _userPeer) {
         return _userContent(
           _message,

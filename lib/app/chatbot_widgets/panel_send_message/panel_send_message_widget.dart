@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -92,9 +93,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
           child: AnimatedContainer(
-            duration: Duration(milliseconds: 5500),
+            duration: Duration(milliseconds: 500),
             constraints: BoxConstraints(
-              maxHeight: _controller.panelSwitchEnabled ? 200.0 : 0.0,
+              maxHeight: _controller.panelSwitchEnabled ? 250.0 : 0.0,
             ),
             curve: Curves.fastOutSlowIn,
             height: _controller.panelSwitchEnabled ? null : 0.0,
@@ -105,7 +106,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    constraints: BoxConstraints(maxHeight: 200),
+                    constraints: BoxConstraints(maxHeight: 250),
                     child: SwitchContentWidget(
                       color: Theme.of(context).primaryColor,
                       connection: connection,
@@ -249,15 +250,13 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             controller: _messageText,
             enabled: _controller.nluEnabled || _controller.textEnabled,
             scrollPhysics: BouncingScrollPhysics(),
-            textInputAction: TextInputAction.newline,
+            textInputAction: kIsWeb ? TextInputAction.send : TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: TextCapitalization.sentences,
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 15.0,
-                horizontal: 15.0,
+              contentPadding: EdgeInsets.all(15.0
               ),
               border: generalOutlineInputBorder(),
               focusedBorder: generalOutlineInputBorder(),

@@ -17,11 +17,13 @@ class Connection extends Disposable {
 
   final StreamController _controller = StreamController<WsMessage>();
   WebSocketChannel _channel;
+  ConnectionStatus connectionStatus = ConnectionStatus.NONE;
 
   Future<StreamController> onInitSession() async {
     try {
       _channel = WebSocketChannel.connect(Uri.parse(_url));
 
+      connectionStatus = ConnectionStatus.WAITING;
       _channel.stream.listen((event) {
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
@@ -29,10 +31,13 @@ class Connection extends Disposable {
         }
         _controller.sink.add(_message);
         _onMessageReceived(_message);
+        connectionStatus = ConnectionStatus.ACTIVE;
       }, onError: (onError) {
         print("Erro de conexão: $onError");
+        connectionStatus = ConnectionStatus.ERROR;
       }, onDone: () {
         print("Conexão encerrada!");
+        connectionStatus = ConnectionStatus.DONE;
       });
       return _controller;
     } catch (e) {
