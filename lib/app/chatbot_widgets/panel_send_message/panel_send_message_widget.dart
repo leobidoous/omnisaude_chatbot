@@ -1,20 +1,20 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
+import 'package:omnisaude_chatbot/app/chatbot_widgets/panel_send_message/panel_send_message_controller.dart';
+import 'package:omnisaude_chatbot/app/chatbot_widgets/switch_content/switch_content_widget.dart';
 import 'package:omnisaude_chatbot/app/components/components.dart';
 import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/datetime_picker_service.dart';
 import 'package:omnisaude_chatbot/app/core/services/file_picker_service.dart';
-import 'package:omnisaude_chatbot/app/chatbot_widgets/panel_send_message/panel_send_message_controller.dart';
-import 'package:omnisaude_chatbot/app/chatbot_widgets/switch_content/switch_content_widget.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage message;
@@ -124,17 +124,16 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   Widget _panelSendMessage(WsMessage message) {
     return Observer(builder: (context) {
-      final _enabled = _controller.nluEnabled;
+      final _enabled = _controller.nluEnabled || _controller.panelInputEnabled;
+      if (!_enabled) return Container();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AnimatedContainer(
             duration: Duration(milliseconds: 500),
-            constraints: BoxConstraints(
-              maxHeight: _enabled || _controller.panelInputEnabled ? 100 : 0.0,
-            ),
+            constraints: BoxConstraints(maxHeight: _enabled ? 100 : 0.0),
             curve: Curves.fastOutSlowIn,
-            height: _enabled || _controller.panelInputEnabled ? null : 0.0,
+            height: _enabled ? null : 0.0,
             child: Container(
               color: Theme.of(context).textTheme.headline4.color,
               padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -250,14 +249,15 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             controller: _messageText,
             enabled: _controller.nluEnabled || _controller.textEnabled,
             scrollPhysics: BouncingScrollPhysics(),
-            textInputAction: kIsWeb ? TextInputAction.send : TextInputAction.newline,
+            textInputAction:
+                kIsWeb ? TextInputAction.done : TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: TextCapitalization.sentences,
+            // onEditingComplete: () => _onSendTextMessage(_messageText.text),
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
-              contentPadding: EdgeInsets.all(15.0
-              ),
+              contentPadding: EdgeInsets.all(15.0),
               border: generalOutlineInputBorder(),
               focusedBorder: generalOutlineInputBorder(),
               enabledBorder: generalOutlineInputBorder(),

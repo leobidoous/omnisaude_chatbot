@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:mobx/mobx.dart';
 import 'package:omnisaude_chatbot/app/chatbot_widgets/switch_content/switch_content_controller.dart';
 import 'package:omnisaude_chatbot/app/components/components.dart';
 import 'package:omnisaude_chatbot/app/connection/connection.dart';
@@ -98,7 +99,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Widget _btnSendMultiplesOptions(MultiSelection multiSelection) {
     return Observer(
       builder: (context) {
-        final bool _enabled = _controller.optionsSelecteds.isNotEmpty;
+        final bool _enabled = _controller.selectedOptions.isNotEmpty;
         if (!multiSelection.enabled) return Container();
         return Padding(
           padding: EdgeInsets.all(5.0),
@@ -129,7 +130,6 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Widget _gridContent(Axis direction, Layout layout, List<Option> options,
       MultiSelection multiSelection) {
     double _height = 75.0;
-    double _childAspectRatio = 0.25;
     int _crossAxisCount = 1;
     StaggeredTile _staggeredTile = StaggeredTile.count(1, 4);
     if (direction == Axis.vertical) {
@@ -141,47 +141,34 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
 
     switch (layout) {
       case Layout.BUTTON:
-        // _height = 75.0;
         break;
       case Layout.CARD:
-        // _height = 75.0;
         break;
       case Layout.AVATAR_CARD:
-        // _height = 75.0;
         break;
       case Layout.IMAGE_CARD:
-        _height = null;
-        _childAspectRatio = 1.0;
+        int _crossAxisCount = 1;
         if (direction == Axis.vertical) {
           _crossAxisCount = 2;
-          _staggeredTile = StaggeredTile.extent(200, 200);
-          // _staggeredTile = StaggeredTile.fit(2);
-        } else {
-          _staggeredTile = StaggeredTile.count(2, 1);
+          if (MediaQuery.of(context).size.width > 500) _crossAxisCount = 5;
         }
-        break;
+        return GridView.builder(
+          shrinkWrap: true,
+          itemCount: options.length,
+          scrollDirection: direction,
+          padding: const EdgeInsets.all(5.0),
+          physics: const BouncingScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: 5.0,
+            crossAxisSpacing: 5.0,
+            childAspectRatio: 1.0,
+            crossAxisCount: _crossAxisCount,
+          ),
+          itemBuilder: (context, index) {
+            return _chooseType(layout, options[index], multiSelection);
+          },
+        );
     }
-
-    return Container(
-      height: _height,
-      child: GridView.builder(
-        shrinkWrap: true,
-        scrollDirection: direction,
-        controller: ScrollController(),
-        physics: const BouncingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisSpacing: 5.0,
-          crossAxisSpacing: 5.0,
-          childAspectRatio: _childAspectRatio,
-          crossAxisCount: _crossAxisCount,
-        ),
-        itemCount: options.length,
-        padding: const EdgeInsets.all(5.0),
-        itemBuilder: (context, index) {
-          return _chooseType(layout, options[index], multiSelection);
-        },
-      ),
-    );
 
     return Container(
       height: _height,
@@ -211,24 +198,20 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Widget _slideContent(
       Layout layout, List<Option> options, MultiSelection multiSelection) {
     double _height = 75.0;
-    if (layout == Layout.IMAGE_CARD) _height = 250.0;
+    if (layout == Layout.IMAGE_CARD) _height = 200.0;
     final CarouselSlider _carouselSlider = CarouselSlider.builder(
       itemCount: options.length,
       options: CarouselOptions(
         aspectRatio: 1.0,
-        viewportFraction: 0.7,
+        viewportFraction: 0.75,
+        height: _height,
         enlargeCenterPage: true,
         enableInfiniteScroll: true,
         scrollPhysics: BouncingScrollPhysics(),
       ),
       carouselController: _carouselController,
       itemBuilder: (context, index) {
-        return Column(
-          children: [
-            Expanded(
-                child: _chooseType(layout, options[index], multiSelection)),
-          ],
-        );
+        return _chooseType(layout, options[index], multiSelection);
       },
     );
     return Column(
@@ -256,10 +239,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
             ),
             SizedBox(width: 5.0),
             Expanded(
-              child: Container(
-                height: _height,
-                child: _carouselSlider,
-              ),
+              child: _carouselSlider,
             ),
             SizedBox(width: 5.0),
             Container(
@@ -287,53 +267,132 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
 
   Widget _searchContent(
       Layout layout, List<Option> options, MultiSelection multiSelection) {
+    final ObservableList<Option> _aux = ObservableList();
+    options.forEach((option) => _aux.add(option));
+    _controller.filteredOptions = _aux;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: 5.0),
         Flexible(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: options.length,
-            padding: EdgeInsets.symmetric(horizontal: 5.0),
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
+          child: Observer(builder: (context) {
+            if (_controller.filteredOptions.isEmpty) {
               return Padding(
-                padding: EdgeInsets.only(bottom: 5.0),
-                child: _chooseType(layout, options[index], multiSelection),
+                padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            "Buscando opções...",
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                        SizedBox(width: 10.0),
+                        Container(
+                          height: 20.0,
+                          width: 20.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).textTheme.headline4.color,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               );
-            },
-          ),
+            }
+            if (_controller.filteredOptions.isEmpty) {
+              return Padding(
+                padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Nenhuma opção encontrada",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: _controller.filteredOptions.length,
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 5.0),
+                  child: _chooseType(
+                    layout,
+                    _controller.filteredOptions[index],
+                    multiSelection,
+                  ),
+                );
+              },
+            );
+          }),
         ),
         SizedBox(height: 5.0),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Theme.of(context).backgroundColor,
-          ),
-          margin: EdgeInsets.all(5.0),
-          child: TextFormField(
-            minLines: 1,
-            maxLines: 5,
-            autofocus: true,
-            focusNode: _messageFocus,
-            controller: _messageText,
-            scrollPhysics: BouncingScrollPhysics(),
-            textInputAction: TextInputAction.newline,
-            cursorColor: Theme.of(context).primaryColor,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              hintText: "Informe a opção desejada",
-              contentPadding: EdgeInsets.all(10.0),
-              border: generalOutlineInputBorder(),
-              focusedBorder: generalOutlineInputBorder(),
-              enabledBorder: generalOutlineInputBorder(),
-              disabledBorder: generalOutlineInputBorder(),
-              focusedErrorBorder: generalOutlineInputBorder(),
-              errorBorder: generalOutlineInputBorder(),
+        Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Theme.of(context).backgroundColor,
+              ),
+              margin: EdgeInsets.all(5.0),
+              child: TextFormField(
+                autofocus: true,
+                focusNode: _messageFocus,
+                controller: _messageText,
+                scrollPhysics: BouncingScrollPhysics(),
+                onChanged: (String input) async {
+                  await _controller.onSearchIntoOptions(options, input);
+                },
+                textInputAction: TextInputAction.done,
+                cursorColor: Theme.of(context).primaryColor,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  hintText: "Informe a opção desejada",
+                  contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 40.0, 10.0),
+                  border: generalOutlineInputBorder(),
+                  focusedBorder: generalOutlineInputBorder(),
+                  enabledBorder: generalOutlineInputBorder(),
+                  disabledBorder: generalOutlineInputBorder(),
+                  focusedErrorBorder: generalOutlineInputBorder(),
+                  errorBorder: generalOutlineInputBorder(),
+                ),
+              ),
             ),
-          ),
+            Observer(
+              builder: (context) {
+                return IconButton(
+                  onPressed: () {
+                    if (_messageText.text.trim().isNotEmpty) {
+                      _messageText.clear();
+                    }
+                  },
+                  icon: Icon(
+                    _messageText.text.trim().isNotEmpty
+                        ? Icons.clear
+                        : Icons.search,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -363,7 +422,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
           child: Observer(
             builder: (context) {
               final bool _enabled =
-                  _controller.optionsSelecteds.contains(option);
+                  _controller.selectedOptions.contains(option);
               return FlatButton(
                 onPressed: () => _onTapOption(option, multiSelection),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -415,7 +474,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       children: [
         Observer(
           builder: (context) {
-            final bool _enabled = _controller.optionsSelecteds.contains(option);
+            final bool _enabled = _controller.selectedOptions.contains(option);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -470,7 +529,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       children: [
         Observer(
           builder: (context) {
-            final bool _enabled = _controller.optionsSelecteds.contains(option);
+            final bool _enabled = _controller.selectedOptions.contains(option);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -540,7 +599,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
             padding: EdgeInsets.all(5.0),
             child: Observer(
               builder: (context) {
-                final bool _enabled = _controller.optionsSelecteds.contains(
+                final bool _enabled = _controller.selectedOptions.contains(
                   option,
                 );
                 return ClipRRect(
@@ -569,9 +628,15 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                                   Expanded(
                                     child: IgnorePointer(
                                       ignoring: true,
-                                      child: AvatarWidget(
-                                        url: option.image,
-                                        boxFit: BoxFit.cover,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          topRight: Radius.circular(10.0),
+                                        ),
+                                        child: AvatarWidget(
+                                          url: option.image,
+                                          boxFit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -629,14 +694,14 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Future<void> _onTapOption(
       Option option, MultiSelection multiSelection) async {
     if (!multiSelection.enabled) {
-      _controller.optionsSelecteds.add(option);
+      _controller.selectedOptions.add(option);
       await _controller.onSendOptionsMessage(widget.connection);
       return;
     }
-    if (_controller.optionsSelecteds.contains(option)) {
-      _controller.optionsSelecteds.remove(option);
+    if (_controller.selectedOptions.contains(option)) {
+      _controller.selectedOptions.remove(option);
     } else {
-      _controller.optionsSelecteds.add(option);
+      _controller.selectedOptions.add(option);
     }
   }
 
@@ -752,7 +817,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   }
 
   Widget _iconDetailsOption(Option option, MultiSelection multiSelection) {
-    final _enabled = _controller.optionsSelecteds.contains(option);
+    final _enabled = _controller.selectedOptions.contains(option);
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -775,7 +840,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Widget _btnSelectOption(Option option, MultiSelection multiSelection) {
     return Observer(
       builder: (context) {
-        final bool _selected = _controller.optionsSelecteds.contains(option);
+        final bool _selected = _controller.selectedOptions.contains(option);
         String _label = "Selecionar";
 
         if (_selected) _label = "Selecionado";
@@ -788,15 +853,15 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
               FlatButton(
                 onPressed: () async {
                   if (!multiSelection.enabled) {
-                    _controller.optionsSelecteds.add(option);
+                    _controller.selectedOptions.add(option);
                     await _controller.onSendOptionsMessage(widget.connection);
                     Navigator.pop(context);
                     return;
                   }
                   if (_selected) {
-                    _controller.optionsSelecteds.remove(option);
+                    _controller.selectedOptions.remove(option);
                   } else {
-                    _controller.optionsSelecteds.add(option);
+                    _controller.selectedOptions.add(option);
                   }
                 },
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

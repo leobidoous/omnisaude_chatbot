@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter/material.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/video_call_widgets/agora_video_call/agora_video_call_controller.dart';
@@ -21,6 +18,7 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
   @override
   void initState() {
     _controller.onCheckPermissionsToInitCall();
+    // _controller.onCheckWebPermissionsToInitCall();
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -34,28 +32,48 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).secondaryHeaderColor,
-      padding: EdgeInsets.all(0.0),
-      child: _videoCallRender(),
+    return Scaffold(
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
+      body: Observer(
+        builder: (context) {
+          if (!_controller.canInitCall) return _givePermissionsWidget();
+          _controller.initVideoCall();
+          return _videoStackRender();
+        },
+      ),
     );
   }
 
   Widget _givePermissionsWidget() {
+    final String _labelVideo = "Permitir vídeo";
+    final String _labelAudio = "Permitir áudio";
+    final String _labelStorage = "Permitir armazenamento";
+
     return Observer(
       builder: (context) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FlatButton(onPressed: () async {
-              final stream = await html.window.navigator.getUserMedia(video: true, audio: true);
-            }, child: Text("Permitir câmera")),
-            FlatButton(onPressed: () {}, child: Text("Permitir microfone")),
-            FlatButton(onPressed: () {}, child: Text("Permitir armazenamento")),
-            FlatButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancelar"),
+            _btnGivePermission(_labelStorage, _controller.hasStorePermission),
+            _btnGivePermission(_labelVideo, _controller.hasVideoPermission),
+            _btnGivePermission(_labelAudio, _controller.hasAudioPermission),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  child: FlatButton(
+                    onPressed: () => Navigator.pop(context),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Text("Cancelar"),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -63,94 +81,102 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
     );
   }
 
-  Widget _videoCallRender() {
-    return Observer(
-      builder: (context) {
-        // if (!_controller.canInitCall) return _givePermissionsWidget();
-        _controller.initVideoCall();
-        return Scaffold(
-          backgroundColor: Theme.of(context).secondaryHeaderColor,
-          body: _videoStackRender(),
-        );
-      },
+  Widget _btnGivePermission(String label, bool hasPermission) {
+    if (hasPermission) return Container();
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.0),
+      child: Column(
+        children: [
+          FlatButton(
+            onPressed: () async =>
+                await _controller.onCheckWebPermissionsToInitCall(),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            color: Theme.of(context).cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Text(label),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _videoStackRender() {
     return Stack(
       children: [
-        Center(child: _chooseMainVideoRender()),
-        Observer(
-          builder: (context) {
-            return AnimatedPadding(
-              duration: Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: _controller.fullScreen ? 60.0 : 40.0,
-              ),
-              child: Align(
-                alignment: _controller.insideVideoAlignment,
-                child: Draggable(
-                  child: _chooseSecondaryVideoRender(),
-                  feedback: _chooseSecondaryVideoRender(),
-                  childWhenDragging: Container(),
-                  onDragEnd: (DraggableDetails details) {
-                    _controller.calculateAlignment(context, details);
-                  },
-                ),
-              ),
-            );
-          },
+        Center(child: _primaryVideoScreen()),
+        AnimatedPadding(
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: _controller.fullScreen ? 60.0 : 40.0,
+          ),
+          child: Align(
+            alignment: _controller.insideVideoAlignment,
+            child: new Draggable(
+              maxSimultaneousDrags: 1,
+              child: _secondaryVideoScreen(),
+              feedback: _secondaryVideoScreen(),
+              childWhenDragging: Container(),
+              onDragEnd: (DraggableDetails details) {
+                _controller.calculateAlignment(context, details);
+              },
+            ),
+          ),
         ),
         Align(alignment: Alignment.bottomCenter, child: _toolbarCallOptions()),
       ],
     );
   }
 
-  Widget _chooseMainVideoRender() {
-    return Observer(
-      builder: (context) {
-        if (_controller.usersOnline.length == 1)
-          return CallingVideoCallWidget();
-        if (_controller.switchVideos) return _renderLocalPreview();
-        return GestureDetector(
-          onTap: () => _controller.changeFullScreenMode(),
-          child: _renderRemoteVideo(),
-        );
-      },
+  Widget _primaryVideoScreen() {
+    return GestureDetector(
+      onTap: () => _controller.changeFullScreenMode(),
+      child: Observer(
+        builder: (context) {
+          final bool _calling = _controller.usersOnline.length == 1;
+          if (_calling) return CallingVideoCallWidget();
+          if (_controller.switchVideos) return _renderLocalPreview();
+          return _renderRemoteVideo();
+        },
+      ),
     );
   }
 
-  Widget _chooseSecondaryVideoRender() {
+  Widget _secondaryVideoScreen() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
-      child: GestureDetector(
-        onTap: () => _controller.switchVideos = !_controller.switchVideos,
-        child: IgnorePointer(
-          ignoring: false,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-            child: Observer(
-              builder: (context) {
-                if (_controller.usersOnline.length <= 1) return Container();
-                if (_controller.switchVideos) {
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () => _controller.switchVideos = !_controller.switchVideos,
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.2,
+                maxWidth: MediaQuery.of(context).size.width * 0.2,
+              ),
+              child: Observer(
+                builder: (context) {
+                  final bool _calling = _controller.usersOnline.length == 1;
+                  if (_calling) return Container();
+                  if (_controller.switchVideos) {
+                    return Container(
+                      color: Theme.of(context).backgroundColor,
+                      child: _renderRemoteVideo(),
+                    );
+                  }
                   return Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: MediaQuery.of(context).size.height * 0.2,
                     color: Theme.of(context).backgroundColor,
-                    child: _renderRemoteVideo(),
+                    child: _renderLocalPreview(),
                   );
-                }
-                return Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  color: Theme.of(context).backgroundColor,
-                  child: _renderLocalPreview(),
-                );
-              },
+                },
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -159,7 +185,60 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
     return Observer(
       builder: (context) {
         if (_controller.usersOnline.isEmpty) return Container();
-        return RtcLocalView.SurfaceView();
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            new RtcLocalView.SurfaceView(),
+            _statusVideoCall(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _statusVideoCall() {
+    return Observer(
+      builder: (context) {
+        Widget _videoOff = Container();
+        Widget _videoLabelOff = Container();
+        Widget _audioOff = Container();
+        Widget _audioLabelOff = Container();
+        if (!_controller.videoEnabled) {
+          if (_controller.switchVideos) {
+            _videoLabelOff = Text(
+              "Vídeo está desativado",
+              textAlign: TextAlign.center,
+            );
+          }
+          _videoOff = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Icon(Icons.videocam_off_rounded), _videoLabelOff],
+          );
+        }
+        if (!_controller.audioEnabled) {
+          if (_controller.switchVideos) {
+            _audioLabelOff = Text(
+              "Áudio está desativado",
+              textAlign: TextAlign.center,
+            );
+          }
+          _audioOff = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Icon(Icons.mic_off_rounded), _audioLabelOff],
+          );
+        }
+        return Container(
+          color: !_controller.videoEnabled || !_controller.audioEnabled
+              ? Colors.black.withOpacity(0.85)
+              : Colors.transparent,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [_videoOff, _audioOff],
+          ),
+        );
       },
     );
   }
@@ -169,7 +248,7 @@ class _AgoraVideoCallWidgetState extends State<AgoraVideoCallWidget>
       builder: (context) {
         if (_controller.usersOnline.isEmpty) return Container();
         if (_controller.usersOnline.length < 2) return Container();
-        return RtcRemoteView.SurfaceView(uid: 123123123);
+        return new RtcRemoteView.SurfaceView(uid: 123123123);
       },
     );
   }

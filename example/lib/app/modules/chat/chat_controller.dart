@@ -33,6 +33,7 @@ abstract class _ChatControllerBase with Store {
 
   Future<void> onInitAndListenStream(String idChat) async {
     try {
+      print("123123123123123");
       connection = Connection(
         "$WSS_BASE_URL/ws/chat/$idChat/",
         _username,
@@ -72,6 +73,8 @@ abstract class _ChatControllerBase with Store {
   }
 
   void dispose() {
+    print("dispose");
+    messages.clear();
     scrollController.dispose();
     omnisaudeChatbot.dispose();
     streamController.close();
