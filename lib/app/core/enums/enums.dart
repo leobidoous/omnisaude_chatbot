@@ -60,7 +60,7 @@ final keyboardTypeValues = EnumValues({
 });
 
 final inputTypeValues =
-    EnumValues({"date": InputType.DATE, "text": InputType.TEXT});
+    EnumValues({"date": InputType.DATE, "text": InputType.TEXT,});
 
 class EnumValues<T> {
   Map<String, T> map;

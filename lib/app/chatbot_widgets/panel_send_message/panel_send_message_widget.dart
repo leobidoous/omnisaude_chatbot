@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -243,17 +242,15 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           ),
           child: TextFormField(
             minLines: 1,
-            maxLines: 5,
+            maxLines: kIsWeb ? 1 : 5,
             autofocus: true,
             focusNode: _messageFocus,
             controller: _messageText,
             enabled: _controller.nluEnabled || _controller.textEnabled,
             scrollPhysics: BouncingScrollPhysics(),
-            textInputAction:
-                kIsWeb ? TextInputAction.done : TextInputAction.newline,
+            textInputAction: TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: TextCapitalization.sentences,
-            // onEditingComplete: () => _onSendTextMessage(_messageText.text),
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",

@@ -7,44 +7,42 @@ class ViewPhotoService extends Disposable {
   Future<void> onViewSinglePhoto(BuildContext context, String url) async {
     try {
       await showDialog(
-          context: context,
-          builder: (context) {
-            return SafeArea(
-              child: Scaffold(
-                backgroundColor: Colors.black87,
-                body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.close, color: Colors.white),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.black87,
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  PhotoView(
+                    imageProvider: NetworkImage(url),
+                    loadingBuilder: (context, image) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            strokeWidth: 1.5,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 0.0,
+                    right: 0.0,
+                    child: IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                    Expanded(
-                      child: PhotoView(
-                        imageProvider: NetworkImage(url),
-                        loadingBuilder: (context, image) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                strokeWidth: 1.5,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          });
+            ),
+          );
+        },
+      );
     } catch (e) {
       print("impossível visualizar a foto unica: $e");
     }

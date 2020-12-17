@@ -6,11 +6,9 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: Modular.initialRoute,
       debugShowCheckedModeBanner: false,
-      navigatorKey: Modular.navigatorKey,
       title: 'Omnisaude - Chatbot Example',
-      onGenerateRoute: Modular.generateRoute,
       supportedLocales: [const Locale('pt', 'BR')],
       localizationsDelegates: [
         GlobalCupertinoLocalizations.delegate,
@@ -20,14 +18,14 @@ class AppWidget extends StatelessWidget {
       // themeMode: ThemeMode.light,
       themeMode: ThemeMode.dark,
       theme: ThemeData(
-        primaryColor: Colors.deepOrange,
+        primaryColor: Color(0xFF139ECC),
         backgroundColor: Colors.white,
         cardColor: Colors.grey,
         secondaryHeaderColor: Colors.grey.shade300,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        accentColor: Colors.deepOrange,
+        accentColor: Color(0xFF139ECC),
         fontFamily: "Helvetica Neue",
         textTheme: TextTheme(
           headline4: TextStyle(color: Colors.grey.shade300),
@@ -38,11 +36,11 @@ class AppWidget extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         backgroundColor: Colors.black,
-        primaryColor: Colors.deepOrange,
+        primaryColor: Color(0xFF139ECC),
         cardColor: Colors.grey.shade800,
         secondaryHeaderColor: Colors.grey.shade900,
         highlightColor: Colors.transparent,
-        accentColor: Colors.deepOrange,
+        accentColor: Color(0xFF139ECC),
         splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
         fontFamily: "Helvetica Neue",
@@ -52,6 +50,6 @@ class AppWidget extends StatelessWidget {
           headline6: TextStyle(color: Colors.grey.shade300),
         ),
       ),
-    );
+    ).modular();
   }
 }

@@ -16,10 +16,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends ModularState<HomePage, HomeController> {
+  final ScrollController _scrollController = new ScrollController();
+
   @override
   void initState() {
+    print(widget.title);
     controller.onGetChatBots();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -38,12 +47,11 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                   margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
                   child: FlatButton(
                     onPressed: _enabled
-                        ? () async {
-                            await Navigator.pushNamed(
-                              context,
-                              "/chat/${controller.chatSelected?.id}/",
-                            );
-                            // controller.chatSelected = null;
+                        ? () {
+                            Modular.to.navigate('/chat_bot/${controller.chatSelected?.id}', arguments: {
+                              "botName": controller.chatSelected?.name,
+                              "chatBotId": controller.chatSelected?.id,
+                            });
                           }
                         : null,
                     shape: RoundedRectangleBorder(
@@ -64,28 +72,28 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 );
               },
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
-              child: FlatButton(
-                onPressed: () async {
-                  await Navigator.pushNamed(context, "/video_call");
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
-                color: Theme.of(context).primaryColor,
-                padding: EdgeInsets.symmetric(vertical: 25.0),
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Text(
-                  "Video Call",
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.headline1.color,
-                  ),
-                ),
-              ),
-            ),
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
+            //   child: FlatButton(
+            //     onPressed: () async {
+            //       Navigator.pushNamed(context, "/video_call");
+            //     },
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(15.0),
+            //     ),
+            //     disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
+            //     color: Theme.of(context).primaryColor,
+            //     padding: EdgeInsets.symmetric(vertical: 25.0),
+            //     visualDensity: VisualDensity.compact,
+            //     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //     child: Text(
+            //       "Video Call",
+            //       style: TextStyle(
+            //         color: Theme.of(context).textTheme.headline1.color,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -113,7 +121,10 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               ],
             );
           return GridView.builder(
-            physics: AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            physics: BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5,
               mainAxisSpacing: 7.5,

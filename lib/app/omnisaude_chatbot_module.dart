@@ -12,7 +12,7 @@ import 'omnisaude_chatbot_widget.dart';
 
 class OmnisaudeChatbotModule extends MainModule {
   @override
-  List<Bind> get binds => [
+  final List<Bind> binds = [
         Bind((i) => CallingVideoCallController()),
         Bind((i) => IncomingVideoCallController()),
         Bind((i) => AgoraVideoCallController()),
@@ -23,10 +23,8 @@ class OmnisaudeChatbotModule extends MainModule {
       ];
 
   @override
-  List<ModularRouter> get routers => [];
+  final List<ModularRoute> routes = [];
 
   @override
   Widget get bootstrap => OmnisaudeChatbotWidget();
-
-  static Inject get to => Inject<OmnisaudeChatbotModule>.of();
 }

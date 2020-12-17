@@ -25,35 +25,34 @@ mixin _$AgoraVideoCallController on _AgoraVideoCallControllerBase, Store {
     });
   }
 
-  final _$hasCameraPermissionAtom =
-      Atom(name: '_AgoraVideoCallControllerBase.hasCameraPermission');
+  final _$hasVideoPermissionAtom =
+      Atom(name: '_AgoraVideoCallControllerBase.hasVideoPermission');
 
   @override
   bool get hasVideoPermission {
-    _$hasCameraPermissionAtom.reportRead();
+    _$hasVideoPermissionAtom.reportRead();
     return super.hasVideoPermission;
   }
 
   @override
   set hasVideoPermission(bool value) {
-    _$hasCameraPermissionAtom.reportWrite(value, super.hasVideoPermission, () {
+    _$hasVideoPermissionAtom.reportWrite(value, super.hasVideoPermission, () {
       super.hasVideoPermission = value;
     });
   }
 
-  final _$hasMicrophonePermissionAtom =
-      Atom(name: '_AgoraVideoCallControllerBase.hasMicrophonePermission');
+  final _$hasAudioPermissionAtom =
+      Atom(name: '_AgoraVideoCallControllerBase.hasAudioPermission');
 
   @override
   bool get hasAudioPermission {
-    _$hasMicrophonePermissionAtom.reportRead();
+    _$hasAudioPermissionAtom.reportRead();
     return super.hasAudioPermission;
   }
 
   @override
   set hasAudioPermission(bool value) {
-    _$hasMicrophonePermissionAtom
-        .reportWrite(value, super.hasAudioPermission, () {
+    _$hasAudioPermissionAtom.reportWrite(value, super.hasAudioPermission, () {
       super.hasAudioPermission = value;
     });
   }
@@ -175,8 +174,8 @@ mixin _$AgoraVideoCallController on _AgoraVideoCallControllerBase, Store {
   String toString() {
     return '''
 canInitCall: ${canInitCall},
-hasCameraPermission: ${hasVideoPermission},
-hasMicrophonePermission: ${hasAudioPermission},
+hasVideoPermission: ${hasVideoPermission},
+hasAudioPermission: ${hasAudioPermission},
 hasStorePermission: ${hasStorePermission},
 switchVideos: ${switchVideos},
 videoEnabled: ${videoEnabled},
