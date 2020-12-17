@@ -35,7 +35,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("asd"),
+            Text("Chatbot"),
             Observer(
               builder: (BuildContext context) {
                 if (controller.botTyping) {

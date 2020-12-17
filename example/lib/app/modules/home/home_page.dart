@@ -72,28 +72,28 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 );
               },
             ),
-            // Container(
-            //   margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
-            //   child: FlatButton(
-            //     onPressed: () async {
-            //       Navigator.pushNamed(context, "/video_call");
-            //     },
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(15.0),
-            //     ),
-            //     disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
-            //     color: Theme.of(context).primaryColor,
-            //     padding: EdgeInsets.symmetric(vertical: 25.0),
-            //     visualDensity: VisualDensity.compact,
-            //     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            //     child: Text(
-            //       "Video Call",
-            //       style: TextStyle(
-            //         color: Theme.of(context).textTheme.headline1.color,
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
+              child: FlatButton(
+                onPressed: () async {
+                  Modular.to.navigate("/attendant");
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
+                color: Theme.of(context).primaryColor,
+                padding: EdgeInsets.symmetric(vertical: 25.0),
+                visualDensity: VisualDensity.compact,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                child: Text(
+                  "Área do atendente",
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.headline1.color,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

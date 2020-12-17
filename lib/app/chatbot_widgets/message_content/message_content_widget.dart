@@ -37,8 +37,6 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
         return _textContent(_message.value, _color);
       case MessageType.IMAGE:
         return _imageContent(_message.value, _color);
-      // default:
-      //   return _textContent(_message.value, _color);
     }
     return Container();
   }
@@ -46,9 +44,9 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   Widget _textContent(String message, Color color) {
     return Container(
       color: color,
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(10.0),
       child: SelectableText(
-        "$message",
+        "${message?.trim()}",
         style: TextStyle(color: Colors.white),
       ),
     );
@@ -58,7 +56,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
     return Container(
       color: color,
       constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -76,7 +74,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
                 ),
                 child: AvatarWidget(
                   url: url,
-                  radius: 2.5,
+                  radius: 10.0,
                   boxFit: BoxFit.cover,
                 ),
               ),

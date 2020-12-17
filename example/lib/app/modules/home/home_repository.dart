@@ -17,7 +17,7 @@ class HomeRepository extends Disposable {
 
   Future<Result> onGetChatBots() async {
     try {
-      Response _response = await _dio.get("/organization/759eb2e4-2aff-43c1-85d0-16c63035367d/bot/");
+      Response _response = await _dio.get("/organization/7d0704d7-873b-4002-bc3c-9028d2a2b6da/bot/");
       return Result.fromJson(_response.data);
     } on DioError catch (e) {
       print("Repository: Erro ao buscar bots. $e");

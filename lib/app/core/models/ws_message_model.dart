@@ -22,7 +22,7 @@ class WsMessage {
       this.switchContent,
       this.messageContent,
       this.fileContent,
-      this.eventContent});
+      this.eventContent,});
 
   WsMessage.fromJson(Map<String, dynamic> json) {
     datetime = json['datetime'];

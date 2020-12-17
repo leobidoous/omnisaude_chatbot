@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
-import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
-import 'package:omnisaude_chatbot/app/shared_widgets/avatar/avatar_widget.dart';
 import 'package:omnisaude_chatbot/app/chatbot_widgets/datetime_on_message/datetime_on_message_widget.dart';
 import 'package:omnisaude_chatbot/app/chatbot_widgets/event_content/event_content_widget.dart';
 import 'package:omnisaude_chatbot/app/chatbot_widgets/file_content/file_content_widget.dart';
 import 'package:omnisaude_chatbot/app/chatbot_widgets/message_content/message_content_widget.dart';
+import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/shared_widgets/avatar/avatar_widget.dart';
 
 class ChooseWidgetToRenderWidget extends StatefulWidget {
   final bool enabled;
@@ -36,10 +36,7 @@ class _ChooseWidgetToRenderWidgetState
     final String _userPeer = widget.connection.getUserPeer();
 
     if (_message.eventContent != null) {
-      return EventContentWidget(
-        message: _message.eventContent,
-        peer: _message.peer,
-      );
+      return EventContentWidget(message: _message);
     } else if (_message.fileContent != null) {
       if (_message.peer == _userPeer) {
         return _userContent(
@@ -90,9 +87,9 @@ class _ChooseWidgetToRenderWidgetState
                 Flexible(
                   child: ClipRRect(
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(5.0),
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                      bottomLeft: Radius.circular(20.0),
                     ),
                     child: child,
                   ),
@@ -143,9 +140,9 @@ class _ChooseWidgetToRenderWidgetState
                 Flexible(
                   child: ClipRRect(
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0),
-                      bottomRight: Radius.circular(5.0),
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                      bottomRight: Radius.circular(20.0),
                     ),
                     child: child,
                   ),

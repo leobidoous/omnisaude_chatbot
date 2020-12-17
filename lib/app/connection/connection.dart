@@ -25,12 +25,13 @@ class Connection extends Disposable {
 
       connectionStatus = ConnectionStatus.WAITING;
       _channel.stream.listen((event) {
+        print("-----> ### MENSAGEM RECEBIDA: $event\n");
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           _userPeer = _message.eventContent.message;
         }
         _controller.sink.add(_message);
-        _onMessageReceived(_message);
+        // _onMessageReceived(_message);
         connectionStatus = ConnectionStatus.ACTIVE;
       }, onError: (onError) {
         print("Erro de conexão: $onError");

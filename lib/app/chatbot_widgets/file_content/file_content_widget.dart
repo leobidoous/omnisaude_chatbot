@@ -47,7 +47,7 @@ class _FileContentWidgetState extends State<FileContentWidget> {
       String url, String filename, String comment, Color color) {
     return Container(
       color: color,
-      height: 200.0,
+      constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,7 +62,7 @@ class _FileContentWidgetState extends State<FileContentWidget> {
               child: AvatarWidget(
                 url: url,
                 boxFit: BoxFit.cover,
-                radius: 10.0,
+                radius: 20.0,
               ),
             ),
           ),
@@ -76,10 +76,10 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     return Container(
       color: color,
       padding: const EdgeInsets.all(5.0),
+      constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       child: Column(
         children: [
-          Container(
-            height: 200.0,
+          Expanded(
             child: GestureDetector(
               onTap: () {
                 final ViewDocumentService _service = ViewDocumentService();

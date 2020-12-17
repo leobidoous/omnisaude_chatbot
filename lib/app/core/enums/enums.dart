@@ -1,7 +1,21 @@
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum RenderType { LIST, SEARCH }
-enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED, NLU_START, NLU_END }
+enum EventType {
+  DEBUG,
+  ERROR,
+  TYPING,
+  SYSTEM,
+  CONNECTED,
+  NLU_START,
+  NLU_END,
+  ENTRY_QUEUE,
+  USER_LEFT,
+  ATTENDANT_LEFT,
+  INIT_ATTENDANCE,
+  UPDATE_QUEUE,
+  FINISH_ATTENDANCE,
+}
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
 enum KeyboardType { DATE, EMAIL, NUMBER, TEXT }
@@ -40,9 +54,15 @@ final eventTypeValues = EnumValues({
   "typing": EventType.TYPING,
   "system": EventType.SYSTEM,
   "connected": EventType.CONNECTED,
-  "human_attendance": EventType.HUMAN_ATTENDANCE,
   "nlu_start": EventType.NLU_START,
-  "nlu_end": EventType.NLU_END
+  "nlu_end": EventType.NLU_END,
+
+  "entry_queue": EventType.ENTRY_QUEUE,
+  "user_left": EventType.USER_LEFT,
+  "update_queue": EventType.UPDATE_QUEUE,
+  "init_attendance": EventType.INIT_ATTENDANCE,
+  "attendant_left": EventType.ATTENDANT_LEFT,
+  "finish_attendance": EventType.FINISH_ATTENDANCE,
 });
 
 final contentFileTypeValues = EnumValues({
@@ -60,7 +80,7 @@ final keyboardTypeValues = EnumValues({
 });
 
 final inputTypeValues =
-    EnumValues({"date": InputType.DATE, "text": InputType.TEXT,});
+EnumValues({"date": InputType.DATE, "text": InputType.TEXT,});
 
 class EnumValues<T> {
   Map<String, T> map;

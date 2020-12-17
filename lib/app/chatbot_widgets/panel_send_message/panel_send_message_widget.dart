@@ -73,6 +73,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         _controller.nluEnabled = true;
       } else if (_message.eventContent.eventType == EventType.NLU_END) {
         _controller.nluEnabled = false;
+      } else if (_message.eventContent.eventType == EventType.INIT_ATTENDANCE) {
+        _controller.nluEnabled = true;
       }
     }
     return Column(

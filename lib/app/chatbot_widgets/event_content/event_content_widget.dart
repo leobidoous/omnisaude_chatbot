@@ -3,12 +3,9 @@ import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 class EventContentWidget extends StatefulWidget {
-  final EventContent message;
-  final String peer;
+  final WsMessage message;
 
-  const EventContentWidget(
-      {Key key, @required this.message, @required this.peer})
-      : super(key: key);
+  const EventContentWidget({Key key, @required this.message}) : super(key: key);
 
   @override
   _EventContentWidgetState createState() => _EventContentWidgetState();
@@ -17,19 +14,53 @@ class EventContentWidget extends StatefulWidget {
 class _EventContentWidgetState extends State<EventContentWidget> {
   @override
   Widget build(BuildContext context) {
-    return _chooseWidgetToRender(widget.message);
-  }
+    final EventContent _event = widget.message.eventContent;
 
-  Widget _chooseWidgetToRender(EventContent message) {
-    switch (message.eventType) {
+    switch (_event.eventType) {
       case EventType.DEBUG:
-        return _systemContent(message);
+        return _systemContent(_event);
       case EventType.ERROR:
-        return _systemContent(message);
-      case EventType.HUMAN_ATTENDANCE:
-        return _systemContent(message);
+        return _systemContent(_event);
       case EventType.SYSTEM:
-        return _systemContent(message);
+        return _systemContent(_event);
+
+      case EventType.TYPING:
+        // TODO: Handle this case.
+        break;
+      case EventType.CONNECTED:
+        // TODO: Handle this case.
+        break;
+      case EventType.NLU_START:
+        // TODO: Handle this case.
+        break;
+      case EventType.NLU_END:
+        // TODO: Handle this case.
+        break;
+      case EventType.ENTRY_QUEUE:
+        final EventContent _message = EventContent(
+          message: "Aguardando atendimento",
+        );
+        return _systemContent(_message);
+      case EventType.USER_LEFT:
+        final EventContent _message = EventContent(
+          message: "${widget.message.username} saiu da conversa",
+        );
+        return _systemContent(_message);
+      case EventType.ATTENDANT_LEFT:
+        final EventContent _message = EventContent(
+          message: "${widget.message.username} saiu da conversa",
+        );
+        return _systemContent(_message);
+      case EventType.INIT_ATTENDANCE:
+        final EventContent _message = EventContent(
+          message: "${widget.message.username} assumiu a conversa",
+        );
+        return _systemContent(_message);
+      case EventType.FINISH_ATTENDANCE:
+        final EventContent _message = EventContent(
+          message: "Atendimento finalizado",
+        );
+        return _systemContent(_message);
       default:
         break;
     }
