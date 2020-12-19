@@ -8,11 +8,8 @@ import 'package:omnisaude_chatbot/app/shared_widgets/avatar/avatar_widget.dart';
 
 class FileContentWidget extends StatefulWidget {
   final WsMessage message;
-  final Color color;
 
-  const FileContentWidget(
-      {Key key, @required this.message, @required this.color})
-      : super(key: key);
+  const FileContentWidget({Key key, @required this.message}) : super(key: key);
 
   @override
   _FileContentWidgetState createState() => _FileContentWidgetState();
@@ -23,31 +20,26 @@ class _FileContentWidgetState extends State<FileContentWidget> {
   Widget build(BuildContext context) {
     final FileContent _message = widget.message.fileContent;
     final String _mimeType = lookupMimeType(_message.value);
-    final Color _color = widget.color;
 
     if (lookupMimeType(_message.value).contains("image")) {
       return _imageContent(
         _message.value,
         _message.name,
         _message.comment,
-        _color,
       );
     } else if (_mimeType == "application/pdf") {
       return _pdfContent(
         _message.value,
         _message.name,
         _message.comment,
-        _color,
       );
     }
     return Container();
   }
 
-  Widget _imageContent(
-      String url, String filename, String comment, Color color) {
+  Widget _imageContent(String url, String filename, String comment) {
     return Container(
-      color: color,
-      constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
+      constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,12 +64,12 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     );
   }
 
-  Widget _pdfContent(String url, String filename, String comment, Color color) {
+  Widget _pdfContent(String url, String filename, String comment) {
     return Container(
-      color: color,
       padding: const EdgeInsets.all(5.0),
-      constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
+      constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
             child: GestureDetector(

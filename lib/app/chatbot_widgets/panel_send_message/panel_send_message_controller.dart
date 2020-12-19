@@ -11,11 +11,13 @@ abstract class _PanelSendMessageControllerBase with Store {
   @observable
   bool panelSwitchEnabled;
   @observable
-  bool attachEnabled;
+  bool attachEnabled = false;
   @observable
-  bool dateEnabled;
+  bool dateEnabled = false;
   @observable
-  bool textEnabled;
+  bool textEnabled = false;
   @observable
   bool nluEnabled = false;
+  @observable
+  bool humanAttendant = false;
 }

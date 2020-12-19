@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
+import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
 import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
 
 part 'attendant_controller.g.dart';
 
@@ -25,29 +25,38 @@ abstract class _AttendantControllerBase with Store {
   StreamController streamController;
 
   @observable
+  ConnectionStatus connectionStatus = ConnectionStatus.NONE;
+  @observable
+  bool chooseUser = true;
+  @observable
   String botUsername = "Bot";
   @observable
   bool botTyping = false;
   @observable
-  ObservableList messages = new ObservableList<WsMessage>();
+  ObservableList<WsMessage> messages = new ObservableList();
 
-  Future<void> onInitAndListenStream(String idChat) async {
-    try {
-      connection = Connection(
-        "$WSS_BASE_URL/ws/attendance/?token=$TOKEN/",
-        _username,
-        _avatarUrl,
-      );
-      omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
-      streamController = await connection.onInitSession();
-      streamController.stream.listen((message) {
+  Future<void> onInitAndListenStream(String token) async {
+    connection = Connection(
+      "$WSS_BASE_URL/ws/attendance/?token=$TOKEN",
+      _username,
+      _avatarUrl,
+    );
+    omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
+    streamController = await connection.onInitSession();
+    streamController.stream.listen(
+          (message) {
         messages.insert(0, message);
         onScrollListToBottom();
         _onChangeChatGlobalConfigs(message);
-      });
-    } catch (e) {
-      print("erro ao inicializar stream: $e");
-    }
+        connectionStatus = ConnectionStatus.ACTIVE;
+      },
+      onError: ((onError) {
+        connectionStatus = ConnectionStatus.ERROR;
+      }),
+      onDone: () {
+        connectionStatus = ConnectionStatus.DONE;
+      },
+    );
   }
 
   @action
@@ -55,11 +64,11 @@ abstract class _AttendantControllerBase with Store {
     if (scrollController.hasClients) {
       Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
         scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
+          0.0,
           duration: Duration(milliseconds: 300),
           curve: Curves.decelerate,
         );
-      });
+      },);
     }
   }
 
@@ -72,7 +81,6 @@ abstract class _AttendantControllerBase with Store {
   }
 
   void dispose() {
-    print("dispose");
     messages.clear();
     scrollController.dispose();
     omnisaudeChatbot.dispose();

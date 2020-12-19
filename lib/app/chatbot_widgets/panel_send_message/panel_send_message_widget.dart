@@ -19,9 +19,11 @@ class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage message;
   final Connection connection;
 
-  const PanelSendMessageWidget(
-      {Key key, @required this.message, @required this.connection})
-      : super(key: key);
+  const PanelSendMessageWidget({
+    Key key,
+    @required this.message,
+    @required this.connection,
+  }) : super(key: key);
 
   @override
   _PanelSendMessageWidgetState createState() => _PanelSendMessageWidgetState();
@@ -31,11 +33,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   final PanelSendMessageController _controller = PanelSendMessageController();
   final TextEditingController _messageText = TextEditingController();
   final FocusNode _messageFocus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -52,33 +49,63 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     _controller.panelSwitchEnabled = false;
     _controller.panelInputEnabled = false;
 
+    _controller.attachEnabled = false;
     _controller.dateEnabled = false;
     _controller.textEnabled = false;
-    _controller.attachEnabled = false;
+
+    if (_message.eventContent != null) {
+      switch (_message.eventContent.eventType) {
+        case EventType.NLU_START:
+          _controller.nluEnabled = true;
+          _controller.textEnabled = true;
+          _controller.attachEnabled = true;
+          _controller.panelInputEnabled = true;
+          break;
+        case EventType.NLU_END:
+          _controller.nluEnabled = false;
+          break;
+        case EventType.USER_LEFT:
+          _controller.humanAttendant = false;
+          break;
+        case EventType.ATTENDANT_LEFT:
+          _controller.humanAttendant = false;
+          break;
+        case EventType.INIT_ATTENDANCE:
+          _controller.textEnabled = true;
+          _controller.attachEnabled = true;
+          _controller.humanAttendant = true;
+          _controller.panelInputEnabled = true;
+          break;
+        case EventType.FINISH_ATTENDANCE:
+          _controller.humanAttendant = false;
+          break;
+        default:
+          break;
+      }
+    }
 
     if (_message.inputContent != null) {
       _controller.panelInputEnabled = true;
-      if (_message.inputContent.inputType == InputType.DATE) {
-        _controller.dateEnabled = true;
-      } else if (_message.inputContent.inputType == InputType.TEXT) {
-        _controller.textEnabled = true;
-      }
-    } else if (_message.uploadContent != null) {
-      _controller.attachEnabled = true;
-    } else if (_message.switchContent != null) {
-      print(_message.switchContent.toJson());
-      _controller.panelSwitchEnabled = true;
-    } else if (_message.eventContent != null) {
-      if (_message.eventContent.eventType == EventType.NLU_START) {
-        _controller.nluEnabled = true;
-      } else if (_message.eventContent.eventType == EventType.NLU_END) {
-        _controller.nluEnabled = false;
-      } else if (_message.eventContent.eventType == EventType.INIT_ATTENDANCE) {
-        _controller.nluEnabled = true;
+      switch (_message.inputContent.inputType) {
+        case InputType.DATE:
+          _controller.dateEnabled = true;
+          break;
+        case InputType.TEXT:
+          _controller.textEnabled = true;
+          break;
       }
     }
+
+    if (_message.uploadContent != null) {
+      _controller.panelInputEnabled = true;
+      _controller.attachEnabled = true;
+    }
+
+    if (_message.switchContent != null) _controller.panelSwitchEnabled = true;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
         _panelSwitch(_connection, _message),
         _panelSendMessage(_message),
@@ -88,74 +115,80 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   Widget _panelSwitch(Connection connection, WsMessage message) {
     if (message.switchContent == null) return Container();
-    return Observer(builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15.0),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            constraints: BoxConstraints(
-              maxHeight: _controller.panelSwitchEnabled ? 250.0 : 0.0,
-            ),
-            curve: Curves.fastOutSlowIn,
-            height: _controller.panelSwitchEnabled ? null : 0.0,
-            color: Theme.of(context).textTheme.headline5.color,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    constraints: BoxConstraints(maxHeight: 250),
-                    child: SwitchContentWidget(
-                      color: Theme.of(context).primaryColor,
-                      connection: connection,
-                      message: message,
+    return Observer(
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0),
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 500),
+              constraints: BoxConstraints(
+                maxHeight: _controller.panelSwitchEnabled ? 250.0 : 0.0,
+              ),
+              curve: Curves.easeIn,
+              height: _controller.panelSwitchEnabled ? null : 0.0,
+              color: Theme.of(context).textTheme.headline5.color,
+              child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 250),
+                      child: SwitchContentWidget(
+                        color: Theme.of(context).primaryColor,
+                        connection: connection,
+                        message: message,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _panelSendMessage(WsMessage message) {
-    return Observer(builder: (context) {
-      final _enabled = _controller.nluEnabled || _controller.panelInputEnabled;
-      if (!_enabled) return Container();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            constraints: BoxConstraints(maxHeight: _enabled ? 100 : 0.0),
-            curve: Curves.fastOutSlowIn,
-            height: _enabled ? null : 0.0,
-            child: Container(
-              color: Theme.of(context).textTheme.headline4.color,
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: Observer(
-                builder: (context) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _btnShowDatePickerContent(),
-                      _btnSelectFileContent(message),
-                      Expanded(child: _textFormFieldContent()),
-                      _btnSendTextMessageContent(),
-                    ],
-                  );
-                },
+    return Observer(
+      builder: (context) {
+        final bool _enabled = _controller.nluEnabled ||
+            _controller.panelInputEnabled ||
+            _controller.humanAttendant;
+        if (!_enabled) return Container();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AnimatedContainer(
+              duration: Duration(milliseconds: 500),
+              constraints: BoxConstraints(maxHeight: _enabled ? 100 : 0.0),
+              curve: Curves.easeIn,
+              height: _enabled ? null : 0.0,
+              child: Container(
+                color: Theme.of(context).textTheme.headline4.color,
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: Observer(
+                  builder: (context) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _btnShowDatePickerContent(),
+                        _btnSelectFileContent(message),
+                        Expanded(child: _textFormFieldContent()),
+                        _btnSendTextMessageContent(),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   Widget _btnShowDatePickerContent() {
@@ -166,7 +199,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         child: IconButton(
           iconSize: 30.0,
           onPressed: _onShowDatePicker,
-          padding: EdgeInsets.zero,
           color: Theme.of(context).textTheme.headline1.color,
           icon: Icon(Icons.date_range_rounded),
         ),
@@ -175,15 +207,18 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   }
 
   Widget _btnSelectFileContent(WsMessage message) {
+    final bool _enabled = _controller.nluEnabled ||
+        _controller.attachEnabled ||
+        _controller.humanAttendant;
     return IgnorePointer(
-      ignoring: !_controller.attachEnabled,
+      ignoring: !_enabled,
       child: Opacity(
-        opacity: _controller.attachEnabled ? 1.0 : 0.3,
+        opacity: _enabled ? 1.0 : 0.3,
         child: PopupMenuButton<UploadInputType>(
           onSelected: (UploadInputType type) async {
             await _onSelectFile(type, message);
           },
-          elevation: 0.0,
+          elevation: 5.0,
           offset: Offset(0.0, -175.0),
           color: Theme.of(context).cardColor,
           shape: RoundedRectangleBorder(
@@ -192,9 +227,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           icon: Icon(
             Icons.attach_file_rounded,
             color: Theme.of(context).textTheme.headline1.color,
-            size: 30.0,
           ),
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(vertical: 10.0),
           itemBuilder: (context) => <PopupMenuEntry<UploadInputType>>[
             PopupMenuItem<UploadInputType>(
               value: UploadInputType.CAMERA,
@@ -233,10 +267,13 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   }
 
   Widget _textFormFieldContent() {
+    final bool _enabled = _controller.nluEnabled ||
+        _controller.textEnabled ||
+        _controller.humanAttendant;
     return IgnorePointer(
-      ignoring: !(_controller.nluEnabled || _controller.textEnabled),
+      ignoring: !_enabled,
       child: Opacity(
-        opacity: _controller.nluEnabled || _controller.textEnabled ? 1.0 : 0.3,
+        opacity: _enabled ? 1.0 : 0.3,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30.0),
@@ -248,7 +285,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             autofocus: true,
             focusNode: _messageFocus,
             controller: _messageText,
-            enabled: _controller.nluEnabled || _controller.textEnabled,
+            enabled: _enabled,
             scrollPhysics: BouncingScrollPhysics(),
             textInputAction: TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,
@@ -271,14 +308,16 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   }
 
   Widget _btnSendTextMessageContent() {
+    final bool _enabled = _controller.nluEnabled ||
+        _controller.textEnabled ||
+        _controller.humanAttendant;
     return IgnorePointer(
-      ignoring: !(_controller.nluEnabled || _controller.textEnabled),
+      ignoring: !_enabled,
       child: Opacity(
-        opacity: _controller.nluEnabled || _controller.textEnabled ? 1.0 : 0.3,
+        opacity: _enabled ? 1.0 : 0.3,
         child: IconButton(
           iconSize: 30.0,
           onPressed: () => _onSendTextMessage(_messageText.text),
-          padding: EdgeInsets.zero,
           color: Theme.of(context).textTheme.headline1.color,
           icon: Icon(Icons.send_rounded),
         ),
@@ -368,6 +407,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       await widget.connection
           .onSendMessage(_message)
           .whenComplete(() => _messageText.clear());
+      _messageFocus.requestFocus();
     }
   }
 }

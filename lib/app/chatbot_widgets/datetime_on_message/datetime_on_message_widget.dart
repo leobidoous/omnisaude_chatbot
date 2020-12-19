@@ -5,11 +5,10 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'datetime_on_message_controller.dart';
 
 class DatetimeOnMessageWidget extends StatefulWidget {
-  final DateTime dateTime;
   final WsMessage message;
 
   const DatetimeOnMessageWidget(
-      {Key key, @required this.dateTime, @required this.message})
+      {Key key, @required this.message})
       : super(key: key);
 
   @override
@@ -22,7 +21,9 @@ class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final String _time = DateFormat("jm", "PT_br").format(widget.dateTime);
+    final String _time = DateFormat("jm", "PT_br").format(
+      DateTime.parse(widget.message.datetime).toLocal(),
+    );
     if (!_controller.oShowMessageDateTimeContent(widget.message)) {
       return Container();
     }
@@ -44,6 +45,7 @@ class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
           height: 2.0,
           width: 25.0,
         ),
+        SizedBox(height: 5.0),
       ],
     );
   }

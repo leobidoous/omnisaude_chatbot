@@ -13,15 +13,16 @@ class AvatarWidget extends StatefulWidget {
   final BoxFit boxFit;
   final bool showIfUrlNone;
 
-  const AvatarWidget(
-      {Key key,
-      this.height,
-      this.width,
-      this.imagePath: "assets/avatar/bot.png",
-      this.url,
-      this.radius: 0.0,
-      this.boxFit: BoxFit.fill, this.showIfUrlNone: true})
-      : super(key: key);
+  const AvatarWidget({
+    Key key,
+    this.height,
+    this.width,
+    this.imagePath: "assets/avatar/bot.png",
+    this.url,
+    this.radius: 0.0,
+    this.boxFit: BoxFit.fill,
+    this.showIfUrlNone: true,
+  }) : super(key: key);
 
   @override
   _AvatarWidgetState createState() => _AvatarWidgetState();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/chatbot_widgets/datetime_on_message/datetime_on_message_widget.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/core/services/file_picker_service.dart';
 import 'package:omnisaude_chatbot/app/shared_widgets/avatar/avatar_widget.dart';
-import 'package:omnisaude_chatbot/app/chatbot_widgets/datetime_on_message/datetime_on_message_widget.dart';
 
 class UploadContentWidget extends StatefulWidget {
   final Future<void> Function(WsMessage) onSendMessage;
@@ -52,10 +52,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
               children: [
                 Flexible(child: _btnUploadFileContent()),
                 const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(
-                  dateTime: DateTime.parse(widget.message.datetime),
-                  message: widget.message,
-                ),
+                DatetimeOnMessageWidget(message: widget.message),
               ],
             ),
           ),
@@ -116,5 +113,4 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
       print(e);
     }
   }
-
 }

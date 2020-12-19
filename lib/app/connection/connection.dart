@@ -15,43 +15,48 @@ class Connection extends Disposable {
 
   Connection(this._url, this._username, this._avatarUrl);
 
-  final StreamController _controller = StreamController<WsMessage>();
+  final StreamController<WsMessage> _streamController = StreamController();
   WebSocketChannel _channel;
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
 
-  Future<StreamController> onInitSession() async {
-    try {
-      _channel = WebSocketChannel.connect(Uri.parse(_url));
+  Future<Stream> onnnn() async {
+    _channel = WebSocketChannel.connect(Uri.parse(_url));
+    return _channel.stream;
+  }
 
-      connectionStatus = ConnectionStatus.WAITING;
-      _channel.stream.listen((event) {
-        print("-----> ### MENSAGEM RECEBIDA: $event\n");
+  Future<StreamController> onInitSession() async {
+    _channel = WebSocketChannel.connect(Uri.parse(_url));
+
+    connectionStatus = ConnectionStatus.WAITING;
+    _channel.stream.listen(
+      (event) {
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           _userPeer = _message.eventContent.message;
         }
-        _controller.sink.add(_message);
-        // _onMessageReceived(_message);
+        _streamController.sink.add(_message);
+        _onMessageReceived(_message);
         connectionStatus = ConnectionStatus.ACTIVE;
-      }, onError: (onError) {
+      },
+      onError: (onError) async {
         print("Erro de conexão: $onError");
         connectionStatus = ConnectionStatus.ERROR;
-      }, onDone: () {
+        _streamController.addError(onError);
+        await _onCloseSession();
+      },
+      onDone: () async {
         print("Conexão encerrada!");
         connectionStatus = ConnectionStatus.DONE;
-      });
-      return _controller;
-    } catch (e) {
-      print("Erro ao iniciar a conexão: $e");
-      throw e;
-    }
+      },
+    );
+    return _streamController;
   }
 
   Future<void> _onMessageReceived(WsMessage message) async {
     try {
       print("-----> ### MENSAGEM RECEBIDA: ${message.toJson()}\n");
     } catch (e) {
-      print(e);
+      print("Erro ao receber mensagem: $e");
     }
   }
 
@@ -60,28 +65,33 @@ class Connection extends Disposable {
       message.username = _username;
       message.avatarUrl = _avatarUrl;
 
-      _channel.sink.add(jsonEncode(message));
-      print("-----> *** MENSAGEM ENVIADA: ${message.toJson()}\n");
+      if (connectionStatus == ConnectionStatus.ACTIVE) {
+        _channel.sink.add(jsonEncode(message));
+        print("-----> *** MENSAGEM ENVIADA: ${message.toJson()}\n");
+      } else {
+        print(
+            "Não foi possível enviar a mensagem, pois a conexão está inativa!");
+      }
     } catch (e) {
-      print(e);
+      print("Erro ao enviar mensagem: $e");
     }
   }
 
-  String getUserPeer() => _userPeer;
+  String get getUserPeer => _userPeer;
 
   Future<void> _onCloseSession() async {
     try {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
-      _controller.close();
-      print("\t--: CONEXÃO ENCERRADA");
+      _streamController.close();
+      print("\t--: CONEXÃO ENCERRADA!");
     } catch (e) {
-      print(e);
+      print("Erro ao encerrar sessão: $e");
     }
   }
 
   @override
-  void dispose() {
-    _onCloseSession();
+  void dispose() async {
+    await _onCloseSession();
   }
 }

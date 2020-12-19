@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot_example/app/shared/widgets/content_error/content_error_widget.dart';
+import 'package:omnisaude_chatbot_example/app/shared/widgets/loading/loading_widget.dart';
+
 import 'chat_bot_controller.dart';
 
 class ChatBotPage extends StatefulWidget {
   final String chatBotId;
+
   const ChatBotPage({Key key, this.chatBotId = ""}) : super(key: key);
 
   @override
@@ -75,97 +80,76 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             ),
             color: Theme.of(context).backgroundColor,
           ),
-          child: Stack(
-            children: [
-              Observer(
-                builder: (context) {
-                  if (controller.messages.isEmpty) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              elevation: 0.0,
-                              color: Theme.of(context).primaryColor,
-                              child: Container(
-                                padding: EdgeInsets.all(50.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      alignment: Alignment.center,
-                                      child: Theme(
-                                        data: ThemeData(
-                                            brightness: Brightness.dark),
-                                        child: CupertinoActivityIndicator(
-                                          animating: true,
-                                          radius: 15.0,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Text(
-                                      "Iniciando chat...",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () =>
-                              FocusScope.of(context).requestFocus(FocusNode()),
-                          child: ListView.builder(
-                            physics: BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics(),
-                            ),
-                            reverse: true,
-                            itemCount: controller.messages.length,
-                            controller: controller.scrollController,
-                            padding: EdgeInsets.all(5.0),
-                            itemBuilder: (BuildContext context, int index) {
-                              return controller.omnisaudeChatbot
-                                  .chooseWidgetToRender(
-                                controller.messages[index],
-                                controller.messages.first ==
-                                    controller.messages[index],
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      controller.omnisaudeChatbot.panelSendMessage(
-                        controller.messages.first,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
+          child: _buildListWidget(),
         ),
       ),
+    );
+  }
+
+  Widget _buildListWidget() {
+    return Observer(
+      builder: (context) {
+        Widget _popup = Container();
+
+        if (controller.connectionStatus == ConnectionStatus.WAITING) {
+          _popup = LoadingWidget(
+            background: Theme.of(context).primaryColor,
+            message: "Iniciando conversa...",
+            margin: 20.0,
+            padding: 50.0,
+            radius: 20.0,
+            opacity: 0.5,
+          );
+        } else if (controller.connectionStatus == ConnectionStatus.ERROR) {
+          _popup = ContentErrorWidget(
+            messageLabel: "Ocorreu um erro ao iniciar a conversa",
+            background: Theme.of(context).backgroundColor,
+            function: () => controller.onInitAndListenStream(widget.chatBotId),
+            buttonLabel: "Tentar novamente",
+            margin: 20.0,
+            padding: 20.0,
+            radius: 20.0,
+            opacity: 0.5,
+          );
+        } else if (controller.connectionStatus == ConnectionStatus.ACTIVE) {
+          if (controller.messages.isNotEmpty) {
+            _popup = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => FocusScope.of(context).requestFocus(
+                      FocusNode(),
+                    ),
+                    child: ListView.builder(
+                      reverse: true,
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      itemCount: controller.messages.length,
+                      controller: controller.scrollController,
+                      padding: const EdgeInsets.all(5.0),
+                      itemBuilder: (BuildContext context, int index) {
+                        return controller.omnisaudeChatbot.chooseWidgetToRender(
+                          controller.messages[index],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                controller.omnisaudeChatbot.panelSendMessage(
+                  controller.messages.first,
+                ),
+              ],
+            );
+          }
+        }
+
+        return Stack(
+          fit: StackFit.expand,
+          children: [_popup],
+        );
+      },
     );
   }
 }

@@ -8,16 +8,14 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/shared_widgets/avatar/avatar_widget.dart';
 
 class ChooseWidgetToRenderWidget extends StatefulWidget {
-  final bool enabled;
   final WsMessage message;
   final Connection connection;
 
-  const ChooseWidgetToRenderWidget(
-      {Key key,
-      @required this.message,
-      @required this.connection,
-      @required this.enabled})
-      : super(key: key);
+  const ChooseWidgetToRenderWidget({
+    Key key,
+    @required this.message,
+    @required this.connection,
+  }) : super(key: key);
 
   @override
   _ChooseWidgetToRenderWidgetState createState() =>
@@ -28,47 +26,40 @@ class _ChooseWidgetToRenderWidgetState
     extends State<ChooseWidgetToRenderWidget> {
   @override
   Widget build(BuildContext context) {
-    final bool _enabled = widget.enabled;
     final WsMessage _message = widget.message;
-    final Connection _connection = widget.connection;
-    final Color _userColor = Theme.of(context).primaryColor;
-    final Color _botColor = Theme.of(context).cardColor;
-    final String _userPeer = widget.connection.getUserPeer();
+    final String _myPeer = widget.connection.getUserPeer;
 
+    // Se o objeto for um evento
     if (_message.eventContent != null) {
-      return EventContentWidget(message: _message);
-    } else if (_message.fileContent != null) {
-      if (_message.peer == _userPeer) {
-        return _userContent(
-          _message,
-          FileContentWidget(message: _message, color: _userColor),
-        );
+      return EventContentWidget(message: _message, myPeer: _myPeer);
+    }
+
+    // Se o objeto for um arquivo
+    if (_message.fileContent != null) {
+      if (_message.peer == _myPeer) {
+        return _myContent(_message, FileContentWidget(message: _message));
       }
-      return _botContent(
-        _message,
-        FileContentWidget(message: _message, color: _botColor),
-      );
-    } else if (_message.messageContent != null) {
-      /**
-       * Verificar se o conteúdo da mensagem é vazio,
-       * assim retiro a exibição do componente
-       */
+      return _otherContent(_message, FileContentWidget(message: _message));
+    }
+
+    // Se o objeto for uma mensagem
+    if (_message.messageContent != null) {
       if (_message.messageContent.value.trim().isEmpty) return Container();
-      if (_message.peer == _userPeer) {
-        return _userContent(
+      if (_message.peer == _myPeer) {
+        return _myContent(
           _message,
-          MessageContentWidget(message: _message, color: _userColor),
+          MessageContentWidget(message: _message),
         );
       }
-      return _botContent(
+      return _otherContent(
         _message,
-        MessageContentWidget(message: _message, color: _botColor),
+        MessageContentWidget(message: _message),
       );
     }
-    return Container();
+    return Column(mainAxisSize: MainAxisSize.min);
   }
 
-  Widget _userContent(WsMessage message, child) {
+  Widget _myContent(WsMessage message, child) {
     return Container(
       margin: EdgeInsets.only(
         left: MediaQuery.of(context).size.width * 0.2,
@@ -85,26 +76,28 @@ class _ChooseWidgetToRenderWidgetState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                      ),
+                      color: Theme.of(context).primaryColor,
                     ),
                     child: child,
                   ),
                 ),
                 const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(
-                  dateTime: DateTime.parse(message.datetime),
-                  message: message,
-                ),
+                DatetimeOnMessageWidget(message: message),
               ],
             ),
           ),
           const SizedBox(width: 10.0),
           AvatarWidget(
             url: message.avatarUrl,
+            imagePath: "assets/avatar/user.png",
+            boxFit: BoxFit.cover,
             width: 30.0,
             height: 30.0,
             radius: 10.0,
@@ -114,7 +107,7 @@ class _ChooseWidgetToRenderWidgetState
     );
   }
 
-  Widget _botContent(WsMessage message, child) {
+  Widget _otherContent(WsMessage message, child) {
     return Container(
       margin: EdgeInsets.only(
         right: MediaQuery.of(context).size.width * 0.2,
@@ -127,6 +120,8 @@ class _ChooseWidgetToRenderWidgetState
         children: [
           AvatarWidget(
             url: message.avatarUrl,
+            imagePath: "assets/avatar/bot.png",
+            boxFit: BoxFit.cover,
             width: 30.0,
             height: 30.0,
             radius: 10.0,
@@ -138,20 +133,20 @@ class _ChooseWidgetToRenderWidgetState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Flexible(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      color: Theme.of(context).cardColor,
                     ),
                     child: child,
                   ),
                 ),
                 const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(
-                  dateTime: DateTime.parse(message.datetime),
-                  message: message,
-                ),
+                DatetimeOnMessageWidget(message: message),
               ],
             ),
           ),

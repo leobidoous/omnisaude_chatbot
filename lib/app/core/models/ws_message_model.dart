@@ -12,17 +12,18 @@ class WsMessage {
   FileContent fileContent;
   EventContent eventContent;
 
-  WsMessage(
-      {this.datetime,
-      this.peer,
-      this.avatarUrl,
-      this.username,
-      this.inputContent,
-      this.uploadContent,
-      this.switchContent,
-      this.messageContent,
-      this.fileContent,
-      this.eventContent,});
+  WsMessage({
+    this.datetime,
+    this.peer,
+    this.avatarUrl,
+    this.username,
+    this.inputContent,
+    this.uploadContent,
+    this.switchContent,
+    this.messageContent,
+    this.fileContent,
+    this.eventContent,
+  });
 
   WsMessage.fromJson(Map<String, dynamic> json) {
     datetime = json['datetime'];
@@ -259,13 +260,20 @@ class EventContent {
   String message;
   String imageUrl;
   EventType eventType;
+  List<Queue> queue;
 
-  EventContent({this.message, this.imageUrl, this.eventType});
+  EventContent({this.message, this.imageUrl, this.eventType, this.queue});
 
   EventContent.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     imageUrl = json['imageUrl'];
     eventType = eventTypeValues.map[json["eventType"]];
+    if (json['queue'] != null) {
+      queue = new List<Queue>();
+      json['queue'].forEach((v) {
+        queue.add(new Queue.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -273,6 +281,85 @@ class EventContent {
     data['message'] = this.message;
     data['imageUrl'] = this.imageUrl;
     data['eventType'] = eventTypeValues.reverse[this.eventType];
+    if (this.queue != null) {
+      data['queue'] = this.queue.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Queue {
+  Bot bot;
+  User user;
+
+  Queue({this.bot, this.user});
+
+  Queue.fromJson(Map<String, dynamic> json) {
+    bot = json['bot'] != null ? new Bot.fromJson(json['bot']) : null;
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.bot != null) {
+      data['bot'] = this.bot.toJson();
+    }
+    if (this.user != null) {
+      data['user'] = this.user.toJson();
+    }
+    return data;
+  }
+}
+
+class Bot {
+  String id;
+  String avatar;
+  String name;
+  String organization;
+
+  Bot({this.id, this.avatar, this.name, this.organization});
+
+  Bot.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    avatar = json['avatar'];
+    name = json['name'];
+    organization = json['organization'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['avatar'] = this.avatar;
+    data['name'] = this.name;
+    data['organization'] = this.organization;
+    return data;
+  }
+}
+
+class User {
+  String name;
+  String avatar;
+  String entered;
+  String peer;
+  String session;
+
+  User({this.name, this.avatar, this.entered, this.peer, this.session});
+
+  User.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    avatar = json['avatar'];
+    entered = json['entered'];
+    peer = json['peer'];
+    session = json['session'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['avatar'] = this.avatar;
+    data['entered'] = this.entered;
+    data['peer'] = this.peer;
+    data['session'] = this.session;
     return data;
   }
 }

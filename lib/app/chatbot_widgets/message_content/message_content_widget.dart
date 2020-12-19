@@ -14,10 +14,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class MessageContentWidget extends StatefulWidget {
   final WsMessage message;
-  final Color color;
 
   const MessageContentWidget(
-      {Key key, @required this.message, @required this.color})
+      {Key key, @required this.message})
       : super(key: key);
 
   @override
@@ -28,22 +27,20 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   @override
   Widget build(BuildContext context) {
     final MessageContent _message = widget.message.messageContent;
-    final Color _color = widget.color;
 
     switch (_message.messageType) {
       case MessageType.HTML:
-        return _htmlContent(_message.value, _color);
+        return _htmlContent(_message.value);
       case MessageType.TEXT:
-        return _textContent(_message.value, _color);
+        return _textContent(_message.value);
       case MessageType.IMAGE:
-        return _imageContent(_message.value, _color);
+        return _imageContent(_message.value);
     }
     return Container();
   }
 
-  Widget _textContent(String message, Color color) {
+  Widget _textContent(String message) {
     return Container(
-      color: color,
       padding: const EdgeInsets.all(10.0),
       child: SelectableText(
         "${message?.trim()}",
@@ -52,9 +49,8 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
     );
   }
 
-  Widget _imageContent(String url, Color color) {
+  Widget _imageContent(String url) {
     return Container(
-      color: color,
       constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -85,9 +81,9 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
     );
   }
 
-  Widget _htmlContent(String message, Color color) {
+  Widget _htmlContent(String message) {
     return Container(
-      color: color,
+      padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,

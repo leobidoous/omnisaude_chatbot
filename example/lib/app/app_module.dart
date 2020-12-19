@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot_example/app/modules/attendant/attendant_module.dart';
 import 'package:omnisaude_chatbot_example/app/modules/chat_bot/chat_bot_module.dart';
+import 'shared/widgets/image/image_controller.dart';
 import 'app_widget.dart';
 import 'modules/home/home_module.dart';
 
@@ -14,7 +15,8 @@ class AppModule extends MainModule {
   @override
   final List<Bind> binds = [
     Bind.lazySingleton((i) => PageNotFoundController()),
-    Bind((i) => AppController),
+    Bind.lazySingleton((i) => AppController()),
+    Bind.lazySingleton((i) => ImageController()),
   ];
 
   @override

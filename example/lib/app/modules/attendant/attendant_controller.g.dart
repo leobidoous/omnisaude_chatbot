@@ -9,6 +9,37 @@ part of 'attendant_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AttendantController on _AttendantControllerBase, Store {
+  final _$connectionStatusAtom =
+      Atom(name: '_AttendantControllerBase.connectionStatus');
+
+  @override
+  ConnectionStatus get connectionStatus {
+    _$connectionStatusAtom.reportRead();
+    return super.connectionStatus;
+  }
+
+  @override
+  set connectionStatus(ConnectionStatus value) {
+    _$connectionStatusAtom.reportWrite(value, super.connectionStatus, () {
+      super.connectionStatus = value;
+    });
+  }
+
+  final _$chooseUserAtom = Atom(name: '_AttendantControllerBase.chooseUser');
+
+  @override
+  bool get chooseUser {
+    _$chooseUserAtom.reportRead();
+    return super.chooseUser;
+  }
+
+  @override
+  set chooseUser(bool value) {
+    _$chooseUserAtom.reportWrite(value, super.chooseUser, () {
+      super.chooseUser = value;
+    });
+  }
+
   final _$botUsernameAtom = Atom(name: '_AttendantControllerBase.botUsername');
 
   @override
@@ -42,13 +73,13 @@ mixin _$AttendantController on _AttendantControllerBase, Store {
   final _$messagesAtom = Atom(name: '_AttendantControllerBase.messages');
 
   @override
-  ObservableList<dynamic> get messages {
+  ObservableList<WsMessage> get messages {
     _$messagesAtom.reportRead();
     return super.messages;
   }
 
   @override
-  set messages(ObservableList<dynamic> value) {
+  set messages(ObservableList<WsMessage> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
     });
@@ -75,6 +106,8 @@ mixin _$AttendantController on _AttendantControllerBase, Store {
   @override
   String toString() {
     return '''
+connectionStatus: ${connectionStatus},
+chooseUser: ${chooseUser},
 botUsername: ${botUsername},
 botTyping: ${botTyping},
 messages: ${messages}

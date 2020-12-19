@@ -105,6 +105,22 @@ mixin _$PanelSendMessageController on _PanelSendMessageControllerBase, Store {
     });
   }
 
+  final _$humanAttendantAtom =
+      Atom(name: '_PanelSendMessageControllerBase.humanAttendant');
+
+  @override
+  bool get humanAttendant {
+    _$humanAttendantAtom.reportRead();
+    return super.humanAttendant;
+  }
+
+  @override
+  set humanAttendant(bool value) {
+    _$humanAttendantAtom.reportWrite(value, super.humanAttendant, () {
+      super.humanAttendant = value;
+    });
+  }
+
   @override
   String toString() {
     return '''
@@ -113,7 +129,8 @@ panelSwitchEnabled: ${panelSwitchEnabled},
 attachEnabled: ${attachEnabled},
 dateEnabled: ${dateEnabled},
 textEnabled: ${textEnabled},
-nluEnabled: ${nluEnabled}
+nluEnabled: ${nluEnabled},
+humanAttendant: ${humanAttendant}
     ''';
   }
 }
