@@ -11,18 +11,15 @@ class Connection extends Disposable {
   final String _url;
   final String _username;
   final String _avatarUrl;
-  String _userPeer;
+  String _myPeer;
 
   Connection(this._url, this._username, this._avatarUrl);
 
   final StreamController<WsMessage> _streamController = StreamController();
-  WebSocketChannel _channel;
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
+  WebSocketChannel _channel;
 
-  Future<Stream> onnnn() async {
-    _channel = WebSocketChannel.connect(Uri.parse(_url));
-    return _channel.stream;
-  }
+  WsMessage lastMessage = WsMessage();
 
   Future<StreamController> onInitSession() async {
     _channel = WebSocketChannel.connect(Uri.parse(_url));
@@ -30,13 +27,14 @@ class Connection extends Disposable {
     connectionStatus = ConnectionStatus.WAITING;
     _channel.stream.listen(
       (event) {
+        connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
-          _userPeer = _message.eventContent.message;
+          _myPeer = _message.eventContent.message;
         }
-        _streamController.sink.add(_message);
-        _onMessageReceived(_message);
-        connectionStatus = ConnectionStatus.ACTIVE;
+          _onMessageReceived(_message);
+        lastMessage = _message;
+          _streamController.add(_message);
       },
       onError: (onError) async {
         print("Erro de conexão: $onError");
@@ -77,7 +75,7 @@ class Connection extends Disposable {
     }
   }
 
-  String get getUserPeer => _userPeer;
+  String get getUserPeer => _myPeer;
 
   Future<void> _onCloseSession() async {
     try {

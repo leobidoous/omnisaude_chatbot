@@ -59,7 +59,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           _controller.nluEnabled = true;
           _controller.textEnabled = true;
           _controller.attachEnabled = true;
-          _controller.panelInputEnabled = true;
           break;
         case EventType.NLU_END:
           _controller.nluEnabled = false;
@@ -74,10 +73,12 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           _controller.textEnabled = true;
           _controller.attachEnabled = true;
           _controller.humanAttendant = true;
-          _controller.panelInputEnabled = true;
           break;
         case EventType.FINISH_ATTENDANCE:
           _controller.humanAttendant = false;
+          break;
+        case EventType.UPDATE_QUEUE:
+          _controller.humanAttendant = true;
           break;
         default:
           break;
@@ -101,7 +102,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       _controller.attachEnabled = true;
     }
 
-    if (_message.switchContent != null) _controller.panelSwitchEnabled = true;
+    if (_message.switchContent != null) {
+      _controller.panelSwitchEnabled = true;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

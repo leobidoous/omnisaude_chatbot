@@ -159,8 +159,12 @@ class _AttendantPageState
                     ),
                   ),
                 ),
-                controller.omnisaudeChatbot.panelSendMessage(
-                  controller.messages.first,
+                Observer(
+                  builder: (context) {
+                    return controller.omnisaudeChatbot.panelSendMessage(
+                      controller.messages.first,
+                    );
+                  },
                 ),
               ],
             );
@@ -238,7 +242,7 @@ class _AttendantPageState
       constraints: BoxConstraints(maxWidth: 200.0),
       margin: const EdgeInsets.all(10.0),
       child: FlatButton(
-        onPressed: ()  async {
+        onPressed: () async {
           final WsMessage _message = WsMessage(
             eventContent: EventContent(
               eventType: EventType.INIT_ATTENDANCE,

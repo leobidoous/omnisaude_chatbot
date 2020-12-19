@@ -137,8 +137,12 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                     ),
                   ),
                 ),
-                controller.omnisaudeChatbot.panelSendMessage(
-                  controller.messages.first,
+                Observer(
+                  builder: (context) {
+                    return controller.omnisaudeChatbot.panelSendMessage(
+                      controller.messages.first,
+                    );
+                  },
                 ),
               ],
             );
