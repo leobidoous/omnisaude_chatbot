@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
+import 'package:universal_html/html.dart';
 
 import 'home_controller.dart';
 
@@ -20,8 +21,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   @override
   void initState() {
-    print(widget.title);
-    controller.onGetChatBots();
+    controller.getChatBots();
     super.initState();
   }
 
@@ -35,6 +35,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text("${widget.title}"),
+        ),
         backgroundColor: Theme.of(context).backgroundColor,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,10 +51,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                   child: FlatButton(
                     onPressed: _enabled
                         ? () {
-                            Modular.to.navigate('/chat_bot/${controller.chatSelected?.id}', arguments: {
-                              "botName": controller.chatSelected?.name,
-                              "chatBotId": controller.chatSelected?.id,
-                            });
+                            Modular.to.navigate(
+                              '/chat_bot/${controller.chatSelected?.id}',
+                            );
                           }
                         : null,
                     shape: RoundedRectangleBorder(
@@ -103,7 +105,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   Widget _gridChatsContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        await controller.onGetChatBots();
+        await controller.getChatBots();
       },
       color: Theme.of(context).primaryColor,
       child: Observer(
@@ -115,7 +117,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               children: [
                 IconButton(
                   icon: Icon(Icons.refresh_rounded),
-                  onPressed: () async => await controller.onGetChatBots(),
+                  onPressed: () async => await controller.getChatBots(),
                 ),
                 Text("Recarregar", textAlign: TextAlign.center),
               ],
@@ -152,9 +154,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               : Theme.of(context).cardColor,
         ),
         child: IconButton(
-          onPressed: () {
-            controller.chatSelected = chatBot;
-          },
+          onPressed: () => controller.chatSelected = chatBot,
           icon: Text(chatBot.name),
         ),
       );

@@ -7,7 +7,9 @@ import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
-import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
+
+import '../../app_controller.dart';
+import '../../core/constants/constants.dart';
 
 part 'attendant_controller.g.dart';
 
@@ -15,6 +17,8 @@ part 'attendant_controller.g.dart';
 class AttendantController = _AttendantControllerBase with _$AttendantController;
 
 abstract class _AttendantControllerBase with Store {
+  final AppController appController = Modular.get<AppController>();
+
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
@@ -44,7 +48,7 @@ abstract class _AttendantControllerBase with Store {
     omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
     streamController = await connection.onInitSession();
     streamController.stream.listen(
-          (message) {
+      (message) {
         messages.insert(0, message);
         onScrollListToBottom();
         _onChangeChatGlobalConfigs(message);
@@ -62,13 +66,15 @@ abstract class _AttendantControllerBase with Store {
   @action
   Future<void> onScrollListToBottom() async {
     if (scrollController.hasClients) {
-      Future.delayed(Duration(milliseconds: 300)).whenComplete(() {
-        scrollController.animateTo(
-          0.0,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.decelerate,
-        );
-      },);
+      Future.delayed(Duration(milliseconds: 300)).whenComplete(
+        () {
+          scrollController.animateTo(
+            0.0,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.decelerate,
+          );
+        },
+      );
     }
   }
 

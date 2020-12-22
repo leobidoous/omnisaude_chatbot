@@ -15,9 +15,10 @@ class HomeRepository extends Disposable {
     _dio.interceptors.add(DioInterceptors());
   }
 
-  Future<Result> onGetChatBots() async {
+  Future<Result> getChatBots() async {
     try {
-      Response _response = await _dio.get("/organization/7d0704d7-873b-4002-bc3c-9028d2a2b6da/bot/");
+      // Response _response = await _dio.get("/organization/7d0704d7-873b-4002-bc3c-9028d2a2b6da/bot/");
+      Response _response = await _dio.get("/organization/f3552bf8-7546-4a30-9f0c-dbadff68989c/bot/");
       return Result.fromJson(_response.data);
     } on DioError catch (e) {
       print("Repository: Erro ao buscar bots. $e");

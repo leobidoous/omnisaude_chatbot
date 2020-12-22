@@ -28,9 +28,11 @@ class _PageNotFoundPageState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: Text(
-              "404 page not found",
-              textAlign: TextAlign.center,
+            child: Center(
+              child: Text(
+                "404 page not found",
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],

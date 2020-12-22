@@ -10,17 +10,18 @@ class HomeController = _HomeControllerBase with _$HomeController;
 abstract class _HomeControllerBase with Store {
 
   @observable
-  dynamic chatBots = Result()..results = List<ChatBot>();
+  ChatBot chatSelected;
   @observable
-  dynamic chatSelected;
+  Result chatBots = Result()..results = List<ChatBot>();
 
   @action
-  Future<void> onGetChatBots() async {
+  Future<void> getChatBots() async {
     try {
       chatSelected = null;
       final HomeRepository _repository = HomeRepository();
-      chatBots = await _repository.onGetChatBots();
+      chatBots = await _repository.getChatBots();
     } on DioError catch(e) {
+      print(e);
     }
   }
 }

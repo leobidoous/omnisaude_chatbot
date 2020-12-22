@@ -31,10 +31,8 @@ final layoutValues = EnumValues({
   "image_card": Layout.IMAGE_CARD
 });
 
-final renderTypeValues = EnumValues({
-  "list": RenderType.LIST,
-  "search": RenderType.SEARCH
-});
+final renderTypeValues =
+    EnumValues({"list": RenderType.LIST, "search": RenderType.SEARCH});
 
 final messageTypeValues = EnumValues({
   "html": MessageType.HTML,
@@ -56,7 +54,6 @@ final eventTypeValues = EnumValues({
   "connected": EventType.CONNECTED,
   "nlu_start": EventType.NLU_START,
   "nlu_end": EventType.NLU_END,
-
   "entry_queue": EventType.ENTRY_QUEUE,
   "user_left": EventType.USER_LEFT,
   "update_queue": EventType.UPDATE_QUEUE,
@@ -79,8 +76,10 @@ final keyboardTypeValues = EnumValues({
   "text": KeyboardType.TEXT
 });
 
-final inputTypeValues =
-EnumValues({"date": InputType.DATE, "text": InputType.TEXT,});
+final inputTypeValues = EnumValues({
+  "date": InputType.DATE,
+  "text": InputType.TEXT,
+});
 
 class EnumValues<T> {
   Map<String, T> map;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -149,10 +151,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
           }
         }
 
-        return Stack(
-          fit: StackFit.expand,
-          children: [_popup],
-        );
+        return Stack(fit: StackFit.expand, children: [_popup]);
       },
     );
   }

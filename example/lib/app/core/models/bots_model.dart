@@ -6,13 +6,14 @@ class Result {
   int offset;
   List<ChatBot> results;
 
-  Result(
-      {this.next,
-        this.previous,
-        this.count,
-        this.pageSize,
-        this.offset,
-        this.results});
+  Result({
+    this.next,
+    this.previous,
+    this.count,
+    this.pageSize,
+    this.offset,
+    this.results,
+  });
 
   Result.fromJson(Map<String, dynamic> json) {
     next = json['next'];
@@ -48,7 +49,12 @@ class ChatBot {
   String description;
   String avatar;
 
-  ChatBot({this.id, this.name, this.description, this.avatar});
+  ChatBot({
+    this.id,
+    this.name,
+    this.description,
+    this.avatar,
+  });
 
   ChatBot.fromJson(Map<String, dynamic> json) {
     id = json['id'];

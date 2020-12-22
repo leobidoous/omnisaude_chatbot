@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot_example/app/modules/video_call/video_call_page.dart';
 import 'package:omnisaude_chatbot_example/app/shared/widgets/content_error/content_error_widget.dart';
 import 'package:omnisaude_chatbot_example/app/shared/widgets/empty/empty_widget.dart';
 import 'package:omnisaude_chatbot_example/app/shared/widgets/image/image_widget.dart';
@@ -66,6 +67,12 @@ class _AttendantPageState
           ],
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Modular.to.navigate("/video_call");
+            },
+            icon: Icon(Icons.videocam_rounded),
+          ),
           IconButton(
             onPressed: () {
               controller.chooseUser = !controller.chooseUser;

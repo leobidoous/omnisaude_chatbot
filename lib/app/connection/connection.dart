@@ -19,8 +19,6 @@ class Connection extends Disposable {
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
-  WsMessage lastMessage = WsMessage();
-
   Future<StreamController> onInitSession() async {
     _channel = WebSocketChannel.connect(Uri.parse(_url));
 
@@ -32,9 +30,8 @@ class Connection extends Disposable {
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           _myPeer = _message.eventContent.message;
         }
-          _onMessageReceived(_message);
-        lastMessage = _message;
-          _streamController.add(_message);
+        _onMessageReceived(_message);
+        _streamController.add(_message);
       },
       onError: (onError) async {
         print("Erro de conexão: $onError");
@@ -68,7 +65,8 @@ class Connection extends Disposable {
         print("-----> *** MENSAGEM ENVIADA: ${message.toJson()}\n");
       } else {
         print(
-            "Não foi possível enviar a mensagem, pois a conexão está inativa!");
+          "Não foi possível enviar a mensagem, pois a conexão está inativa!",
+        );
       }
     } catch (e) {
       print("Erro ao enviar mensagem: $e");
@@ -82,7 +80,7 @@ class Connection extends Disposable {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
       _streamController.close();
-      print("\t--: CONEXÃO ENCERRADA!");
+      print("\t--##: CONEXÃO ENCERRADA!");
     } catch (e) {
       print("Erro ao encerrar sessão: $e");
     }

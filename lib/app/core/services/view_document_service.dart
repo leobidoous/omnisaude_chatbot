@@ -10,29 +10,42 @@ class ViewDocumentService extends Disposable {
           context: context,
           builder: (context) {
             return Scaffold(
-              body: PDF().cachedFromUrl(
-                url,
-                placeholder: (double progress) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
+              body: Stack(
+                fit: StackFit.expand,
+                children: [
+                  PDF().cachedFromUrl(
+                    url,
+                    placeholder: (double progress) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            strokeWidth: 1.5,
+                          Column(
+                            children: [
+                              CircularProgressIndicator(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                strokeWidth: 1.5,
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
-                  );
-                },
-                errorWidget: (dynamic error) =>
-                    Center(child: Text(error.toString())),
+                      );
+                    },
+                    errorWidget: (dynamic error) =>
+                        Center(child: Text(error.toString())),
+                  ),
+                  Positioned(
+                    top: 0.0,
+                    right: 0.0,
+                    child: IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
               ),
             );
-          });
+          },);
     } catch (e) {
       print("impossível visualizar a foto unica: $e");
     }

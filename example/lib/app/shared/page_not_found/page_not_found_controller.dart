@@ -8,11 +8,4 @@ class PageNotFoundController = _PageNotFoundControllerBase
     with _$PageNotFoundController;
 
 abstract class _PageNotFoundControllerBase with Store {
-  @observable
-  int value = 0;
-
-  @action
-  void increment() {
-    value++;
-  }
 }
