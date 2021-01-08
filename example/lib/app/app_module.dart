@@ -28,15 +28,11 @@ class AppModule extends MainModule {
     ModuleRoute(Modular.initialRoute, module: HomeModule()),
     ChildRoute(
       "/attendant/:token",
-      child: (_, args) => AttendantPage(
-        token: args.params["token"],
-      ),
+      child: (_, args) => AttendantPage(token: args.params["token"]),
     ),
     ChildRoute(
       "/chat_bot/:chatBotId",
-      child: (_, args) => ChatBotPage(
-        chatBotId: args.params["chatBotId"],
-      ),
+      child: (_, args) => ChatBotPage(chatBotId: args.params["chatBotId"]),
     ),
     WildcardRoute(child: (BuildContext context, ModularArguments args) {
       return PageNotFoundPage();

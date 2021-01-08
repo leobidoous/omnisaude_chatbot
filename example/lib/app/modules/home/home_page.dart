@@ -37,6 +37,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text("${widget.title}"),
         ),
         backgroundColor: Theme.of(context).backgroundColor,

@@ -13,7 +13,7 @@ class DioInterceptors extends InterceptorsWrapper {
 
   @override
   Future onResponse(Response response) {
-    print('RESPONSE [${response.statusCode}] => DATA: [${response.data}]');
+    print('RESPONSE [${response.statusCode}] => DATA: [${response.statusMessage}]');
     return super.onResponse(response);
   }
 

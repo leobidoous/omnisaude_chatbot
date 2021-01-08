@@ -4,9 +4,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'page_not_found_controller.dart';
 
 class PageNotFoundPage extends StatefulWidget {
-  final String title;
 
-  const PageNotFoundPage({Key key, this.title = "PageNotFound"})
+  const PageNotFoundPage({Key key})
       : super(key: key);
 
   @override

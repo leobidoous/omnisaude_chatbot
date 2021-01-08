@@ -34,12 +34,12 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
 
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(Duration()).then((value) {
-    //   if (!_configLoaded) {
-    //     store.appController.getQueryParams(context);
-    //     _configLoaded = true;
-    //   }
-    // });
+    Future.delayed(Duration()).then((value) {
+      if (!_configLoaded) {
+        store.appController.getQueryParams(context);
+        _configLoaded = true;
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import '../../core/models/ws_message_model.dart';
 
-import 'datetime_on_message_controller.dart';
 
 class DatetimeOnMessageWidget extends StatefulWidget {
   final WsMessage message;
@@ -17,16 +16,12 @@ class DatetimeOnMessageWidget extends StatefulWidget {
 }
 
 class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
-  final DatetimeOnMessageController _controller = DatetimeOnMessageController();
 
   @override
   Widget build(BuildContext context) {
     final String _time = DateFormat("jm", "PT_br").format(
       DateTime.parse(widget.message.datetime).toLocal(),
     );
-    if (!_controller.oShowMessageDateTimeContent(widget.message)) {
-      return Container();
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
