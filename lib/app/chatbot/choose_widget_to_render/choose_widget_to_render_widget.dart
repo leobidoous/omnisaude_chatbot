@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
 
 import '../../connection/connection.dart';
 import '../../core/models/ws_message_model.dart';
@@ -46,7 +45,7 @@ class _ChooseWidgetToRenderWidgetState
 
     // Se o objeto for uma mensagem
     if (_message.messageContent != null) {
-      if(_message.messageContent.value == null) return Container();
+      if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _myPeer) {
         return _myContent(

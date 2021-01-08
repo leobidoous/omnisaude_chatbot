@@ -41,7 +41,7 @@ abstract class _AttendantControllerBase with Store {
 
   Future<void> onInitAndListenStream(String token) async {
     connection = Connection(
-      "$WSS_BASE_URL/ws/attendance/?token=$TOKEN",
+      "$WSS_BASE_URL/ws/attendance/?token=$token",
       _username,
       _avatarUrl,
     );

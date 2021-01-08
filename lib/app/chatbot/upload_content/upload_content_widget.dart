@@ -1,14 +1,12 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
+import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
 import 'package:universal_html/html.dart';
 
 import '../../core/enums/enums.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/file_picker_service.dart';
-import 'upload_content_controller.dart';
 
 class UploadContentWidget extends StatefulWidget {
   final Future<void> Function(WsMessage) onSendMessage;
@@ -25,20 +23,7 @@ class UploadContentWidget extends StatefulWidget {
 }
 
 class _UploadContentWidgetState extends State<UploadContentWidget> {
-  final UploadContentController _controller = new UploadContentController();
   final FilePickerService _service = new FilePickerService();
-
-  Widget _webcamWidget = HtmlElementView(key: UniqueKey(), viewType: 'webcam');
-  final VideoElement _webcamVideoElement = new VideoElement();
-
-  @override
-  void initState() {
-    ui.platformViewRegistry.registerViewFactory(
-      'webcam',
-      (int viewId) => _webcamVideoElement,
-    );
-    super.initState();
-  }
 
   @override
   void dispose() {

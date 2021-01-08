@@ -5,7 +5,7 @@ description: Demonstrates how to use the omnisaude_chatbot plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.10.4 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   dio: ^3.0.10

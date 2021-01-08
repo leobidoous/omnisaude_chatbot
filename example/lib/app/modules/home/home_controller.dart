@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
-import 'package:omnisaude_chatbot_example/app/modules/home/home_repository.dart';
+import '../../core/models/bots_model.dart';
+import 'home_repository.dart';
 
 part 'home_controller.g.dart';
 
@@ -12,7 +12,7 @@ abstract class _HomeControllerBase with Store {
   @observable
   ChatBot chatSelected;
   @observable
-  Result chatBots = Result()..results = List<ChatBot>();
+  Result chatBots = Result()..results = List<ChatBot>.empty();
 
   @action
   Future<void> getChatBots() async {

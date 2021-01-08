@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 class EventContentWidget extends StatefulWidget {
@@ -23,6 +24,8 @@ class _EventContentWidgetState extends State<EventContentWidget> {
 
     switch (_event.eventType) {
       case EventType.SYSTEM:
+        return _eventMessageWidget(_event);
+      case EventType.ERROR:
         return _eventMessageWidget(_event);
 
       case EventType.TYPING:

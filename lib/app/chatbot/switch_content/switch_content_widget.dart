@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mobx/mobx.dart';
+import 'package:omnisaude_chatbot/app/core/models/multi_selection_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
 
 import '../../components/components.dart';
 import '../../connection/connection.dart';

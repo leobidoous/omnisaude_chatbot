@@ -1,5 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 part 'switch_content_controller.g.dart';
@@ -18,7 +20,7 @@ abstract class _SwitchContentControllerBase with Store {
   @action
   Future<void> onSendOptionsMessage(Connection connection) async {
     try {
-      final List<String> _options = List<String>();
+      final List<String> _options = List<String>.empty(growable: true);
       selectedOptions.forEach((option) => _options.add(option.id));
       final MessageContent _messageContent = MessageContent(
         extras: {"options": _options},

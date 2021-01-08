@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
 import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
 
 class ImageWidget extends StatefulWidget {
@@ -47,7 +48,11 @@ class _ImageWidgetState extends State<ImageWidget> {
         width: widget.width,
         height: widget.height,
         placeholder: (BuildContext context, String url) {
-          return LoadingWidget(opacity: 0.85, background: Colors.transparent);
+          return LoadingWidget(
+            opacity: 0.85,
+            background: Colors.transparent,
+            radius: widget.radius,
+          );
         },
         errorWidget: (BuildContext context, String url, dynamic error) {
           return Image.asset(
@@ -61,7 +66,11 @@ class _ImageWidgetState extends State<ImageWidget> {
         },
         imageBuilder: (BuildContext context, ImageProvider image) {
           return GestureDetector(
-            onTap: () async {},
+            onTap: () async {
+              final ViewPhotoService _service = new ViewPhotoService();
+              await _service.onViewSinglePhoto(context, widget.url);
+              _service.dispose();
+            },
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(

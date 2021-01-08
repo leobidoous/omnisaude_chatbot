@@ -64,17 +64,7 @@ class LoadingWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CupertinoActivityIndicator(
-                          ),
-                          // Flexible(
-                          //   child: CircularProgressIndicator(
-                          //     backgroundColor: Theme.of(context).primaryColor,
-                          //     strokeWidth: 1.5,
-                          //     valueColor: new AlwaysStoppedAnimation<Color>(
-                          //       Theme.of(context).backgroundColor,
-                          //     ),
-                          //   ),
-                          // ),
+                          CupertinoActivityIndicator(),
                           _buildMessageWidget(context),
                         ],
                       ),

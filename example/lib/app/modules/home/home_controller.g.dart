@@ -18,7 +18,7 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
-  set chatSelected(dynamic value) {
+  set chatSelected(ChatBot value) {
     _$chatSelectedAtom.reportWrite(value, super.chatSelected, () {
       super.chatSelected = value;
     });
@@ -33,7 +33,7 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
-  set chatBots(dynamic value) {
+  set chatBots(Result value) {
     _$chatBotsAtom.reportWrite(value, super.chatBots, () {
       super.chatBots = value;
     });

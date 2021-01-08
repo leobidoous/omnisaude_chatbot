@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/queue_model.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
-import 'package:omnisaude_chatbot_example/app/modules/video_call/video_call_page.dart';
-import 'package:omnisaude_chatbot_example/app/shared/widgets/content_error/content_error_widget.dart';
-import 'package:omnisaude_chatbot_example/app/shared/widgets/empty/empty_widget.dart';
-import 'package:omnisaude_chatbot_example/app/shared/widgets/image/image_widget.dart';
-import 'package:omnisaude_chatbot_example/app/shared/widgets/loading/loading_widget.dart';
 
+import '../../shared/widgets/content_error/content_error_widget.dart';
+import '../../shared/widgets/empty/empty_widget.dart';
+import '../../shared/widgets/image/image_widget.dart';
+import '../../shared/widgets/loading/loading_widget.dart';
 import 'attendant_controller.dart';
 
 class AttendantPage extends StatefulWidget {
-  final String title;
+  final String token;
 
-  const AttendantPage({Key key, this.title = "Attendant"}) : super(key: key);
+  const AttendantPage({Key key, this.token = ""}) : super(key: key);
 
   @override
   _AttendantPageState createState() => _AttendantPageState();
@@ -23,20 +24,29 @@ class AttendantPage extends StatefulWidget {
 
 class _AttendantPageState
     extends ModularState<AttendantPage, AttendantController> {
+  bool _configLoaded = false;
+
   @override
   void initState() {
-    controller.onInitAndListenStream("");
+    store.onInitAndListenStream(widget.token);
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    store.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration()).then((value) {
+      if (!_configLoaded) {
+        store.appController.getQueryParams(context);
+        _configLoaded = true;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -48,9 +58,9 @@ class _AttendantPageState
             Text("Chatbot"),
             Observer(
               builder: (BuildContext context) {
-                if (controller.botTyping) {
+                if (store.botTyping) {
                   return Text(
-                    "${controller.botUsername} está digitando...",
+                    "${store.botUsername} está digitando...",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300,
@@ -59,7 +69,7 @@ class _AttendantPageState
                   );
                 }
                 return Text(
-                  "${controller.botUsername}",
+                  "${store.botUsername}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
                 );
               },
@@ -69,13 +79,7 @@ class _AttendantPageState
         actions: [
           IconButton(
             onPressed: () {
-              Modular.to.navigate("/video_call");
-            },
-            icon: Icon(Icons.videocam_rounded),
-          ),
-          IconButton(
-            onPressed: () {
-              controller.chooseUser = !controller.chooseUser;
+              store.chooseUser = !store.chooseUser;
             },
             icon: Icon(Icons.swap_vertical_circle_rounded),
           ),
@@ -86,7 +90,7 @@ class _AttendantPageState
                   eventType: EventType.FINISH_ATTENDANCE,
                 ),
               );
-              controller.connection.onSendMessage(_message);
+              store.connection.onSendMessage(_message);
             },
             icon: Icon(Icons.exit_to_app_rounded),
           ),
@@ -120,7 +124,7 @@ class _AttendantPageState
       builder: (context) {
         Widget _popup = Container();
 
-        if (controller.connectionStatus == ConnectionStatus.WAITING) {
+        if (store.connectionStatus == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
             background: Theme.of(context).primaryColor,
             message: "Iniciando conversa...",
@@ -129,19 +133,19 @@ class _AttendantPageState
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (controller.connectionStatus == ConnectionStatus.ERROR) {
+        } else if (store.connectionStatus == ConnectionStatus.ERROR) {
           _popup = ContentErrorWidget(
             messageLabel: "Ocorreu um erro ao iniciar a conversa",
             background: Theme.of(context).backgroundColor,
-            function: () => controller.onInitAndListenStream(""),
+            function: () => store.onInitAndListenStream(""),
             buttonLabel: "Tentar novamente",
             margin: 20.0,
             padding: 20.0,
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (controller.connectionStatus == ConnectionStatus.ACTIVE) {
-          if (controller.messages.isNotEmpty) {
+        } else if (store.connectionStatus == ConnectionStatus.ACTIVE) {
+          if (store.messages.isNotEmpty) {
             _popup = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -155,12 +159,12 @@ class _AttendantPageState
                       physics: const BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
-                      itemCount: controller.messages.length,
-                      controller: controller.scrollController,
+                      itemCount: store.messages.length,
+                      controller: store.scrollController,
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
-                        return controller.omnisaudeChatbot.chooseWidgetToRender(
-                          controller.messages[index],
+                        return store.omnisaudeChatbot.chooseWidgetToRender(
+                          store.messages[index],
                         );
                       },
                     ),
@@ -168,8 +172,8 @@ class _AttendantPageState
                 ),
                 Observer(
                   builder: (context) {
-                    return controller.omnisaudeChatbot.panelSendMessage(
-                      controller.messages.first,
+                    return store.omnisaudeChatbot.panelSendMessage(
+                      store.messages.first,
                     );
                   },
                 ),
@@ -190,11 +194,11 @@ class _AttendantPageState
     return Observer(
       builder: (context) {
         Widget _popup = Column(mainAxisSize: MainAxisSize.min);
-        if (controller.messages.isEmpty) return Container();
-        if (controller.messages.first.eventContent?.queue == null) {
+        if (store.messages.isEmpty) return Container();
+        if (store.messages.first.eventContent?.queue == null) {
           return Container();
         }
-        if (controller.messages.first.eventContent.queue.isEmpty) {
+        if (store.messages.first.eventContent.queue.isEmpty) {
           _popup = Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -204,22 +208,22 @@ class _AttendantPageState
               ),
             ],
           );
-        } else if (controller.messages.first.eventContent.queue.isNotEmpty) {
+        } else if (store.messages.first.eventContent.queue.isNotEmpty) {
           _popup = ListView.builder(
-            itemCount: controller.messages.first.eventContent.queue.length,
+            itemCount: store.messages.first.eventContent.queue.length,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
             itemBuilder: (context, index) {
               return _attendanceItemWidget(
-                controller.messages.first.eventContent.queue[index],
+                store.messages.first.eventContent.queue[index],
               );
             },
           );
         }
         return AnimatedCrossFade(
-          crossFadeState: controller.chooseUser
+          crossFadeState: store.chooseUser
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
           duration: Duration(milliseconds: 250),
@@ -256,8 +260,8 @@ class _AttendantPageState
               message: queue.user.session,
             ),
           );
-          await controller.connection.onSendMessage(_message);
-          controller.chooseUser = false;
+          await store.connection.onSendMessage(_message);
+          store.chooseUser = false;
         },
         color: Theme.of(context).primaryColor,
         textColor: Colors.white,

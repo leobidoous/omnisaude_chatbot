@@ -22,7 +22,7 @@ class Result {
     pageSize = json['page_size'];
     offset = json['offset'];
     if (json['results'] != null) {
-      results = new List<ChatBot>();
+      results = new List<ChatBot>.empty(growable: true);
       json['results'].forEach((v) {
         results.add(new ChatBot.fromJson(v));
       });

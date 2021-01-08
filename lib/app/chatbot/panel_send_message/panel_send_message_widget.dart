@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
 
 import '../../components/components.dart';
 import '../../connection/connection.dart';
@@ -31,6 +33,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   final PanelSendMessageController _controller = PanelSendMessageController();
   final TextEditingController _messageText = TextEditingController();
   final FocusNode _messageFocus = FocusNode();
+
+  TextInputType _textInputType = TextInputType.text;
+  MaskTextInputFormatter _mask = MaskTextInputFormatter();
 
   @override
   void dispose() {
@@ -81,12 +86,35 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
     if (_message.inputContent != null) {
       _controller.panelInputEnabled = true;
+      _mask = MaskTextInputFormatter(mask: _message.inputContent.mask);
+
       switch (_message.inputContent.inputType) {
         case InputType.DATE:
           _controller.dateEnabled = true;
           break;
         case InputType.TEXT:
           _controller.textEnabled = true;
+          break;
+        case InputType.NUMBER:
+          _controller.textEnabled = true;
+          break;
+        case InputType.EMAIL:
+          _controller.textEnabled = true;
+          break;
+      }
+
+      switch (_message.inputContent.keyboardType) {
+        case KeyboardType.DATE:
+          _textInputType = TextInputType.datetime;
+          break;
+        case KeyboardType.EMAIL:
+          _textInputType = TextInputType.emailAddress;
+          break;
+        case KeyboardType.NUMBER:
+          _textInputType = TextInputType.number;
+          break;
+        case KeyboardType.TEXT:
+          _textInputType = TextInputType.text;
           break;
       }
     }
@@ -252,6 +280,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             focusNode: _messageFocus,
             controller: _messageText,
             enabled: _enabled,
+            inputFormatters: [_mask],
+            keyboardType: _textInputType,
             scrollPhysics: BouncingScrollPhysics(),
             textInputAction: TextInputAction.newline,
             cursorColor: Theme.of(context).primaryColor,

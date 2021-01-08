@@ -19,7 +19,7 @@ enum EventType {
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
 enum KeyboardType { DATE, EMAIL, NUMBER, TEXT }
-enum InputType { DATE, TEXT }
+enum InputType { DATE, TEXT, NUMBER, EMAIL }
 enum ContentFileType { CUSTOM, IMAGE, PDF, ANY }
 enum CameraType { FRONT, BACK }
 enum ConnectionStatus { ACTIVE, DONE, ERROR, NONE, WAITING }
@@ -79,6 +79,8 @@ final keyboardTypeValues = EnumValues({
 final inputTypeValues = EnumValues({
   "date": InputType.DATE,
   "text": InputType.TEXT,
+  "number": InputType.NUMBER,
+  "email": InputType.EMAIL,
 });
 
 class EnumValues<T> {

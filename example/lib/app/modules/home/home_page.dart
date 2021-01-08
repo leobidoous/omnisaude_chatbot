@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
 import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
 import 'package:universal_html/html.dart';
 
@@ -21,7 +22,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   @override
   void initState() {
-    controller.getChatBots();
+    store.getChatBots();
     super.initState();
   }
 
@@ -43,42 +44,11 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(child: _gridChatsContent()),
-            Observer(
-              builder: (context) {
-                final _enabled = controller.chatSelected != null;
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
-                  child: FlatButton(
-                    onPressed: _enabled
-                        ? () {
-                            Modular.to.navigate(
-                              '/chat_bot/${controller.chatSelected?.id}',
-                            );
-                          }
-                        : null,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
-                    color: Theme.of(context).primaryColor,
-                    padding: EdgeInsets.symmetric(vertical: 25.0),
-                    visualDensity: VisualDensity.compact,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Text(
-                      "Iniciar chat",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.headline1.color,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
               child: FlatButton(
                 onPressed: () async {
-                  Modular.to.navigate("/attendant");
+                  Modular.to.navigate("/attendant/$TOKEN");
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -105,19 +75,19 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   Widget _gridChatsContent() {
     return RefreshIndicator(
       onRefresh: () async {
-        await controller.getChatBots();
+        await store.getChatBots();
       },
       color: Theme.of(context).primaryColor,
       child: Observer(
         builder: (context) {
-          if (controller.chatBots.results.isEmpty)
+          if (store.chatBots.results.isEmpty)
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
                   icon: Icon(Icons.refresh_rounded),
-                  onPressed: () async => await controller.getChatBots(),
+                  onPressed: () async => await store.getChatBots(),
                 ),
                 Text("Recarregar", textAlign: TextAlign.center),
               ],
@@ -133,9 +103,9 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               crossAxisSpacing: 7.5,
             ),
             padding: EdgeInsets.all(7.5),
-            itemCount: controller.chatBots.results.length,
+            itemCount: store.chatBots.results.length,
             itemBuilder: (BuildContext context, int index) {
-              return _gridChatItem(controller.chatBots.results[index]);
+              return _gridChatItem(store.chatBots.results[index]);
             },
           );
         },
@@ -144,20 +114,27 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   }
 
   Widget _gridChatItem(ChatBot chatBot) {
-    return Observer(builder: (context) {
-      final bool _selected = controller.chatSelected == chatBot;
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: _selected
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).cardColor,
-        ),
-        child: IconButton(
-          onPressed: () => controller.chatSelected = chatBot,
-          icon: Text(chatBot.name),
-        ),
-      );
-    });
+    return Observer(
+      builder: (context) {
+        final bool _selected = store.chatSelected == chatBot;
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            color: _selected
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).cardColor,
+          ),
+          child: IconButton(
+            onPressed: () {
+              store.chatSelected = chatBot;
+              Modular.to.navigate(
+                '/chat_bot/${store.chatSelected?.id}',
+              );
+            },
+            icon: Text(chatBot.name),
+          ),
+        );
+      },
+    );
   }
 }

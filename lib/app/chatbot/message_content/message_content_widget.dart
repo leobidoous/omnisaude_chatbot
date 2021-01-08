@@ -10,6 +10,7 @@ import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/enums/enums.dart';
+import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/view_photo_service.dart';
 import '../../shared/image/image_widget.dart';
@@ -67,7 +68,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).textTheme.headline4.color,
-                  borderRadius: BorderRadius.circular(2.5),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ImageWidget(
                   url: url,
@@ -106,6 +107,23 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
             "div": (RenderContext renderContext, Widget child, attributes, _) {
               if (attributes["class"] == "media-wrap embed-wrap") {
                 if (kIsWeb) {
+                  // return FlatButton(
+                  //   onPressed: () async {
+                  //     await launch(
+                  //       _.firstChild.firstChild.attributes["src"],
+                  //       forceWebView: true,
+                  //       enableJavaScript: true,
+                  //     );
+                  //   },
+                  //   color: Theme.of(context).primaryColor,
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(5.0),
+                  //   ),
+                  //   child: Text(
+                  //     "Clique aqui para abrir o vídeo",
+                  //     style: TextStyle(color: Colors.white),
+                  //   ),
+                  // );
                   ui.platformViewRegistry.registerViewFactory(
                     'iframe',
                     (int viewId) => IFrameElement()
@@ -146,7 +164,6 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
                       style: TextStyle(color: Colors.white),
                     ),
                   );
-                  // return Column();
                 }
               }
 
@@ -169,7 +186,6 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
                       style: TextStyle(color: Colors.white),
                     ),
                   );
-                  return Column();
                 }
               }
               return child;

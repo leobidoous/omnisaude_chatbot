@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:mime/mime.dart';
+import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
 
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/view_document_service.dart';

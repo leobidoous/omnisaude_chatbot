@@ -8,7 +8,9 @@ import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
-import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
+
+import '../../app_controller.dart';
+import '../../core/constants/constants.dart';
 
 part 'chat_bot_controller.g.dart';
 
@@ -16,6 +18,8 @@ part 'chat_bot_controller.g.dart';
 class ChatBotController = _ChatBotControllerBase with _$ChatBotController;
 
 abstract class _ChatBotControllerBase with Store {
+  final AppController appController = Modular.get<AppController>();
+
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
