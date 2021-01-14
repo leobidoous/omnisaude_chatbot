@@ -24,29 +24,21 @@ class AttendantPage extends StatefulWidget {
 
 class _AttendantPageState
     extends ModularState<AttendantPage, AttendantController> {
-  bool _configLoaded = false;
 
   @override
   void initState() {
-    store.onInitAndListenStream(widget.token);
+    controller.onInitAndListenStream(widget.token);
     super.initState();
   }
 
   @override
   void dispose() {
-    store.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration()).then((value) {
-      if (!_configLoaded) {
-        store.appController.getQueryParams(context);
-        _configLoaded = true;
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -58,9 +50,9 @@ class _AttendantPageState
             Text("Chatbot"),
             Observer(
               builder: (BuildContext context) {
-                if (store.botTyping) {
+                if (controller.botTyping) {
                   return Text(
-                    "${store.botUsername} está digitando...",
+                    "${controller.botUsername} está digitando...",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300,
@@ -69,7 +61,7 @@ class _AttendantPageState
                   );
                 }
                 return Text(
-                  "${store.botUsername}",
+                  "${controller.botUsername}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
                 );
               },
@@ -79,7 +71,7 @@ class _AttendantPageState
         actions: [
           IconButton(
             onPressed: () {
-              store.chooseUser = !store.chooseUser;
+              controller.chooseUser = !controller.chooseUser;
             },
             icon: Icon(Icons.swap_vertical_circle_rounded),
           ),
@@ -90,7 +82,7 @@ class _AttendantPageState
                   eventType: EventType.FINISH_ATTENDANCE,
                 ),
               );
-              store.connection.onSendMessage(_message);
+              controller.connection.onSendMessage(_message);
             },
             icon: Icon(Icons.exit_to_app_rounded),
           ),
@@ -124,7 +116,7 @@ class _AttendantPageState
       builder: (context) {
         Widget _popup = Container();
 
-        if (store.connectionStatus == ConnectionStatus.WAITING) {
+        if (controller.connectionStatus == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
             background: Theme.of(context).primaryColor,
             message: "Iniciando conversa...",
@@ -133,19 +125,19 @@ class _AttendantPageState
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (store.connectionStatus == ConnectionStatus.ERROR) {
+        } else if (controller.connectionStatus == ConnectionStatus.ERROR) {
           _popup = ContentErrorWidget(
             messageLabel: "Ocorreu um erro ao iniciar a conversa",
             background: Theme.of(context).backgroundColor,
-            function: () => store.onInitAndListenStream(""),
+            function: () => controller.onInitAndListenStream(""),
             buttonLabel: "Tentar novamente",
             margin: 20.0,
             padding: 20.0,
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (store.connectionStatus == ConnectionStatus.ACTIVE) {
-          if (store.messages.isNotEmpty) {
+        } else if (controller.connectionStatus == ConnectionStatus.ACTIVE) {
+          if (controller.messages.isNotEmpty) {
             _popup = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -159,12 +151,12 @@ class _AttendantPageState
                       physics: const BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
-                      itemCount: store.messages.length,
-                      controller: store.scrollController,
+                      itemCount: controller.messages.length,
+                      controller: controller.scrollController,
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
-                        return store.omnisaudeChatbot.chooseWidgetToRender(
-                          store.messages[index],
+                        return controller.omnisaudeChatbot.chooseWidgetToRender(
+                          controller.messages[index],
                         );
                       },
                     ),
@@ -172,8 +164,8 @@ class _AttendantPageState
                 ),
                 Observer(
                   builder: (context) {
-                    return store.omnisaudeChatbot.panelSendMessage(
-                      store.messages.first,
+                    return controller.omnisaudeChatbot.panelSendMessage(
+                      controller.messages.first,
                     );
                   },
                 ),
@@ -194,11 +186,11 @@ class _AttendantPageState
     return Observer(
       builder: (context) {
         Widget _popup = Column(mainAxisSize: MainAxisSize.min);
-        if (store.messages.isEmpty) return Container();
-        if (store.messages.first.eventContent?.queue == null) {
+        if (controller.messages.isEmpty) return Container();
+        if (controller.messages.first.eventContent?.queue == null) {
           return Container();
         }
-        if (store.messages.first.eventContent.queue.isEmpty) {
+        if (controller.messages.first.eventContent.queue.isEmpty) {
           _popup = Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -208,22 +200,22 @@ class _AttendantPageState
               ),
             ],
           );
-        } else if (store.messages.first.eventContent.queue.isNotEmpty) {
+        } else if (controller.messages.first.eventContent.queue.isNotEmpty) {
           _popup = ListView.builder(
-            itemCount: store.messages.first.eventContent.queue.length,
+            itemCount: controller.messages.first.eventContent.queue.length,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
             itemBuilder: (context, index) {
               return _attendanceItemWidget(
-                store.messages.first.eventContent.queue[index],
+                controller.messages.first.eventContent.queue[index],
               );
             },
           );
         }
         return AnimatedCrossFade(
-          crossFadeState: store.chooseUser
+          crossFadeState: controller.chooseUser
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
           duration: Duration(milliseconds: 250),
@@ -260,8 +252,8 @@ class _AttendantPageState
               message: queue.user.session,
             ),
           );
-          await store.connection.onSendMessage(_message);
-          store.chooseUser = false;
+          await controller.connection.onSendMessage(_message);
+          controller.chooseUser = false;
         },
         color: Theme.of(context).primaryColor,
         textColor: Colors.white,

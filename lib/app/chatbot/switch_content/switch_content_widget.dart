@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/core/models/multi_selection_model.dart';
-import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
 
 import '../../components/components.dart';
 import '../../connection/connection.dart';
 import '../../core/enums/enums.dart';
+import '../../core/models/multi_selection_model.dart';
+import '../../core/models/option_model.dart';
 import '../../core/models/ws_message_model.dart';
+import '../../shared/empty/empty_widget.dart';
 import '../../shared/image/image_widget.dart';
 import 'switch_content_controller.dart';
 
@@ -284,28 +285,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            "Buscando opções...",
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ),
-                        SizedBox(width: 10.0),
-                        Container(
-                          height: 20.0,
-                          width: 20.0,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1.5,
-                            backgroundColor: Theme.of(context).primaryColor,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).textTheme.headline4.color,
-                            ),
-                          ),
-                        ),
-                      ],
+                    EmptyWidget(
+                      message: "Nenhuma resultado encontrado!",
+                      padding: 10.0,
                     ),
                   ],
                 ),
@@ -359,8 +341,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                 focusNode: _messageFocus,
                 controller: _messageText,
                 scrollPhysics: BouncingScrollPhysics(),
-                onChanged: (String input) async {
-                  await _controller.onSearchIntoOptions(options, input);
+                onChanged: (String input) {
+                  _controller.onSearchIntoOptions(options, input);
                 },
                 textInputAction: TextInputAction.done,
                 cursorColor: Theme.of(context).primaryColor,
@@ -382,21 +364,21 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                 ),
               ),
             ),
-            Observer(
-              builder: (context) {
-                return IconButton(
-                  onPressed: () {
-                    if (_messageText.text.trim().isNotEmpty) {
-                      _messageText.clear();
-                    }
-                  },
-                  icon: Icon(
-                    _messageText.text.trim().isNotEmpty
-                        ? Icons.clear
-                        : Icons.search,
-                  ),
-                );
+            IconButton(
+              onPressed: () {
+                if (_messageText.text.trim().isNotEmpty) {
+                  _messageText.clear();
+                  _controller.onSearchIntoOptions(
+                    options,
+                    _messageText.text.trim(),
+                  );
+                }
               },
+              icon: Icon(
+                _messageText.text.trim().isNotEmpty
+                    ? Icons.clear
+                    : Icons.arrow_drop_up_rounded,
+              ),
             ),
           ],
         ),

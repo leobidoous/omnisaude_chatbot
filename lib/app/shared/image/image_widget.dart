@@ -11,6 +11,7 @@ class ImageWidget extends StatefulWidget {
   final BoxFit fit;
   final double radius;
   final Alignment alignment;
+  final bool showNone;
 
   const ImageWidget({
     Key key,
@@ -21,6 +22,7 @@ class ImageWidget extends StatefulWidget {
     this.fit,
     this.radius: 0.0,
     this.alignment: Alignment.center,
+    this.showNone: true,
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class _ImageWidgetState extends State<ImageWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.url == null) {
+      if (!widget.showNone) return Container();
       return ClipRRect(
         borderRadius: BorderRadius.circular(widget.radius),
         child: Image.asset(

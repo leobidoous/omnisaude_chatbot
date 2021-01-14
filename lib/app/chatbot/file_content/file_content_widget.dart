@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:mime/mime.dart';
@@ -28,9 +27,6 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     if (lookupMimeType(_message.value).contains("image")) {
       return _imageContent(_message.value, _message.name, _message.comment);
     } else if (_mimeType == "application/pdf") {
-      if (kIsWeb) {
-        return _anyContent(_message.value, _message.name, _message.comment);
-      }
       return _pdfContent(_message.value, _message.name, _message.comment);
     }
     return _anyContent(_message.value, _message.name, _message.comment);

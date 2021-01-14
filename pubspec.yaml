@@ -1,5 +1,5 @@
 name: omnisaude_chatbot
-description: Pacote de integração do chatbot para aplicativos móveis e sistemas Web.
+description: Pacote de integração do chatbot para aplicativos móveis.
 version: 0.0.6-dev.2+1
 homepage: "https://www.omnisaude.co/"
 
@@ -8,19 +8,18 @@ environment:
   flutter: ">=1.20.0 <2.0.0"
 
 dependencies:
+  dio: ^3.0.10
   mobx: ^1.2.1+4
   flutter_mobx: ^1.1.0+2
-  flutter_modular: ^3.0.0-nullsafety.30
+  flutter_modular: ^2.0.1
 
   mime: ^0.9.7
-  intl: ^0.17.0-nullsafety.2
+  intl: ^0.16.1
   photo_view: ^0.10.3
-  file_picker: ^2.1.5
-  flutter_html: ^1.1.1
+  flutter_html: 1.1.1
+  file_picker: ^2.1.5+1
   url_launcher: ^5.7.10
-  path_provider: ^1.6.24
-  universal_html: ^1.2.3
-  image_picker: ^0.6.7+17
+  image_picker: ^0.6.7+21
   carousel_slider: ^2.3.1
   flutter_slidable: ^0.5.7
   agora_rtc_engine: ^3.2.1
@@ -31,7 +30,6 @@ dependencies:
   flutter_datetime_picker: ^1.4.0
   mask_text_input_formatter: ^1.2.1
   flutter_staggered_grid_view: ^0.3.3
-
 
   flutter:
     sdk: flutter

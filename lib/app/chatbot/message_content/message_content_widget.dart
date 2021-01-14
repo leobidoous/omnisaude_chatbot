@@ -1,12 +1,7 @@
-import 'dart:ui' as ui;
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
-import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/enums/enums.dart';
@@ -102,94 +97,6 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
               padding: EdgeInsets.zero,
               whiteSpace: WhiteSpace.PRE,
             ),
-          },
-          customRender: {
-            "div": (RenderContext renderContext, Widget child, attributes, _) {
-              if (attributes["class"] == "media-wrap embed-wrap") {
-                if (kIsWeb) {
-                  // return FlatButton(
-                  //   onPressed: () async {
-                  //     await launch(
-                  //       _.firstChild.firstChild.attributes["src"],
-                  //       forceWebView: true,
-                  //       enableJavaScript: true,
-                  //     );
-                  //   },
-                  //   color: Theme.of(context).primaryColor,
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(5.0),
-                  //   ),
-                  //   child: Text(
-                  //     "Clique aqui para abrir o vídeo",
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  // );
-                  ui.platformViewRegistry.registerViewFactory(
-                    'iframe',
-                    (int viewId) => IFrameElement()
-                      ..style.border = 'none'
-                      ..height = _.firstChild.firstChild.attributes["height"]
-                      ..width = _.firstChild.firstChild.attributes["width"]
-                      ..src = _.firstChild.firstChild.attributes["src"],
-                  );
-
-                  return SizedBox(
-                    height: double.tryParse(
-                      _.firstChild.firstChild.attributes["height"],
-                    ),
-                    width: double.tryParse(
-                      _.firstChild.firstChild.attributes["width"],
-                    ),
-                    child: HtmlElementView(viewType: 'iframe'),
-                  );
-                }
-              }
-
-              if (attributes["class"] == "media-wrap video-wrap") {
-                if (kIsWeb) {
-                  return FlatButton(
-                    onPressed: () async {
-                      await launch(
-                        _.firstChild.attributes["src"],
-                        forceWebView: true,
-                        enableJavaScript: true,
-                      );
-                    },
-                    color: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Text(
-                      "Clique aqui para abrir o vídeo",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
-              }
-
-              if (attributes["class"] == "media-wrap audio-wrap") {
-                if (kIsWeb) {
-                  return FlatButton(
-                    onPressed: () async {
-                      await launch(
-                        _.firstChild.attributes["src"],
-                        forceWebView: true,
-                        enableJavaScript: true,
-                      );
-                    },
-                    color: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Text(
-                      "Clique aqui para abrir o áudio",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }
-              }
-              return child;
-            },
           },
           onLinkTap: (url) async {
             await launch(

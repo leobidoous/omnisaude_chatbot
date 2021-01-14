@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -82,7 +81,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           _humanAttendant = false;
           break;
         case EventType.UPDATE_QUEUE:
-          _humanAttendant = true;
+          _humanAttendant = false;
           break;
         default:
           break;
@@ -257,15 +256,15 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           ),
           child: TextFormField(
             minLines: 1,
-            maxLines: kIsWeb ? 1 : 5,
+            maxLines: 5,
             autofocus: true,
+            enabled: _enabled,
             focusNode: _messageFocus,
             controller: _messageText,
-            enabled: _enabled,
             inputFormatters: [_mask],
             keyboardType: _textInputType,
             scrollPhysics: BouncingScrollPhysics(),
-            textInputAction: TextInputAction.newline,
+            textInputAction: TextInputAction.send,
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: TextCapitalization.sentences,
             onFieldSubmitted: (String input) => _onSendTextMessage(input),

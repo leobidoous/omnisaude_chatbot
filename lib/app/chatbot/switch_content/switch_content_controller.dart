@@ -10,6 +10,11 @@ class SwitchContentController = _SwitchContentControllerBase
     with _$SwitchContentController;
 
 abstract class _SwitchContentControllerBase with Store {
+  ValueNotifier<List<Option>> selectedOptions = ValueNotifier(List<Option>);
+  ValueNotifier<List<Option>> searchOptions = ValueNotifier(List<Option>);
+  ValueNotifier<List<Option>> filteredOptions = ValueNotifier(List<Option>);
+
+
   @observable
   ObservableList<Option> selectedOptions = ObservableList<Option>();
   @observable
@@ -34,16 +39,18 @@ abstract class _SwitchContentControllerBase with Store {
   }
 
   @action
-  Future<void> onSearchIntoOptions(List<Option> options, String filter) async {
+  void onSearchIntoOptions(List<Option> options, String filter) async {
     filteredOptions.clear();
     options.forEach(
       (Option option) {
-        if (option.title.toLowerCase().contains(filter) ||
+        if (option.title.toLowerCase().contains(filter.toLowerCase()) ||
             option.id.toLowerCase().contains(filter)) {
           filteredOptions.add(option);
         }
       },
     );
-    print("essease: $filteredOptions");
   }
+
+
+
 }

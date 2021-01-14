@@ -18,28 +18,21 @@ class ChatBotPage extends StatefulWidget {
 }
 
 class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
-  bool _configLoaded = false;
 
   @override
   void initState() {
-    store.onInitAndListenStream(widget.chatBotId);
+    controller.onInitAndListenStream(widget.chatBotId);
     super.initState();
   }
 
   @override
   void dispose() {
-    store.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration()).then((value) {
-      if (!_configLoaded) {
-        store.appController.getQueryParams(context);
-        _configLoaded = true;
-      }
-    });
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -51,9 +44,9 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             Text("Chatbot"),
             Observer(
               builder: (BuildContext context) {
-                if (store.botTyping) {
+                if (controller.botTyping) {
                   return Text(
-                    "${store.botUsername} está digitando...",
+                    "${controller.botUsername} está digitando...",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300,
@@ -62,7 +55,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                   );
                 }
                 return Text(
-                  "${store.botUsername}",
+                  "${controller.botUsername}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
                 );
               },
@@ -71,23 +64,23 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
         ),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                "assets/shared/background_walpaper.png",
-                package: "omnisaude_chatbot",
-              ),
-              fit: BoxFit.cover,
-              scale: 0.1,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).textTheme.headline6.color,
-                BlendMode.difference,
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              "assets/shared/background_walpaper.png",
+              package: "omnisaude_chatbot",
             ),
-            color: Theme.of(context).backgroundColor,
+            fit: BoxFit.cover,
+            scale: 0.1,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).textTheme.headline6.color,
+              BlendMode.difference,
+            ),
           ),
+          color: Theme.of(context).backgroundColor,
+        ),
+        child: SafeArea(
           child: _buildListWidget(),
         ),
       ),
@@ -100,7 +93,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
       builder: (context) {
         Widget _popup = Container();
 
-        if (store.connectionStatus == ConnectionStatus.WAITING) {
+        if (controller.connectionStatus == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
             background: Theme.of(context).primaryColor,
             message: "Iniciando conversa...",
@@ -109,19 +102,19 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (store.connectionStatus == ConnectionStatus.ERROR) {
+        } else if (controller.connectionStatus == ConnectionStatus.ERROR) {
           _popup = ContentErrorWidget(
             messageLabel: "Ocorreu um erro ao iniciar a conversa",
             background: Theme.of(context).backgroundColor,
-            function: () => store.onInitAndListenStream(widget.chatBotId),
+            function: () => controller.onInitAndListenStream(widget.chatBotId),
             buttonLabel: "Tentar novamente",
             margin: 20.0,
             padding: 20.0,
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (store.connectionStatus == ConnectionStatus.ACTIVE) {
-          if (store.messages.isNotEmpty) {
+        } else if (controller.connectionStatus == ConnectionStatus.ACTIVE) {
+          if (controller.messages.isNotEmpty) {
             _popup = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -135,12 +128,12 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                       physics: const BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
-                      itemCount: store.messages.length,
-                      controller: store.scrollController,
+                      itemCount: controller.messages.length,
+                      controller: controller.scrollController,
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
-                        return store.omnisaudeChatbot.chooseWidgetToRender(
-                          store.messages[index],
+                        return controller.omnisaudeChatbot.chooseWidgetToRender(
+                          controller.messages[index],
                         );
                       },
                     ),
@@ -148,8 +141,8 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                 ),
                 Observer(
                   builder: (context) {
-                    return store.omnisaudeChatbot.panelSendMessage(
-                      store.messages.first,
+                    return controller.omnisaudeChatbot.panelSendMessage(
+                      controller.messages.first,
                     );
                   },
                 ),

@@ -1,10 +1,7 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
-import 'package:universal_html/html.dart';
 
-import '../../core/enums/enums.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/file_picker_service.dart';
 
@@ -105,30 +102,6 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
         },
       );
     };
-    if (kIsWeb) {
-      _camera = null;
-      _gallery = null;
-      _file = () async {
-        Navigator.pop(context);
-        await _service.openWebFileStorage().then(
-          (files) async {
-            if (files == null) return;
-            files.forEach(
-              (file) {
-                WsMessage _message = WsMessage(
-                  fileContent: FileContent(
-                    fileType: ContentFileType.ANY,
-                    name: "arquivo",
-                    value: file,
-                  ),
-                );
-                widget.onSendMessage(_message);
-              },
-            );
-          },
-        );
-      };
-    }
     return <PopupMenuEntry>[
       _uploadItemWidget(Icons.camera_alt_rounded, _camera, "Câmera"),
       _uploadItemWidget(Icons.photo_rounded, _gallery, "Galeria"),

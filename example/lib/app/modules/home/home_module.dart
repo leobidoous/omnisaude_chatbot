@@ -7,15 +7,14 @@ import 'home_repository.dart';
 class HomeModule extends ChildModule {
   @override
   List<Bind> get binds => [
-        Bind((i) => HomeController()),
-        Bind((i) => HomeRepository()),
-      ];
+    Bind((i) => HomeController()),
+    Bind((i) => HomeRepository()),
+  ];
 
   @override
-  List<ModularRoute> get routes => [
-        ChildRoute(
-          Modular.initialRoute,
-          child: (_, args) => HomePage(),
-        ),
-      ];
+  List<ModularRouter> get routers => [
+    ModularRouter(Modular.initialRoute, child: (_, args) => HomePage()),
+  ];
+
+  static Inject get to => Inject<HomeModule>.of();
 }

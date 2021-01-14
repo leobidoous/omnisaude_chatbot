@@ -9,35 +9,33 @@ import 'modules/chat_bot/chat_bot_controller.dart';
 import 'modules/chat_bot/chat_bot_page.dart';
 import 'modules/home/home_module.dart';
 import 'shared/page_not_found/page_not_found_controller.dart';
-import 'shared/page_not_found/page_not_found_page.dart';
 import 'shared/widgets/image/image_controller.dart';
 
 class AppModule extends MainModule {
   @override
-  final List<Bind> binds = [
+  List<Bind> get binds => [
     Bind((i) => AppController()),
-    Bind.lazySingleton((i) => PageNotFoundController()),
-    Bind.lazySingleton((i) => ImageController()),
-    Bind.lazySingleton((i) => AttendantController()),
-    Bind.lazySingleton((i) => ChatBotController()),
+    Bind((i) => PageNotFoundController()),
+    Bind((i) => ImageController()),
+    Bind((i) => AttendantController()),
+    Bind((i) => ChatBotController()),
   ];
 
   @override
-  final List<ModularRoute> routes = [
-    ModuleRoute(Modular.initialRoute, module: HomeModule()),
-    ChildRoute(
+  List<ModularRouter> get routers => [
+    ModularRouter(Modular.initialRoute, module: HomeModule()),
+    ModularRouter(
       "/attendant/:token",
       child: (_, args) => AttendantPage(token: args.params["token"]),
     ),
-    ChildRoute(
+    ModularRouter(
       "/chat_bot/:chatBotId",
       child: (_, args) => ChatBotPage(chatBotId: args.params["chatBotId"]),
     ),
-    WildcardRoute(child: (BuildContext context, ModularArguments args) {
-      return PageNotFoundPage();
-    }),
   ];
 
   @override
-  final Widget bootstrap = AppWidget();
+  Widget get bootstrap => AppWidget();
+
+  static Inject get to => Inject<AppModule>.of();
 }

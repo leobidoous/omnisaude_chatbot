@@ -5,33 +5,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:universal_html/html.dart';
 
 @Injectable()
 class FilePickerService extends Disposable {
   final ImagePicker _picker = ImagePicker();
-
-  Future<List<String>> openWebFileStorage({String type:"*"}) async {
-    final completer = new Completer<List<String>>();
-    final InputElement input = document.createElement('input');
-    input
-      ..type = 'file'
-      ..multiple = true
-      ..accept = '$type/*';
-    input.onChange.listen((e) async {
-      final List<File> files = input.files;
-      Iterable<Future<String>> resultsFutures = files.map((file) {
-        final reader = new FileReader();
-        reader.readAsDataUrl(file);
-        reader.onError.listen((error) => completer.completeError(error));
-        return reader.onLoad.first.then((_) => reader.result as String);
-      });
-      final results = await Future.wait(resultsFutures);
-      completer.complete(results);
-    });
-    input.click();
-    return completer.future;
-  }
 
   Future<List<IO.File>> openFileStorage() async {
     FilePickerResult _filePickerResult;
