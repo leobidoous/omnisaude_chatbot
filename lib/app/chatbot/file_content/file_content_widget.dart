@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:mime/mime.dart';
-import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/models/file_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/view_document_service.dart';
 import '../../core/services/view_photo_service.dart';
@@ -24,19 +26,14 @@ class _FileContentWidgetState extends State<FileContentWidget> {
     final String _mimeType = lookupMimeType(_message.value);
 
     if (lookupMimeType(_message.value).contains("image")) {
-      return _imageContent(
-        _message.value,
-        _message.name,
-        _message.comment,
-      );
+      return _imageContent(_message.value, _message.name, _message.comment);
     } else if (_mimeType == "application/pdf") {
-      return _pdfContent(
-        _message.value,
-        _message.name,
-        _message.comment,
-      );
+      if (kIsWeb) {
+        return _anyContent(_message.value, _message.name, _message.comment);
+      }
+      return _pdfContent(_message.value, _message.name, _message.comment);
     }
-    return Container();
+    return _anyContent(_message.value, _message.name, _message.comment);
   }
 
   Widget _imageContent(String url, String filename, String comment) {
@@ -74,7 +71,7 @@ class _FileContentWidgetState extends State<FileContentWidget> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 final ViewDocumentService _service = ViewDocumentService();
                 _service.onViewSingleDocument(context, url);
                 _service.dispose();
@@ -108,6 +105,42 @@ class _FileContentWidgetState extends State<FileContentWidget> {
                       ],
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+          _commentContent(comment),
+        ],
+      ),
+    );
+  }
+
+  Widget _anyContent(String url, String filename, String comment) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () async {
+              await launch(url, forceWebView: true, enableJavaScript: true);
+            },
+            child: Container(
+              padding: EdgeInsets.all(10.0),
+              color: Theme.of(context).cardColor,
+              child: Row(
+                children: [
+                  Icon(Icons.insert_drive_file_rounded),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: Text(
+                      "$filename",
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Icon(Icons.download_rounded),
                 ],
               ),
             ),

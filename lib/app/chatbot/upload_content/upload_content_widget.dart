@@ -107,25 +107,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
     };
     if (kIsWeb) {
       _camera = null;
-      _gallery = () async {
-        Navigator.pop(context);
-        await _service.openWebFileStorage(type: "image").then(
-          (files) async {
-            if (files == null) return;
-            files.forEach(
-              (file) {
-                WsMessage _message = WsMessage(
-                  fileContent: FileContent(
-                    fileType: ContentFileType.IMAGE,
-                    value: file,
-                  ),
-                );
-                widget.onSendMessage(_message);
-              },
-            );
-          },
-        );
-      };
+      _gallery = null;
       _file = () async {
         Navigator.pop(context);
         await _service.openWebFileStorage().then(
@@ -135,7 +117,8 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
               (file) {
                 WsMessage _message = WsMessage(
                   fileContent: FileContent(
-                    fileType: ContentFileType.CUSTOM,
+                    fileType: ContentFileType.ANY,
+                    name: "arquivo",
                     value: file,
                   ),
                 );

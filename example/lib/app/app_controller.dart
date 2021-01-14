@@ -20,6 +20,7 @@ abstract class _AppControllerBase with Store {
   void getQueryParams(BuildContext context) {
     try {
       final settingsUri = Uri.parse(ModalRoute.of(context).settings.name);
+      print(settingsUri.queryParameters);
       if (settingsUri.queryParameters['themeMode'] != null) {
         themeMode = settingsUri.queryParameters['themeMode'] == "dark"
             ? ThemeMode.dark

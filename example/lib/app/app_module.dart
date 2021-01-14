@@ -15,9 +15,9 @@ import 'shared/widgets/image/image_controller.dart';
 class AppModule extends MainModule {
   @override
   final List<Bind> binds = [
-    // Bind((i) => AppController()),
+    Bind((i) => AppController()),
     Bind.lazySingleton((i) => PageNotFoundController()),
-    Bind.lazySingleton((i) => AppController()),
+    // Bind.lazySingleton((i) => AppController()),
     Bind.lazySingleton((i) => ImageController()),
     Bind.lazySingleton((i) => AttendantController()),
     Bind.lazySingleton((i) => ChatBotController()),

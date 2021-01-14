@@ -9,9 +9,8 @@ import 'package:universal_html/html.dart';
 import 'home_controller.dart';
 
 class HomePage extends StatefulWidget {
-  final String title;
 
-  const HomePage({Key key, this.title = "Home"}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -38,7 +37,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text("${widget.title}"),
+          title: Text("Início"),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
         body: Column(
@@ -49,7 +48,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
               child: FlatButton(
                 onPressed: () async {
-                  Modular.to.navigate("/attendant/$TOKEN");
+                  Modular.to.navigate("/attendant/$TOKEN?themeMode=light");
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
