@@ -28,7 +28,7 @@ class Connection extends Disposable {
         connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
-          _myPeer = _message.eventContent.message;
+          setUserPeer(_message.eventContent.message);
         }
         _onMessageReceived(_message);
         _streamController.add(_message);
@@ -74,6 +74,8 @@ class Connection extends Disposable {
   }
 
   String get getUserPeer => _myPeer;
+
+  void setUserPeer(String peer) => _myPeer = peer;
 
   Future<void> _onCloseSession() async {
     try {

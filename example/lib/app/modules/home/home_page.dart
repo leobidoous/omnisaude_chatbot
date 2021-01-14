@@ -48,7 +48,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
               child: FlatButton(
                 onPressed: () async {
-                  Modular.to.navigate("/attendant/$TOKEN?themeMode=light");
+                  Modular.to.navigate("/attendant/$TOKEN");
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),

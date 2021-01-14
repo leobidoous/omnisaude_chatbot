@@ -17,7 +17,6 @@ class AppModule extends MainModule {
   final List<Bind> binds = [
     Bind((i) => AppController()),
     Bind.lazySingleton((i) => PageNotFoundController()),
-    // Bind.lazySingleton((i) => AppController()),
     Bind.lazySingleton((i) => ImageController()),
     Bind.lazySingleton((i) => AttendantController()),
     Bind.lazySingleton((i) => ChatBotController()),
