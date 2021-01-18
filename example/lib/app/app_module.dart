@@ -1,25 +1,43 @@
-import 'package:omnisaude_chatbot_example/app/modules/chat/chat_module.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 import 'app_controller.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter/material.dart';
-import 'package:omnisaude_chatbot_example/app/app_widget.dart';
-import 'package:omnisaude_chatbot_example/app/modules/home/home_module.dart';
+import 'app_widget.dart';
+import 'modules/attendant/attendant_controller.dart';
+import 'modules/attendant/attendant_page.dart';
+import 'modules/chat_bot/chat_bot_controller.dart';
+import 'modules/chat_bot/chat_bot_page.dart';
+import 'modules/home/home_module.dart';
+import 'shared/page_not_found/page_not_found_controller.dart';
+import 'shared/page_not_found/page_not_found_page.dart';
+import 'shared/widgets/image/image_controller.dart';
 
 class AppModule extends MainModule {
   @override
-  List<Bind> get binds => [
-        Bind((i) => AppController()),
-      ];
+  final List<Bind> binds = [
+    Bind((i) => AppController()),
+    Bind.lazySingleton((i) => PageNotFoundController()),
+    Bind.lazySingleton((i) => ImageController()),
+    Bind.lazySingleton((i) => AttendantController()),
+    Bind.lazySingleton((i) => ChatBotController()),
+  ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(Modular.initialRoute, module: HomeModule()),
-        ModularRouter("/chat", module: ChatModule()),
-      ];
+  final List<ModularRoute> routes = [
+    ModuleRoute(Modular.initialRoute, module: HomeModule()),
+    ChildRoute(
+      "/attendant/:token",
+      child: (_, args) => AttendantPage(token: args.params["token"]),
+    ),
+    ChildRoute(
+      "/chat_bot/:chatBotId",
+      child: (_, args) => ChatBotPage(chatBotId: args.params["chatBotId"]),
+    ),
+    WildcardRoute(child: (BuildContext context, ModularArguments args) {
+      return PageNotFoundPage();
+    }),
+  ];
 
   @override
-  Widget get bootstrap => AppWidget();
-
-  static Inject get to => Inject<AppModule>.of();
+  final Widget bootstrap = AppWidget();
 }

@@ -15,12 +15,12 @@ class HomeRepository extends Disposable {
     _dio.interceptors.add(DioInterceptors());
   }
 
-  Future<Result> onGetChatBots() async {
+  Future<Result> getChatBots() async {
     try {
-      Response _response = await _dio.get("/bot/");
+      Response _response = await _dio.get("/organization/187db031-3c2e-4bdc-9774-d54636a47f1c/bot/");
       return Result.fromJson(_response.data);
     } on DioError catch (e) {
-      print("Repository: Erro ao verificar token. $e");
+      print("Repository: Erro ao buscar bots. $e");
       throw e;
     }
   }

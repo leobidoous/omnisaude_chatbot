@@ -1,12 +1,28 @@
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum RenderType { LIST, SEARCH }
-enum EventType { DEBUG, ERROR, HUMAN_ATTENDANCE, TYPING, SYSTEM, CONNECTED }
+enum EventType {
+  DEBUG,
+  ERROR,
+  TYPING,
+  SYSTEM,
+  CONNECTED,
+  NLU_START,
+  NLU_END,
+  ENTRY_QUEUE,
+  USER_LEFT,
+  ATTENDANT_LEFT,
+  INIT_ATTENDANCE,
+  UPDATE_QUEUE,
+  FINISH_ATTENDANCE,
+}
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
 enum KeyboardType { DATE, EMAIL, NUMBER, TEXT }
-enum InputType { DATE, TEXT }
+enum InputType { DATE, TEXT, NUMBER, EMAIL }
 enum ContentFileType { CUSTOM, IMAGE, PDF, ANY }
+enum CameraType { FRONT, BACK }
+enum ConnectionStatus { ACTIVE, DONE, ERROR, NONE, WAITING }
 
 final layoutValues = EnumValues({
   "avatar_card": Layout.AVATAR_CARD,
@@ -15,10 +31,8 @@ final layoutValues = EnumValues({
   "image_card": Layout.IMAGE_CARD
 });
 
-final renderTypeValues = EnumValues({
-  "list": RenderType.LIST,
-  "search": RenderType.SEARCH
-});
+final renderTypeValues =
+    EnumValues({"list": RenderType.LIST, "search": RenderType.SEARCH});
 
 final messageTypeValues = EnumValues({
   "html": MessageType.HTML,
@@ -38,7 +52,14 @@ final eventTypeValues = EnumValues({
   "typing": EventType.TYPING,
   "system": EventType.SYSTEM,
   "connected": EventType.CONNECTED,
-  "human_attendance": EventType.HUMAN_ATTENDANCE
+  "nlu_start": EventType.NLU_START,
+  "nlu_end": EventType.NLU_END,
+  "entry_queue": EventType.ENTRY_QUEUE,
+  "user_left": EventType.USER_LEFT,
+  "update_queue": EventType.UPDATE_QUEUE,
+  "init_attendance": EventType.INIT_ATTENDANCE,
+  "attendant_left": EventType.ATTENDANT_LEFT,
+  "finish_attendance": EventType.FINISH_ATTENDANCE,
 });
 
 final contentFileTypeValues = EnumValues({
@@ -55,8 +76,12 @@ final keyboardTypeValues = EnumValues({
   "text": KeyboardType.TEXT
 });
 
-final inputTypeValues =
-    EnumValues({"date": InputType.DATE, "text": InputType.TEXT});
+final inputTypeValues = EnumValues({
+  "date": InputType.DATE,
+  "text": InputType.TEXT,
+  "number": InputType.NUMBER,
+  "email": InputType.EMAIL,
+});
 
 class EnumValues<T> {
   Map<String, T> map;

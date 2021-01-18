@@ -11,13 +11,13 @@ import 'package:universal_html/html.dart';
 class FilePickerService extends Disposable {
   final ImagePicker _picker = ImagePicker();
 
-  Future<List<String>> openWebFileStorage() async {
+  Future<List<String>> openWebFileStorage({String type:"*"}) async {
     final completer = new Completer<List<String>>();
     final InputElement input = document.createElement('input');
     input
       ..type = 'file'
       ..multiple = true
-      ..accept = 'image/*';
+      ..accept = '$type/*';
     input.onChange.listen((e) async {
       final List<File> files = input.files;
       Iterable<Future<String>> resultsFutures = files.map((file) {
@@ -33,13 +33,12 @@ class FilePickerService extends Disposable {
     return completer.future;
   }
 
-  Future<IO.File> openFileStorage() async {
+  Future<List<IO.File>> openFileStorage() async {
     FilePickerResult _filePickerResult;
     try {
-      _filePickerResult = await FilePicker.platform.pickFiles(allowMultiple: false);
+      _filePickerResult = await FilePicker.platform.pickFiles(allowMultiple: true);
       if (_filePickerResult.files.isEmpty) return null;
-      print(_filePickerResult.files.last.path);
-      return IO.File(_filePickerResult.files.last.path);
+      return _filePickerResult.files.map((e) => IO.File(e.path)).toList();
     } on PlatformException catch (e) {
       print("Erro ao obter arquivo: $e");
       return null;
@@ -49,7 +48,7 @@ class FilePickerService extends Disposable {
   Future<IO.File> openCamera() async {
     PickedFile _pickedFile;
     try {
-      _pickedFile = await _picker.getImage(source: ImageSource.camera, imageQuality: 70);
+      _pickedFile = await _picker.getImage(source: ImageSource.camera, imageQuality: 100);
       if (_pickedFile?.path == null) return null;
       return IO.File(_pickedFile.path);
     } on PlatformException catch (e) {
@@ -58,10 +57,10 @@ class FilePickerService extends Disposable {
     }
   }
 
-  Future<IO.File> openGalery() async {
+  Future<IO.File> openGallery() async {
     PickedFile _pickedFile;
     try {
-      _pickedFile = await _picker.getImage(source: ImageSource.gallery, imageQuality: 70);
+      _pickedFile = await _picker.getImage(source: ImageSource.gallery, imageQuality: 100);
       if (_pickedFile?.path == null) return null;
       return IO.File(_pickedFile.path);
     } on PlatformException catch (e) {
