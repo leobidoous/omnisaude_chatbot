@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
-import 'package:omnisaude_chatbot/app/chatbot/upload_content/upload_content_controller.dart';
-import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
-import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
-import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
 import 'package:path/path.dart' hide context;
 import 'package:rx_notifier/rx_notifier.dart';
 
+import '../../core/enums/enums.dart';
+import '../../core/models/file_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/file_picker_service.dart';
+import '../../shared/loading/loading_widget.dart';
+import 'upload_content_controller.dart';
 
 class UploadContentWidget extends StatefulWidget {
   final Future<void> Function(WsMessage) onSendMessage;
