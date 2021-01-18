@@ -17,7 +17,8 @@ class AppWidget extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      themeMode: ThemeMode.dark,
+      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         primaryColor: Color(0xFF139ECC),
         backgroundColor: Colors.white,

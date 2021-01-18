@@ -1,28 +1,14 @@
-import 'package:mobx/mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/connection/connection.dart';
 import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
 import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
-part 'switch_content_controller.g.dart';
+class SwitchContentController extends Disposable {
+  final RxList<Option> selectedOptions = RxList();
+  RxList<Option> filteredOptions = RxList();
 
-class SwitchContentController = _SwitchContentControllerBase
-    with _$SwitchContentController;
-
-abstract class _SwitchContentControllerBase with Store {
-  ValueNotifier<List<Option>> selectedOptions = ValueNotifier(List<Option>);
-  ValueNotifier<List<Option>> searchOptions = ValueNotifier(List<Option>);
-  ValueNotifier<List<Option>> filteredOptions = ValueNotifier(List<Option>);
-
-
-  @observable
-  ObservableList<Option> selectedOptions = ObservableList<Option>();
-  @observable
-  ObservableList<Option> searchOptions = ObservableList<Option>();
-  @observable
-  ObservableList<Option> filteredOptions;
-
-  @action
   Future<void> onSendOptionsMessage(Connection connection) async {
     try {
       final List<String> _options = List<String>.empty(growable: true);
@@ -38,11 +24,10 @@ abstract class _SwitchContentControllerBase with Store {
     }
   }
 
-  @action
-  void onSearchIntoOptions(List<Option> options, String filter) async {
+  void onSearchIntoOptions(List<Option> options, String filter) {
     filteredOptions.clear();
     options.forEach(
-      (Option option) {
+          (Option option) {
         if (option.title.toLowerCase().contains(filter.toLowerCase()) ||
             option.id.toLowerCase().contains(filter)) {
           filteredOptions.add(option);
@@ -51,6 +36,9 @@ abstract class _SwitchContentControllerBase with Store {
     );
   }
 
-
-
+  @override
+  void dispose() {
+    selectedOptions.dispose();
+    filteredOptions.dispose();
+  }
 }

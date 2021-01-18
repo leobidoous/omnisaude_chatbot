@@ -27,16 +27,16 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
 
     switch (_message.messageType) {
       case MessageType.HTML:
-        return _htmlContent(_message.value);
+        return _htmlWidget(_message.value);
       case MessageType.TEXT:
-        return _textContent(_message.value);
+        return _textWidget(_message.value);
       case MessageType.IMAGE:
-        return _imageContent(_message.value);
+        return _imageWidget(_message.value);
     }
     return Container();
   }
 
-  Widget _textContent(String message) {
+  Widget _textWidget(String message) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: SelectableText(
@@ -46,7 +46,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
     );
   }
 
-  Widget _imageContent(String url) {
+  Widget _imageWidget(String url) {
     return Container(
       constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
       padding: const EdgeInsets.all(10.0),
@@ -78,41 +78,32 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
     );
   }
 
-  Widget _htmlContent(String message) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Html(
-          data: message,
-          shrinkWrap: true,
-          style: {
-            "html": Style(
-              color: Colors.white,
-              padding: const EdgeInsets.all(10.0),
-              margin: EdgeInsets.zero,
-              whiteSpace: WhiteSpace.PRE,
-            ),
-            "body": Style(
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              whiteSpace: WhiteSpace.PRE,
-            ),
-          },
-          onLinkTap: (url) async {
-            await launch(
-              url,
-              forceWebView: true,
-              enableJavaScript: true,
-            );
-          },
-          onImageTap: (src) {
-            print(src);
-          },
-          onImageError: (exception, stackTrace) {
-            print(exception);
-          },
+  Widget _htmlWidget(String message) {
+    return Html(
+      data: message,
+      shrinkWrap: true,
+      style: {
+        "html": Style(
+          color: Colors.white,
+          padding: const EdgeInsets.all(10.0),
+          margin: EdgeInsets.zero,
+          whiteSpace: WhiteSpace.PRE,
         ),
-      ],
+        "body": Style(
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
+          whiteSpace: WhiteSpace.PRE,
+        ),
+      },
+      onLinkTap: (url) async {
+        await launch(url, forceWebView: true, enableJavaScript: true);
+      },
+      onImageTap: (src) {
+        print(src);
+      },
+      onImageError: (exception, stackTrace) {
+        print(exception);
+      },
     );
   }
 }

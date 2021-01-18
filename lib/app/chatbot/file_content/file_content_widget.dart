@@ -8,6 +8,7 @@ import '../../core/models/ws_message_model.dart';
 import '../../core/services/view_document_service.dart';
 import '../../core/services/view_photo_service.dart';
 import '../../shared/image/image_widget.dart';
+import '../../shared/loading/loading_widget.dart';
 
 class FileContentWidget extends StatefulWidget {
   final WsMessage message;
@@ -18,8 +19,13 @@ class FileContentWidget extends StatefulWidget {
   _FileContentWidgetState createState() => _FileContentWidgetState();
 }
 
-class _FileContentWidgetState extends State<FileContentWidget> {
+class _FileContentWidgetState extends State<FileContentWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     final FileContent _message = widget.message.fileContent;
     final String _mimeType = lookupMimeType(_message.value);
@@ -41,15 +47,16 @@ class _FileContentWidgetState extends State<FileContentWidget> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 final ViewPhotoService _viewPhotoService = ViewPhotoService();
-                _viewPhotoService.onViewSinglePhoto(context, url);
-                _viewPhotoService.dispose();
+                await _viewPhotoService.onViewSinglePhoto(context, url);
               },
-              child: ImageWidget(
-                url: url,
-                fit: BoxFit.cover,
-                radius: 20.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor.withOpacity(0.25),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: ImageWidget(url: url, fit: BoxFit.cover, radius: 15.0),
               ),
             ),
           ),
@@ -62,6 +69,8 @@ class _FileContentWidgetState extends State<FileContentWidget> {
   Widget _pdfContent(String url, String filename, String comment) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).primaryColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -69,8 +78,7 @@ class _FileContentWidgetState extends State<FileContentWidget> {
             child: GestureDetector(
               onTap: () async {
                 final ViewDocumentService _service = ViewDocumentService();
-                _service.onViewSingleDocument(context, url);
-                _service.dispose();
+                await _service.onViewSingleDocument(context, url);
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,14 +86,31 @@ class _FileContentWidgetState extends State<FileContentWidget> {
                   Expanded(
                     child: Stack(
                       children: [
-                        PDF().fromUrl(url),
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0),
+                            topRight: Radius.circular(20.0),
+                          ),
+                          child: PDF(fitEachPage: true, autoSpacing: false)
+                              .fromUrl(
+                            url,
+                            placeholder: (double progress) {
+                              return LoadingWidget(
+                                message: "Carregando documento",
+                                background: Theme.of(context).primaryColor,
+                                radius: 20.0,
+                                margin: 20.0,
+                                padding: 20.0,
+                              );
+                            },
+                          ),
+                        ),
                         Container(color: Colors.transparent),
                       ],
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    color: Theme.of(context).cardColor,
                     child: Row(
                       children: [
                         Icon(Icons.insert_drive_file_rounded),
@@ -96,8 +121,6 @@ class _FileContentWidgetState extends State<FileContentWidget> {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        SizedBox(width: 10.0),
-                        Icon(Icons.download_rounded),
                       ],
                     ),
                   ),

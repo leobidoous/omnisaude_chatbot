@@ -24,7 +24,6 @@ class AttendantPage extends StatefulWidget {
 
 class _AttendantPageState
     extends ModularState<AttendantPage, AttendantController> {
-
   @override
   void initState() {
     controller.onInitAndListenStream(widget.token);
@@ -156,7 +155,8 @@ class _AttendantPageState
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
                         return controller.omnisaudeChatbot.chooseWidgetToRender(
-                          controller.messages[index],
+                          message: controller.messages[index],
+                          lastMessage: controller.messages.first,
                         );
                       },
                     ),
@@ -165,7 +165,7 @@ class _AttendantPageState
                 Observer(
                   builder: (context) {
                     return controller.omnisaudeChatbot.panelSendMessage(
-                      controller.messages.first,
+                      lastMessage: controller.messages.first,
                     );
                   },
                 ),

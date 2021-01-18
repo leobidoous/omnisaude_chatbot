@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
@@ -24,7 +25,7 @@ class Connection extends Disposable {
 
     connectionStatus = ConnectionStatus.WAITING;
     _channel.stream.listen(
-      (event) {
+      (event) async {
         connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
@@ -34,14 +35,15 @@ class Connection extends Disposable {
         _streamController.add(_message);
       },
       onError: (onError) async {
-        print("Erro de conexão: $onError");
+        log("Erro de conexão: $onError");
         connectionStatus = ConnectionStatus.ERROR;
         _streamController.addError(onError);
-        await _onCloseSession();
+        dispose();
       },
       onDone: () async {
-        print("Conexão encerrada!");
+        log("Conexão encerrada!");
         connectionStatus = ConnectionStatus.DONE;
+        dispose();
       },
     );
     return _streamController;
@@ -49,9 +51,9 @@ class Connection extends Disposable {
 
   Future<void> _onMessageReceived(WsMessage message) async {
     try {
-      print("-----> ### MENSAGEM RECEBIDA: ${message.toJson()}\n");
+      log("-----> ### MENSAGEM RECEBIDA: ${message.toJson()}\n");
     } catch (e) {
-      print("Erro ao receber mensagem: $e");
+      log("Erro ao receber mensagem: $e");
     }
   }
 
@@ -62,14 +64,14 @@ class Connection extends Disposable {
 
       if (connectionStatus == ConnectionStatus.ACTIVE) {
         _channel.sink.add(jsonEncode(message));
-        print("-----> *** MENSAGEM ENVIADA: ${message.toJson()}\n");
+        log("-----> *** MENSAGEM ENVIADA: ${jsonEncode(message)}\n");
       } else {
-        print(
+        log(
           "Não foi possível enviar a mensagem, pois a conexão está inativa!",
         );
       }
     } catch (e) {
-      print("Erro ao enviar mensagem: $e");
+      log("Erro ao enviar mensagem: $e");
     }
   }
 
@@ -77,19 +79,15 @@ class Connection extends Disposable {
 
   void setUserPeer(String peer) => _myPeer = peer;
 
-  Future<void> _onCloseSession() async {
+  @override
+  void dispose() async {
     try {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
       _streamController.close();
-      print("\t--##: CONEXÃO ENCERRADA!");
+      log("\t--##: CONEXÃO ENCERRADA!");
     } catch (e) {
-      print("Erro ao encerrar sessão: $e");
+      log("Erro ao encerrar sessão: $e");
     }
-  }
-
-  @override
-  void dispose() async {
-    await _onCloseSession();
   }
 }

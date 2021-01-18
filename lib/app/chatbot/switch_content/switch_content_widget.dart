@@ -2,9 +2,8 @@ import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:mobx/mobx.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../components/components.dart';
 import '../../connection/connection.dart';
@@ -38,8 +37,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
 
   @override
   void dispose() {
-    _messageText.dispose();
     _messageFocus.dispose();
+    _messageText.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -81,51 +81,58 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       case RenderType.SEARCH:
         _widget = _searchContent(_layout, _options, _multiSelection);
     }
-    return _globalWidgetContent(_widget, _multiSelection);
-  }
-
-  Widget _globalWidgetContent(Widget widget, MultiSelection multi) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Flexible(child: widget),
+        Flexible(child: _widget),
         Container(
           color: Theme.of(context).textTheme.headline5.color,
-          child: _btnSendMultiplesOptions(multi),
+          child: _btnSendMultiplesOptions(_multiSelection),
         ),
       ],
     );
   }
 
   Widget _btnSendMultiplesOptions(MultiSelection multiSelection) {
-    return Observer(
-      builder: (context) {
-        final bool _enabled = _controller.selectedOptions.isNotEmpty;
-        if (!multiSelection.enabled) return Container();
-        return Padding(
-          padding: EdgeInsets.all(5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              FlatButton(
-                onPressed: _enabled
-                    ? () => _controller.onSendOptionsMessage(widget.connection)
-                    : null,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                textColor: _enabled ? Colors.white : null,
-                color: Theme.of(context).primaryColor,
-                disabledColor: Theme.of(context).backgroundColor,
-                child: Text("Enviar"),
+    return RxBuilder(builder: (_) {
+      if (!multiSelection.enabled) return Container();
+      final bool _enabled =
+          _controller.selectedOptions.length >= multiSelection.min;
+      return Padding(
+        padding: EdgeInsets.all(5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FlatButton(
+              onPressed: _enabled
+                  ? () => _controller.onSendOptionsMessage(widget.connection)
+                  : null,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
-            ],
-          ),
-        );
-      },
+              textColor: _enabled ? Colors.white : null,
+              color: Theme.of(context).primaryColor,
+              disabledColor: Theme.of(context).backgroundColor,
+              child: Text("Enviar"),
+            ),
+            _minMaxOptionsWidget(multiSelection),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _minMaxOptionsWidget(MultiSelection multiSelection) {
+    final String _label = multiSelection.min > 1 ? "opções" : "opção";
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Text(
+        "* Selecione ao menos ${multiSelection.min} $_label.",
+        style: TextStyle(fontSize: 10.0, fontStyle: FontStyle.italic),
+      ),
     );
   }
 
@@ -150,10 +157,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
         break;
       case Layout.IMAGE_CARD:
         int _crossAxisCount = 1;
-        if (direction == Axis.vertical) {
-          _crossAxisCount = 2;
-          if (MediaQuery.of(context).size.width > 500) _crossAxisCount = 5;
-        }
+        if (direction == Axis.vertical) _crossAxisCount = 2;
         return GridView.builder(
           shrinkWrap: true,
           itemCount: options.length,
@@ -184,9 +188,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
           crossAxisSpacing: 5.0,
           crossAxisCount: _crossAxisCount,
           staggeredTileCount: options.length,
-          staggeredTileBuilder: (int index) {
-            return _staggeredTile;
-          },
+          staggeredTileBuilder: (int index) => _staggeredTile,
         ),
         itemCount: options.length,
         padding: const EdgeInsets.all(5.0),
@@ -220,48 +222,50 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).primaryColor,
+        Flexible(
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).primaryColor,
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios_rounded),
+                  onPressed: () {
+                    _carouselController.previousPage(
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.decelerate,
+                    );
+                  },
+                  color: Colors.white,
+                ),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios_rounded),
-                onPressed: () {
-                  _carouselController.previousPage(
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.decelerate,
-                  );
-                },
-                color: Colors.white,
+              SizedBox(width: 5.0),
+              Expanded(
+                child: _carouselSlider,
               ),
-            ),
-            SizedBox(width: 5.0),
-            Expanded(
-              child: _carouselSlider,
-            ),
-            SizedBox(width: 5.0),
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).primaryColor,
+              SizedBox(width: 5.0),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).primaryColor,
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_forward_ios_rounded),
+                  onPressed: () {
+                    _carouselController.nextPage(
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.decelerate,
+                    );
+                  },
+                  color: Colors.white,
+                ),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              child: IconButton(
-                icon: Icon(Icons.arrow_forward_ios_rounded),
-                onPressed: () {
-                  _carouselController.nextPage(
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.decelerate,
-                  );
-                },
-                color: Colors.white,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -269,64 +273,69 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
 
   Widget _searchContent(
       Layout layout, List<Option> options, MultiSelection multiSelection) {
-    final ObservableList<Option> _aux = ObservableList();
+    final List<Option> _aux = List<Option>();
     options.forEach((option) => _aux.add(option));
-    _controller.filteredOptions = _aux;
+    _controller.filteredOptions.clear();
+    _aux.forEach((option) => _controller.filteredOptions.add(option));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         Flexible(
-          child: Observer(builder: (context) {
-            if (_controller.filteredOptions.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    EmptyWidget(
-                      message: "Nenhuma resultado encontrado!",
-                      padding: 10.0,
-                    ),
-                  ],
-                ),
-              );
-            }
-            if (_controller.filteredOptions.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Nenhuma opção encontrada",
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: _controller.filteredOptions.length,
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
+          child: RxBuilder(
+            builder: (_) {
+              if (_controller.filteredOptions.isEmpty) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: 5.0),
-                  child: _chooseType(
-                    layout,
-                    _controller.filteredOptions[index],
-                    multiSelection,
+                  padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EmptyWidget(
+                        message: "Nenhuma resultado encontrado!",
+                        padding: 10.0,
+                      ),
+                    ],
                   ),
                 );
-              },
-            );
-          }),
+              }
+              if (_controller.filteredOptions.isEmpty) {
+                return Padding(
+                  padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Nenhuma opção encontrada",
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: _controller.filteredOptions.length,
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                physics: const BouncingScrollPhysics(
+                  parent: const AlwaysScrollableScrollPhysics(),
+                ),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: _chooseType(
+                      layout,
+                      _controller.filteredOptions[index],
+                      multiSelection,
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
-        SizedBox(height: 5.0),
+        const SizedBox(height: 5.0),
         Stack(
           alignment: Alignment.centerRight,
           children: [
@@ -374,11 +383,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                   );
                 }
               },
-              icon: Icon(
-                _messageText.text.trim().isNotEmpty
-                    ? Icons.clear
-                    : Icons.arrow_drop_up_rounded,
-              ),
+              icon: Icon(Icons.arrow_drop_up_rounded),
             ),
           ],
         ),
@@ -407,10 +412,11 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Flexible(
-          child: Observer(
-            builder: (context) {
-              final bool _enabled =
-                  _controller.selectedOptions.contains(option);
+          child: RxBuilder(
+            builder: (_) {
+              final bool _enabled = _controller.selectedOptions.contains(
+                option,
+              );
               return FlatButton(
                 onPressed: () => _onTapOption(option, multiSelection),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -460,8 +466,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Observer(
-          builder: (context) {
+        RxBuilder(
+          builder: (_) {
             final bool _enabled = _controller.selectedOptions.contains(option);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
@@ -518,8 +524,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Observer(
-          builder: (context) {
+        RxBuilder(
+          builder: (_) {
             final bool _enabled = _controller.selectedOptions.contains(option);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
@@ -588,8 +594,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
         Flexible(
           child: Padding(
             padding: EdgeInsets.all(5.0),
-            child: Observer(
-              builder: (context) {
+            child: RxBuilder(
+              builder: (_) {
                 final bool _enabled = _controller.selectedOptions.contains(
                   option,
                 );
@@ -624,9 +630,14 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                                           topLeft: Radius.circular(10.0),
                                           topRight: Radius.circular(10.0),
                                         ),
-                                        child: ImageWidget(
-                                          url: option.image,
-                                          fit: BoxFit.cover,
+                                        child: Container(
+                                          color: Theme.of(context)
+                                              .cardColor
+                                              .withOpacity(0.5),
+                                          child: ImageWidget(
+                                            url: option.image,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -692,7 +703,36 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     if (_controller.selectedOptions.contains(option)) {
       _controller.selectedOptions.remove(option);
     } else {
-      _controller.selectedOptions.add(option);
+      if (multiSelection.max != null) {
+        if (_controller.selectedOptions.length < multiSelection.max) {
+          _controller.selectedOptions.add(option);
+        } else {
+          Scaffold.of(context).removeCurrentSnackBar();
+          final String _label = multiSelection.max > 1 ? "opções" : "opção";
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(milliseconds: 2000),
+              backgroundColor:
+                  Theme.of(context).backgroundColor.withOpacity(0.95),
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.all(15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              content: Text(
+                "É possível selecionar apenas ${multiSelection.max} $_label!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
+              ),
+            ),
+          );
+        }
+      } else {
+        _controller.selectedOptions.add(option);
+      }
     }
   }
 
@@ -845,11 +885,10 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   }
 
   Widget _btnSelectOption(Option option, MultiSelection multiSelection) {
-    return Observer(
-      builder: (context) {
+    return RxBuilder(
+      builder: (_) {
         final bool _selected = _controller.selectedOptions.contains(option);
         String _label = "Selecionar";
-
         if (_selected) _label = "Selecionado";
         if (!multiSelection.enabled) _label = "Enviar";
         return Padding(

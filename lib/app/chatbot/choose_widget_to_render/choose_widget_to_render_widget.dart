@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
 
 import '../../connection/connection.dart';
 import '../../core/models/ws_message_model.dart';
@@ -10,11 +11,13 @@ import '../message_content/message_content_widget.dart';
 
 class ChooseWidgetToRenderWidget extends StatefulWidget {
   final WsMessage message;
+  final WsMessage lastMessage;
   final Connection connection;
 
   const ChooseWidgetToRenderWidget({
     Key key,
     @required this.message,
+    @required this.lastMessage,
     @required this.connection,
   }) : super(key: key);
 
@@ -28,19 +31,27 @@ class _ChooseWidgetToRenderWidgetState
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
+    final WsMessage _lastMessage = widget.lastMessage;
     final String _myPeer = widget.connection.getUserPeer;
 
     // Se o objeto for um evento
     if (_message.eventContent != null) {
-      return EventContentWidget(message: _message, myPeer: _myPeer);
+      WsMessage _aux = WsMessage(eventContent: EventContent());
+      if (_lastMessage.eventContent != null) _aux = _lastMessage;
+      return EventContentWidget(
+        message: _message,
+        lastMessage: _aux,
+        myPeer: _myPeer,
+      );
     }
 
     // Se o objeto for um arquivo
     if (_message.fileContent != null) {
       if (_message.peer == _myPeer) {
-        return _myContent(_message, FileContentWidget(message: _message));
+        return _myMessageWidget(_message, FileContentWidget(message: _message));
       }
-      return _otherContent(_message, FileContentWidget(message: _message));
+      return _anotherMessageWidget(
+          _message, FileContentWidget(message: _message));
     }
 
     // Se o objeto for uma mensagem
@@ -48,12 +59,12 @@ class _ChooseWidgetToRenderWidgetState
       if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _myPeer) {
-        return _myContent(
+        return _myMessageWidget(
           _message,
           MessageContentWidget(message: _message),
         );
       }
-      return _otherContent(
+      return _anotherMessageWidget(
         _message,
         MessageContentWidget(message: _message),
       );
@@ -61,7 +72,7 @@ class _ChooseWidgetToRenderWidgetState
     return Column(mainAxisSize: MainAxisSize.min);
   }
 
-  Widget _myContent(WsMessage message, child) {
+  Widget _myMessageWidget(WsMessage message, child) {
     return Container(
       margin: EdgeInsets.only(
         left: MediaQuery.of(context).size.width * 0.2,
@@ -109,7 +120,7 @@ class _ChooseWidgetToRenderWidgetState
     );
   }
 
-  Widget _otherContent(WsMessage message, child) {
+  Widget _anotherMessageWidget(WsMessage message, child) {
     return Container(
       margin: EdgeInsets.only(
         right: MediaQuery.of(context).size.width * 0.2,

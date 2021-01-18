@@ -13,12 +13,19 @@ class OmnisaudeChatbot extends Disposable {
 
   OmnisaudeChatbot({@required this.connection}) : assert(connection != null);
 
-  Widget chooseWidgetToRender(WsMessage message) {
-    return ChooseWidgetToRenderWidget(message: message, connection: connection);
+  Widget chooseWidgetToRender({WsMessage message, WsMessage lastMessage}) {
+    return ChooseWidgetToRenderWidget(
+      message: message,
+      lastMessage: lastMessage,
+      connection: connection,
+    );
   }
 
-  Widget panelSendMessage(WsMessage message) {
-    return PanelSendMessageWidget(message: message, connection: connection);
+  Widget panelSendMessage({WsMessage lastMessage, bool safeArea}) {
+    return PanelSendMessageWidget(
+      lastMessage: lastMessage,
+      connection: connection,
+    );
   }
 
   @override

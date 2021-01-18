@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -16,7 +17,10 @@ class ViewPhotoService extends Disposable {
                 fit: StackFit.expand,
                 children: [
                   PhotoView(
-                    imageProvider: NetworkImage(url),
+                    backgroundDecoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor.withOpacity(0.25),
+                    ),
+                    imageProvider: CachedNetworkImageProvider(url),
                     loadingBuilder: (context, image) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
