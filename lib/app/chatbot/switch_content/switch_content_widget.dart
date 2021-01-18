@@ -6,7 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../components/components.dart';
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/multi_selection_model.dart';
 import '../../core/models/option_model.dart';
@@ -16,7 +16,7 @@ import '../../shared/image/image_widget.dart';
 import 'switch_content_controller.dart';
 
 class SwitchContentWidget extends StatefulWidget {
-  final Connection connection;
+  final ChatConnection connection;
   final WsMessage message;
 
   const SwitchContentWidget({

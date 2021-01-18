@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../components/components.dart';
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
@@ -14,7 +14,7 @@ import '../upload_content/upload_content_widget.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage lastMessage;
-  final Connection connection;
+  final ChatConnection connection;
   final bool safeArea;
 
   const PanelSendMessageWidget({
@@ -54,7 +54,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.lastMessage;
-    final Connection _connection = widget.connection;
+    final ChatConnection _connection = widget.connection;
 
     _panelSwitchEnabled = false;
     _panelInputEnabled = false;
@@ -147,7 +147,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     );
   }
 
-  Widget _panelSwitch(Connection connection, WsMessage message) {
+  Widget _panelSwitch(ChatConnection connection, WsMessage message) {
     if (message.switchContent == null) return Container();
     return SafeArea(
       bottom: widget.safeArea,

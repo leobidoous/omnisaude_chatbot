@@ -4,10 +4,11 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
+import 'package:omnisaude_chatbot/app/src/omnisaude_video_call.dart';
 
 import '../../app_controller.dart';
 import '../../core/constants/constants.dart';
@@ -20,10 +21,12 @@ class ChatBotController = _ChatBotControllerBase with _$ChatBotController;
 abstract class _ChatBotControllerBase with Store {
   final AppController appController = Modular.get<AppController>();
 
+  final OmnisaudeVideoCall omnisaudeVideoCall = new OmnisaudeVideoCall();
+
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
-  Connection connection;
+  ChatConnection connection;
   OmnisaudeChatbot omnisaudeChatbot;
   final ScrollController scrollController = ScrollController();
 
@@ -40,7 +43,7 @@ abstract class _ChatBotControllerBase with Store {
 
   Future<void> onInitAndListenStream(String idChat) async {
     connectionStatus = ConnectionStatus.WAITING;
-    connection = Connection(
+    connection = ChatConnection(
       "$WSS_BASE_URL/ws/chat/$idChat/",
       _username,
       _avatarUrl,

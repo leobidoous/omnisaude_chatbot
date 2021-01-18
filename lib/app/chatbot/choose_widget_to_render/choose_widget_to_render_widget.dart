@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
 
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../shared/image/image_widget.dart';
 import '../datetime_on_message/datetime_on_message_widget.dart';
@@ -12,7 +12,7 @@ import '../message_content/message_content_widget.dart';
 class ChooseWidgetToRenderWidget extends StatefulWidget {
   final WsMessage message;
   final WsMessage lastMessage;
-  final Connection connection;
+  final ChatConnection connection;
 
   const ChooseWidgetToRenderWidget({
     Key key,

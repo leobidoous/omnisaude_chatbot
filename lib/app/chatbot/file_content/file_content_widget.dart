@@ -69,8 +69,6 @@ class _FileContentWidgetState extends State<FileContentWidget>
   Widget _pdfContent(String url, String filename, String comment) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
-      decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).primaryColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -84,29 +82,38 @@ class _FileContentWidgetState extends State<FileContentWidget>
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20.0),
-                            topRight: Radius.circular(20.0),
+                    child: Container(
+                      color: Colors.transparent,
+                      padding: const EdgeInsets.all(2.5),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0),
+                            ),
+                            child: PDF(
+                              fitEachPage: true,
+                              autoSpacing: false,
+                              fitPolicy: FitPolicy.WIDTH,
+                              swipeHorizontal: true,
+                              pageSnap: false,
+                            ).fromUrl(
+                              url,
+                              placeholder: (double progress) {
+                                return LoadingWidget(
+                                  message: "Carregando documento",
+                                  background: Theme.of(context).primaryColor,
+                                  radius: 20.0,
+                                  margin: 20.0,
+                                  padding: 20.0,
+                                );
+                              },
+                            ),
                           ),
-                          child: PDF(fitEachPage: true, autoSpacing: false)
-                              .fromUrl(
-                            url,
-                            placeholder: (double progress) {
-                              return LoadingWidget(
-                                message: "Carregando documento",
-                                background: Theme.of(context).primaryColor,
-                                radius: 20.0,
-                                margin: 20.0,
-                                padding: 20.0,
-                              );
-                            },
-                          ),
-                        ),
-                        Container(color: Colors.transparent),
-                      ],
+                          Container(color: Colors.transparent),
+                        ],
+                      ),
                     ),
                   ),
                   Container(

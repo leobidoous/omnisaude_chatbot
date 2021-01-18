@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/src/omnisaude_video_call.dart';
 
 import '../../shared/widgets/content_error/content_error_widget.dart';
 import '../../shared/widgets/loading/loading_widget.dart';
@@ -61,6 +62,14 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.videocam_rounded),
+            onPressed: () {
+              controller.omnisaudeVideoCall.initVideoCall(context);
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(

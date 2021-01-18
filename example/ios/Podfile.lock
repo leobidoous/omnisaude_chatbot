@@ -52,6 +52,8 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - picture_in_picture (0.0.1):
+    - Flutter
   - SDWebImage (5.10.0):
     - SDWebImage/Core (= 5.10.0)
   - SDWebImage/Core (5.10.0)
@@ -82,6 +84,7 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - omnisaude_chatbot (from `.symlinks/plugins/omnisaude_chatbot/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - picture_in_picture (from `.symlinks/plugins/picture_in_picture/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -117,6 +120,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/omnisaude_chatbot/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  picture_in_picture:
+    :path: ".symlinks/plugins/picture_in_picture/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -145,6 +150,7 @@ SPEC CHECKSUMS:
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   omnisaude_chatbot: 2b3884291ffe5553681d048d61865679a2e25cf6
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  picture_in_picture: 96e7c60814db0665da9894c588908af8edafd961
   SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d

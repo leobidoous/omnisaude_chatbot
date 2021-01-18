@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
-import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
 
+import '../../core/models/bots_model.dart';
 import 'home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,31 +39,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(child: _gridChatsContent()),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 7.5, vertical: 5.0),
-              child: FlatButton(
-                onPressed: () async {
-                  Navigator.pushNamed(context, "/attendant/$TOKEN");
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                disabledColor: Theme.of(context).cardColor.withOpacity(0.6),
-                color: Theme.of(context).primaryColor,
-                padding: EdgeInsets.symmetric(vertical: 25.0),
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Text(
-                  "Área do atendente",
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.headline1.color,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          children: <Widget>[Expanded(child: _gridChatsContent())],
         ),
       ),
     );

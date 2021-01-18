@@ -55,9 +55,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
             await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              backgroundColor: Theme.of(context).backgroundColor.withOpacity(
-                    0.9,
-                  ),
+              backgroundColor: Theme.of(context).backgroundColor,
               enableDrag: false,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

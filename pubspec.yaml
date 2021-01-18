@@ -27,6 +27,7 @@ dependencies:
   flutter_slidable: ^0.5.7
   agora_rtc_engine: ^3.2.1
   web_socket_channel: ^1.1.0
+  picture_in_picture: ^0.0.2
   cached_network_image: ^2.5.0
   shared_preferences: ^0.5.12+4
   flutter_cached_pdfview: ^0.3.4
