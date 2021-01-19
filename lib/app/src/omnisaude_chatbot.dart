@@ -5,20 +5,27 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import '../chatbot/choose_widget_to_render/choose_widget_to_render_widget.dart';
 import '../chatbot/panel_send_message/panel_send_message_widget.dart';
-import '../connection/connection.dart';
+import '../connection/chat_connection.dart';
 import '../core/models/ws_message_model.dart';
 
 class OmnisaudeChatbot extends Disposable {
-  final Connection connection;
+  final ChatConnection connection;
 
   OmnisaudeChatbot({@required this.connection}) : assert(connection != null);
 
-  Widget chooseWidgetToRender(WsMessage message) {
-    return ChooseWidgetToRenderWidget(message: message, connection: connection);
+  Widget chooseWidgetToRender({WsMessage message, WsMessage lastMessage}) {
+    return ChooseWidgetToRenderWidget(
+      message: message,
+      lastMessage: lastMessage,
+      connection: connection,
+    );
   }
 
-  Widget panelSendMessage(WsMessage message) {
-    return PanelSendMessageWidget(message: message, connection: connection);
+  Widget panelSendMessage({WsMessage message}) {
+    return PanelSendMessageWidget(
+      message: message,
+      connection: connection,
+    );
   }
 
   @override

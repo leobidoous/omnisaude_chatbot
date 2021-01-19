@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
@@ -22,7 +22,7 @@ abstract class _AttendantControllerBase with Store {
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
-  Connection connection;
+  ChatConnection connection;
   OmnisaudeChatbot omnisaudeChatbot;
   final ScrollController scrollController = ScrollController();
 
@@ -40,7 +40,7 @@ abstract class _AttendantControllerBase with Store {
   ObservableList<WsMessage> messages = new ObservableList();
 
   Future<void> onInitAndListenStream(String token) async {
-    connection = Connection(
+    connection = ChatConnection(
       "$WSS_BASE_URL/ws/attendance/?token=$token",
       _username,
       _avatarUrl,

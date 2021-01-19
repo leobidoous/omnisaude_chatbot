@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
+import '../../core/models/event_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../shared/image/image_widget.dart';
 import '../datetime_on_message/datetime_on_message_widget.dart';
@@ -10,11 +11,13 @@ import '../message_content/message_content_widget.dart';
 
 class ChooseWidgetToRenderWidget extends StatefulWidget {
   final WsMessage message;
-  final Connection connection;
+  final WsMessage lastMessage;
+  final ChatConnection connection;
 
   const ChooseWidgetToRenderWidget({
     Key key,
     @required this.message,
+    @required this.lastMessage,
     @required this.connection,
   }) : super(key: key);
 
@@ -28,11 +31,18 @@ class _ChooseWidgetToRenderWidgetState
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
+    final WsMessage _lastMessage = widget.lastMessage;
     final String _myPeer = widget.connection.getUserPeer;
 
     // Se o objeto for um evento
     if (_message.eventContent != null) {
-      return EventContentWidget(message: _message, myPeer: _myPeer);
+      WsMessage _aux = WsMessage(eventContent: EventContent());
+      if (_lastMessage.eventContent != null) _aux = _lastMessage;
+      return EventContentWidget(
+        message: _message,
+        lastMessage: _aux,
+        myPeer: _myPeer,
+      );
     }
 
     // Se o objeto for um arquivo

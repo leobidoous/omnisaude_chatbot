@@ -4,7 +4,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
 import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
-import 'package:universal_html/html.dart';
 
 import 'home_controller.dart';
 

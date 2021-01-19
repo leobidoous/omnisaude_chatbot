@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
-import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
-import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/shared/image/image_widget.dart';
+
+import '../../core/enums/enums.dart';
+import '../../core/models/event_content_model.dart';
+import '../../core/models/ws_message_model.dart';
 
 class EventContentWidget extends StatefulWidget {
   final WsMessage message;
+  final WsMessage lastMessage;
   final String myPeer;
 
   const EventContentWidget({
     Key key,
     @required this.message,
+    @required this.lastMessage,
     this.myPeer,
   }) : super(key: key);
 
@@ -20,17 +24,17 @@ class EventContentWidget extends StatefulWidget {
 class _EventContentWidgetState extends State<EventContentWidget> {
   @override
   Widget build(BuildContext context) {
-    final EventContent _event = widget.message.eventContent;
-
-    switch (_event.eventType) {
+    switch (widget.message.eventContent.eventType) {
       case EventType.SYSTEM:
-        return _eventMessageWidget(_event);
+        return _eventMessageWidget(widget.message.eventContent);
       case EventType.ERROR:
-        return _eventMessageWidget(_event);
+        return _eventMessageWidget(widget.message.eventContent);
 
       case EventType.TYPING:
-        // TODO: Handle this case.
-        break;
+        return _eventTypingWidget(
+          widget.message.eventContent,
+          widget.lastMessage.eventContent,
+        );
       case EventType.CONNECTED:
         // TODO: Handle this case.
         break;
@@ -110,4 +114,62 @@ class _EventContentWidgetState extends State<EventContentWidget> {
     );
   }
 
+  Widget _eventTypingWidget(EventContent event, EventContent lastEvent) {
+    if (lastEvent.eventType != EventType.TYPING || lastEvent != event) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.only(
+        right: MediaQuery.of(context).size.width * 0.2,
+        bottom: 10.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ImageWidget(
+            url: widget.lastMessage.avatarUrl,
+            asset: "assets/avatar/bot.png",
+            fit: BoxFit.cover,
+            width: 30.0,
+            height: 30.0,
+            radius: 10.0,
+          ),
+          const SizedBox(width: 10.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                      bottomRight: Radius.circular(20.0),
+                    ),
+                    child: Container(
+                      color: Theme.of(context).cardColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Image.asset(
+                          "assets/shared/typing.gif",
+                          color: Theme.of(context).cardColor,
+                          colorBlendMode: BlendMode.modulate,
+                          package: "omnisaude_chatbot",
+                          height: 40.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 1.0),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -1,6 +1,6 @@
 name: omnisaude_chatbot
 description: Pacote de integração do chatbot para aplicativos móveis e sistemas Web.
-version: 0.0.6-dev.2+1
+version: 0.0.6-dev.2+2
 homepage: "https://www.omnisaude.co/"
 
 environment:
@@ -8,30 +8,25 @@ environment:
   flutter: ">=1.20.0 <2.0.0"
 
 dependencies:
-  mobx: ^1.2.1+4
-  flutter_mobx: ^1.1.0+2
   flutter_modular: ^3.0.0-nullsafety.36
 
   mime: ^0.9.7
+  rx_notifier: ^0.0.8
+  path: ^1.7.0
+
   intl: ^0.17.0-nullsafety.2
   photo_view: ^0.10.3
-  file_picker: ^2.1.5
   flutter_html: ^1.1.1
   url_launcher: ^5.7.10
   path_provider: ^1.6.24
-  universal_html: ^1.2.3
-  image_picker: ^0.6.7+17
   carousel_slider: ^2.3.1
   flutter_slidable: ^0.5.7
   agora_rtc_engine: ^3.2.1
   web_socket_channel: ^1.1.0
   cached_network_image: ^2.5.0
-  shared_preferences: ^0.5.12+4
-  flutter_cached_pdfview: ^0.3.4
   flutter_datetime_picker: ^1.4.0
   mask_text_input_formatter: ^1.2.1
   flutter_staggered_grid_view: ^0.3.3
-
 
   flutter:
     sdk: flutter
@@ -48,8 +43,6 @@ dev_dependencies:
     sdk: flutter
 
 flutter_icons:
-  image_path_ios: 'assets/shared/logo/appstore.png'
-  image_path_android: 'assets/shared/logo/playstore.png'
   android: true
   ios: true
 
@@ -59,14 +52,6 @@ flutter:
   assets:
     - assets/avatar/
     - assets/shared/
-
-  plugin:
-    platforms:
-      android:
-        package: com.leobidoous.omnisaude.omnisaude_chatbot
-        pluginClass: OmnisaudeChatbotPlugin
-      ios:
-        pluginClass: OmnisaudeChatbotPlugin
 
 vars:
   clean: flutter clean

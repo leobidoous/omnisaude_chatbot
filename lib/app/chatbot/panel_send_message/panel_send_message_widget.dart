@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:omnisaude_chatbot/app/shared/widgets/outline_input_border.dart';
 
-import '../../components/components.dart';
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
@@ -15,7 +15,7 @@ import '../upload_content/upload_content_widget.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage message;
-  final Connection connection;
+  final ChatConnection connection;
 
   const PanelSendMessageWidget({
     Key key,
@@ -52,7 +52,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
-    final Connection _connection = widget.connection;
+    final ChatConnection _connection = widget.connection;
 
     _panelSwitchEnabled = false;
     _panelInputEnabled = false;
@@ -143,7 +143,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     );
   }
 
-  Widget _panelSwitch(Connection connection, WsMessage message) {
+  Widget _panelSwitch(ChatConnection connection, WsMessage message) {
     if (message.switchContent == null) return Container();
     return Padding(
       padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
@@ -272,12 +272,12 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
               contentPadding: EdgeInsets.all(15.0),
-              border: generalOutlineInputBorder(),
-              focusedBorder: generalOutlineInputBorder(),
-              enabledBorder: generalOutlineInputBorder(),
-              disabledBorder: generalOutlineInputBorder(),
-              focusedErrorBorder: generalOutlineInputBorder(),
-              errorBorder: generalOutlineInputBorder(),
+              border: outlineInputBorder(),
+              focusedBorder: outlineInputBorder(),
+              enabledBorder: outlineInputBorder(),
+              disabledBorder: outlineInputBorder(),
+              focusedErrorBorder: outlineInputBorder(),
+              errorBorder: outlineInputBorder(),
             ),
           ),
         ),
