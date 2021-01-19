@@ -30,6 +30,5 @@ class OmnisaudeChatbot extends Disposable {
 
   @override
   void dispose() {
-    connection.dispose();
   }
 }

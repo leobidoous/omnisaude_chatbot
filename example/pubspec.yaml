@@ -21,6 +21,7 @@ environment:
 dependencies:
   dio: ^3.0.10
   mobx: ^1.2.1+4
+  rx_notifier: ^0.0.8
   flutter_mobx: ^1.1.0+2
   flutter_modular: ^2.0.1
 

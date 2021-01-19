@@ -7,8 +7,7 @@ import 'app/app_module.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([])
-      .then((_) {
-    runApp(ModularApp(module: AppModule()));
-  });
+  SystemChrome.setPreferredOrientations([]).then(
+    (_) => runApp(ModularApp(module: AppModule())),
+  );
 }

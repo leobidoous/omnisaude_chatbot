@@ -1,6 +1,6 @@
 const CONNECT_TIMEOUT = 20000;
-const BASE_URL = "https://dev.saudemobi.com";
-const WSS_BASE_URL = "wss://dev.saudemobi.com";
+const BASE_URL = "https://api.chatbot.omnisaude.co";
+const WSS_BASE_URL = "wss://api.chatbot.omnisaude.co";
 // const BASE_URL = "https://d21e9ab8e983.ngrok.io";
 // const WSS_BASE_URL = "wss://d21e9ab8e983.ngrok.io";
 const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoi"

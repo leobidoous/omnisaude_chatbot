@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
-import 'package:omnisaude_chatbot/app/src/omnisaude_video_call.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/content_error/content_error_widget.dart';
 import '../../shared/widgets/loading/loading_widget.dart';
@@ -26,12 +25,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,11 +35,11 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("Chatbot"),
-            Observer(
-              builder: (BuildContext context) {
-                if (controller.botTyping) {
+            RxBuilder(
+              builder: (_) {
+                if (controller.botTyping.value) {
                   return Text(
-                    "${controller.botUsername} está digitando...",
+                    "${controller.botUsername.value} está digitando...",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300,
@@ -55,7 +48,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                   );
                 }
                 return Text(
-                  "${controller.botUsername}",
+                  "${controller.botUsername.value}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
                 );
               },
@@ -94,11 +87,10 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   }
 
   Widget _buildListWidget() {
-    return Observer(
-      builder: (context) {
+    return RxBuilder(
+      builder: (_) {
         Widget _popup = Container();
-
-        if (controller.connectionStatus == ConnectionStatus.WAITING) {
+        if (controller.connectionStatus.value == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
             background: Theme.of(context).primaryColor,
             message: "Iniciando conversa...",
@@ -107,7 +99,8 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (controller.connectionStatus == ConnectionStatus.ERROR) {
+        } else if (controller.connectionStatus.value ==
+            ConnectionStatus.ERROR) {
           _popup = ContentErrorWidget(
             messageLabel: "Ocorreu um erro ao iniciar a conversa",
             background: Theme.of(context).backgroundColor,
@@ -118,7 +111,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (controller.connectionStatus == ConnectionStatus.DONE) {
+        } else if (controller.connectionStatus.value == ConnectionStatus.DONE) {
           _popup = ContentErrorWidget(
             messageLabel: "Sua conexào foi finalizada",
             background: Theme.of(context).backgroundColor,
@@ -129,7 +122,8 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             radius: 20.0,
             opacity: 0.5,
           );
-        } else if (controller.connectionStatus == ConnectionStatus.ACTIVE) {
+        } else if (controller.connectionStatus.value ==
+            ConnectionStatus.ACTIVE) {
           if (controller.messages.isNotEmpty) {
             _popup = Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -145,7 +139,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
                       itemCount: controller.messages.length,
-                      controller: controller.scrollController,
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
                         return controller.omnisaudeChatbot.chooseWidgetToRender(
@@ -156,12 +149,8 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                     ),
                   ),
                 ),
-                Observer(
-                  builder: (context) {
-                    return controller.omnisaudeChatbot.panelSendMessage(
-                      lastMessage: controller.messages.first,
-                    );
-                  },
+                controller.omnisaudeChatbot.panelSendMessage(
+                  lastMessage: controller.messages.first,
                 ),
               ],
             );

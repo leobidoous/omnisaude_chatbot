@@ -1,6 +1,6 @@
 name: omnisaude_chatbot
 description: Pacote de integração do chatbot para aplicativos móveis.
-version: 0.0.5+2
+version: 0.0.6
 homepage: "https://www.omnisaude.co/"
 
 environment:

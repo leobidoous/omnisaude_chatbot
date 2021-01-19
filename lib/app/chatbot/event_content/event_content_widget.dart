@@ -79,7 +79,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
 
   Widget _eventMessageWidget(EventContent event) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.only( bottom: 10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

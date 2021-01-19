@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Revisão de código, melhorias de desempenho e correção de bugs.
+
 ## 0.0.5+2
 
 * Lancamento da versão estável para utilização em aplicativos móveis, atualização de versões dos pacotes utilizados e otimizacões na gerencia de reatividade.

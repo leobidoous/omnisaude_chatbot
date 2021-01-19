@@ -3,55 +3,59 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
-import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../core/enums/enums.dart';
+import '../core/models/ws_message_model.dart';
+
 class ChatConnection extends Disposable {
-  final String _url;
-  final String _username;
-  final String _avatarUrl;
+  final String url;
+  final String username;
+  final String avatarUrl;
   String _myPeer;
 
-  ChatConnection(this._url, this._username, this._avatarUrl);
+  ChatConnection({this.url, this.username, this.avatarUrl});
 
-  final StreamController<WsMessage> _streamController = StreamController();
+  final StreamController<WsMessage> _streamController = new StreamController();
+  StreamSubscription _streamSubscription;
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
   Future<StreamController> onInitSession() async {
-    _channel = WebSocketChannel.connect(Uri.parse(_url));
+    _channel = WebSocketChannel.connect(Uri.parse(url));
 
     connectionStatus = ConnectionStatus.WAITING;
-    _channel.stream.listen(
-      (event) async {
+    _streamSubscription = _channel.stream.listen(
+      (onMessage) async {
+        _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
-        final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
+        final WsMessage _message = WsMessage.fromJson(jsonDecode(onMessage));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           setUserPeer(_message.eventContent.message);
         }
+        _streamController.sink.add(_message);
         _onMessageReceived(_message);
-        _streamController.add(_message);
+        await Future.delayed(Duration(milliseconds: 100));
+        _streamSubscription.resume();
       },
-      onError: (onError) async {
+      onError: (onError) {
         log("Erro de conexão: $onError");
         connectionStatus = ConnectionStatus.ERROR;
         _streamController.addError(onError);
-        dispose();
       },
-      onDone: () async {
+      onDone: () {
         log("Conexão encerrada!");
         connectionStatus = ConnectionStatus.DONE;
-        dispose();
       },
+      cancelOnError: true,
     );
     return _streamController;
   }
 
-  Future<void> _onMessageReceived(WsMessage message) async {
+  void _onMessageReceived(WsMessage message) {
     try {
-      log("-----> ### MENSAGEM RECEBIDA: ${message.toJson()}\n");
+      log("###--> MENSAGEM RECEBIDA: ${message.toJson()}\n");
     } catch (e) {
       log("Erro ao receber mensagem: $e");
     }
@@ -59,12 +63,14 @@ class ChatConnection extends Disposable {
 
   Future<void> onSendMessage(WsMessage message) async {
     try {
-      message.username = _username;
-      message.avatarUrl = _avatarUrl;
+      message.username = username;
+      message.avatarUrl = avatarUrl;
+      message.peer = _myPeer;
+      message.datetime = DateTime.now().toIso8601String();
 
       if (connectionStatus == ConnectionStatus.ACTIVE) {
         _channel.sink.add(jsonEncode(message));
-        log("-----> *** MENSAGEM ENVIADA: ${jsonEncode(message)}\n");
+        log("***--> MENSAGEM ENVIADA: ${jsonEncode(message)}\n");
       } else {
         log(
           "Não foi possível enviar a mensagem, pois a conexão está inativa!",
@@ -85,7 +91,8 @@ class ChatConnection extends Disposable {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
       _streamController.close();
-      log("\t--##: CONEXÃO ENCERRADA!");
+      _streamSubscription.cancel();
+      log("--##: CONEXÃO ENCERRADA!");
     } catch (e) {
       log("Erro ao encerrar sessão: $e");
     }

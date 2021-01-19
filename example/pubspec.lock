@@ -708,7 +708,7 @@ packages:
     source: hosted
     version: "2.1.5"
   rx_notifier:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rx_notifier
       url: "https://pub.dartlang.org"
