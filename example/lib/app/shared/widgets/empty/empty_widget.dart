@@ -12,7 +12,9 @@ class EmptyWidget extends StatelessWidget {
     this.padding: 0.0,
     this.margin: 0.0,
     this.radius: 0.0,
-    this.message, this.function, this.buttonLabel,
+    @required this.message,
+    this.function,
+    this.buttonLabel,
   });
 
   @override
@@ -45,7 +47,7 @@ class EmptyWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16.0,
-                          color: Colors.white,
+                          color: Theme.of(context).textTheme.bodyText1.color,
                           fontFamily: "Comfortaa",
                         ),
                       ),

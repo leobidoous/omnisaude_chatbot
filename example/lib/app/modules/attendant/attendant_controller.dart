@@ -41,9 +41,9 @@ abstract class _AttendantControllerBase with Store {
 
   Future<void> onInitAndListenStream(String token) async {
     connection = ChatConnection(
-      "$WSS_BASE_URL/ws/attendance/?token=$token",
-      _username,
-      _avatarUrl,
+      url: "$WSS_BASE_URL/ws/attendance/?token=$token",
+      username: _username,
+      avatarUrl: _avatarUrl,
     );
     omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
     streamController = await connection.onInitSession();

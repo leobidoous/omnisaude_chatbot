@@ -7,6 +7,7 @@ import 'modules/attendant/attendant_controller.dart';
 import 'modules/attendant/attendant_page.dart';
 import 'modules/chat_bot/chat_bot_controller.dart';
 import 'modules/chat_bot/chat_bot_page.dart';
+import 'modules/historic_conversation/historic_conversation_page.dart';
 import 'modules/home/home_module.dart';
 import 'shared/page_not_found/page_not_found_controller.dart';
 import 'shared/page_not_found/page_not_found_page.dart';
@@ -32,6 +33,12 @@ class AppModule extends MainModule {
     ChildRoute(
       "/chat_bot/:chatBotId",
       child: (_, args) => ChatBotPage(chatBotId: args.params["chatBotId"]),
+    ),
+    ChildRoute(
+      "/historic_conversation/:sessionId",
+      child: (_, args) => HistoricConversationPage(
+        sessionId: args.params["sessionId"],
+      ),
     ),
     WildcardRoute(child: (BuildContext context, ModularArguments args) {
       return PageNotFoundPage();

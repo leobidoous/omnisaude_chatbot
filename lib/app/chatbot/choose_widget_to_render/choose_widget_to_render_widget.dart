@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 
 import '../../connection/chat_connection.dart';
 import '../../core/models/event_content_model.dart';
@@ -13,12 +14,14 @@ class ChooseWidgetToRenderWidget extends StatefulWidget {
   final WsMessage message;
   final WsMessage lastMessage;
   final ChatConnection connection;
+  final MessageViewMode messageViewMode;
 
   const ChooseWidgetToRenderWidget({
     Key key,
     @required this.message,
     @required this.lastMessage,
     @required this.connection,
+    this.messageViewMode: MessageViewMode.ME,
   }) : super(key: key);
 
   @override
@@ -33,6 +36,7 @@ class _ChooseWidgetToRenderWidgetState
     final WsMessage _message = widget.message;
     final WsMessage _lastMessage = widget.lastMessage;
     final String _myPeer = widget.connection.getUserPeer;
+    final MessageViewMode _messageMode = widget.messageViewMode;
 
     // Se o objeto for um evento
     if (_message.eventContent != null) {
@@ -47,26 +51,49 @@ class _ChooseWidgetToRenderWidgetState
 
     // Se o objeto for um arquivo
     if (_message.fileContent != null) {
-      if (_message.peer == _myPeer) {
-        return _myContent(_message, FileContentWidget(message: _message));
+      switch (_messageMode) {
+        case MessageViewMode.ME:
+          if (_message.peer == _myPeer) {
+            return _myContent(_message, FileContentWidget(message: _message));
+          }
+          return _otherContent(_message, FileContentWidget(message: _message));
+        case MessageViewMode.ANOTHER:
+          if (_message.peer != _myPeer) {
+            return _myContent(_message, FileContentWidget(message: _message));
+          }
+          return _otherContent(_message, FileContentWidget(message: _message));
       }
-      return _otherContent(_message, FileContentWidget(message: _message));
     }
 
     // Se o objeto for uma mensagem
     if (_message.messageContent != null) {
       if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
-      if (_message.peer == _myPeer) {
-        return _myContent(
-          _message,
-          MessageContentWidget(message: _message),
-        );
+
+      switch (_messageMode) {
+        case MessageViewMode.ME:
+          if (_message.peer == _myPeer) {
+            return _myContent(
+              _message,
+              MessageContentWidget(message: _message),
+            );
+          }
+          return _otherContent(
+            _message,
+            MessageContentWidget(message: _message),
+          );
+        case MessageViewMode.ANOTHER:
+          if (_message.peer != _myPeer) {
+            return _myContent(
+              _message,
+              MessageContentWidget(message: _message),
+            );
+          }
+          return _otherContent(
+            _message,
+            MessageContentWidget(message: _message),
+          );
       }
-      return _otherContent(
-        _message,
-        MessageContentWidget(message: _message),
-      );
     }
     return Column(mainAxisSize: MainAxisSize.min);
   }

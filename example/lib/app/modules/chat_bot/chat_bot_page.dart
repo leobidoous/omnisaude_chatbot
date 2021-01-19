@@ -95,7 +95,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   }
 
   Widget _buildListWidget() {
-
     return Observer(
       builder: (context) {
         Widget _popup = Container();

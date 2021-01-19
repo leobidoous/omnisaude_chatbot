@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+
 import '../../core/enums/enums.dart';
 import '../../core/models/file_content_model.dart';
 import '../../core/models/ws_message_model.dart';
@@ -33,10 +34,10 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
     return IconButton(
       onPressed: () async {
         await _service.openFileStorage().then(
-              (files) async {
+          (files) async {
             if (files == null) return;
             files.forEach(
-                  (file) {
+              (file) {
                 WsMessage _message = WsMessage(
                   fileContent: FileContent(
                     fileType: ContentFileType.ANY,

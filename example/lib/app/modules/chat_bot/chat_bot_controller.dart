@@ -41,9 +41,9 @@ abstract class _ChatBotControllerBase with Store {
   Future<void> onInitAndListenStream(String idChat) async {
     connectionStatus = ConnectionStatus.WAITING;
     connection = ChatConnection(
-      "$WSS_BASE_URL/ws/chat/$idChat/",
-      _username,
-      _avatarUrl,
+      url: "$WSS_BASE_URL/ws/chat/$idChat/",
+      username: _username,
+      avatarUrl: _avatarUrl,
     );
     omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
     streamController = await connection.onInitSession();
