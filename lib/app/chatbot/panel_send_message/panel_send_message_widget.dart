@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-import '../../components/components.dart';
 import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/datetime_picker_service.dart';
+import '../../shared/widgets/outline_input_border.dart';
 import '../switch_content/switch_content_widget.dart';
 import '../upload_content/upload_content_widget.dart';
 
@@ -99,6 +99,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       switch (_message.inputContent.inputType) {
         case InputType.DATE:
           _dateEnabled = true;
+          _textEnabled = true;
+          _mask = MaskTextInputFormatter(mask: "##/##/####");
           break;
         case InputType.TEXT:
           _textEnabled = true;
@@ -114,7 +116,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
       switch (_message.inputContent.keyboardType) {
         case KeyboardType.DATE:
-          _textInputType = TextInputType.datetime;
+          _textInputType = TextInputType.number;
           break;
         case KeyboardType.EMAIL:
           _textInputType = TextInputType.emailAddress;
@@ -284,12 +286,12 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
               contentPadding: EdgeInsets.all(15.0),
-              border: generalOutlineInputBorder(),
-              focusedBorder: generalOutlineInputBorder(),
-              enabledBorder: generalOutlineInputBorder(),
-              disabledBorder: generalOutlineInputBorder(),
-              focusedErrorBorder: generalOutlineInputBorder(),
-              errorBorder: generalOutlineInputBorder(),
+              border: outlineInputBorder(),
+              focusedBorder: outlineInputBorder(),
+              enabledBorder: outlineInputBorder(),
+              disabledBorder: outlineInputBorder(),
+              focusedErrorBorder: outlineInputBorder(),
+              errorBorder: outlineInputBorder(),
             ),
           ),
         ),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
-import '../../components/components.dart';
 import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/multi_selection_model.dart';
@@ -13,6 +12,7 @@ import '../../core/models/option_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../shared/empty/empty_widget.dart';
 import '../../shared/image/image_widget.dart';
+import '../../shared/widgets/outline_input_border.dart';
 import 'switch_content_controller.dart';
 
 class SwitchContentWidget extends StatefulWidget {
@@ -364,12 +364,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                     40.0,
                     10.0,
                   ),
-                  border: generalOutlineInputBorder(),
-                  focusedBorder: generalOutlineInputBorder(),
-                  enabledBorder: generalOutlineInputBorder(),
-                  disabledBorder: generalOutlineInputBorder(),
-                  focusedErrorBorder: generalOutlineInputBorder(),
-                  errorBorder: generalOutlineInputBorder(),
+                  border: outlineInputBorder(),
+                  focusedBorder: outlineInputBorder(),
+                  enabledBorder: outlineInputBorder(),
+                  disabledBorder: outlineInputBorder(),
+                  focusedErrorBorder: outlineInputBorder(),
+                  errorBorder: outlineInputBorder(),
                 ),
               ),
             ),
@@ -852,12 +852,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
           labelText: labelText,
           labelStyle: const TextStyle(height: 3.0),
           contentPadding: const EdgeInsets.fromLTRB(10.0, 35.0, 10.0, 15.0),
-          border: generalOutlineInputBorder(),
-          focusedBorder: generalOutlineInputBorder(),
-          enabledBorder: generalOutlineInputBorder(),
-          disabledBorder: generalOutlineInputBorder(),
-          focusedErrorBorder: generalOutlineInputBorder(),
-          errorBorder: generalOutlineInputBorder(),
+          border: outlineInputBorder(),
+          focusedBorder: outlineInputBorder(),
+          enabledBorder: outlineInputBorder(),
+          disabledBorder: outlineInputBorder(),
+          focusedErrorBorder: outlineInputBorder(),
+          errorBorder: outlineInputBorder(),
         ),
       ),
     );
