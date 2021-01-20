@@ -1,3 +1,4 @@
+enum MessageViewMode { ME, ANOTHER }
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum RenderType { LIST, SEARCH }

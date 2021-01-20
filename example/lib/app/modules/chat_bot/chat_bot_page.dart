@@ -95,7 +95,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   }
 
   Widget _buildListWidget() {
-
     return Observer(
       builder: (context) {
         Widget _popup = Container();
@@ -140,7 +139,8 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                       padding: const EdgeInsets.all(5.0),
                       itemBuilder: (BuildContext context, int index) {
                         return store.omnisaudeChatbot.chooseWidgetToRender(
-                          store.messages[index],
+                          message: store.messages[index],
+                          lastMessage: store.messages.first,
                         );
                       },
                     ),
@@ -149,7 +149,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                 Observer(
                   builder: (context) {
                     return store.omnisaudeChatbot.panelSendMessage(
-                      store.messages.first,
+                      message: store.messages.first,
                     );
                   },
                 ),

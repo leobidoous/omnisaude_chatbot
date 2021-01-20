@@ -1,24 +1,16 @@
-import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
-import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
-import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
-import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
-part 'switch_content_controller.g.dart';
+import '../../connection/chat_connection.dart';
+import '../../core/models/message_content_model.dart';
+import '../../core/models/option_model.dart';
+import '../../core/models/ws_message_model.dart';
 
-class SwitchContentController = _SwitchContentControllerBase
-    with _$SwitchContentController;
+class SwitchContentController extends Disposable {
+  final RxList<Option> selectedOptions = RxList();
+  RxList<Option> filteredOptions = RxList();
 
-abstract class _SwitchContentControllerBase with Store {
-  @observable
-  ObservableList<Option> selectedOptions = ObservableList<Option>();
-  @observable
-  ObservableList<Option> searchOptions = ObservableList<Option>();
-  @observable
-  ObservableList<Option> filteredOptions;
-
-  @action
-  Future<void> onSendOptionsMessage(Connection connection) async {
+  void onSendOptionsMessage(ChatConnection connection) async {
     try {
       final List<String> _options = List<String>.empty(growable: true);
       selectedOptions.forEach((option) => _options.add(option.id));
@@ -33,17 +25,20 @@ abstract class _SwitchContentControllerBase with Store {
     }
   }
 
-  @action
-  Future<void> onSearchIntoOptions(List<Option> options, String filter) async {
+  void onSearchIntoOptions(List<Option> options, String filter)  {
     filteredOptions.clear();
     options.forEach(
       (Option option) {
-        if (option.title.toLowerCase().contains(filter) ||
-            option.id.toLowerCase().contains(filter)) {
+        if (option.title.toLowerCase().contains(filter.toLowerCase())) {
           filteredOptions.add(option);
         }
       },
     );
-    print("essease: $filteredOptions");
+  }
+
+  @override
+  void dispose() {
+    selectedOptions.dispose();
+    filteredOptions.dispose();
   }
 }

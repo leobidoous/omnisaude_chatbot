@@ -7,20 +7,20 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class Connection extends Disposable {
-  final String _url;
-  final String _username;
-  final String _avatarUrl;
+class ChatConnection extends Disposable {
+  final String url;
+  final String username;
+  final String avatarUrl;
   String _myPeer;
 
-  Connection(this._url, this._username, this._avatarUrl);
+  ChatConnection({this.url, this.username, this.avatarUrl});
 
   final StreamController<WsMessage> _streamController = StreamController();
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
   Future<StreamController> onInitSession() async {
-    _channel = WebSocketChannel.connect(Uri.parse(_url));
+    _channel = WebSocketChannel.connect(Uri.parse(url));
 
     connectionStatus = ConnectionStatus.WAITING;
     _channel.stream.listen(
@@ -57,8 +57,8 @@ class Connection extends Disposable {
 
   Future<void> onSendMessage(WsMessage message) async {
     try {
-      message.username = _username;
-      message.avatarUrl = _avatarUrl;
+      message.username = username;
+      message.avatarUrl = avatarUrl;
 
       if (connectionStatus == ConnectionStatus.ACTIVE) {
         _channel.sink.add(jsonEncode(message));

@@ -4,7 +4,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
@@ -23,7 +23,7 @@ abstract class _ChatBotControllerBase with Store {
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
-  Connection connection;
+  ChatConnection connection;
   OmnisaudeChatbot omnisaudeChatbot;
   final ScrollController scrollController = ScrollController();
 
@@ -40,10 +40,10 @@ abstract class _ChatBotControllerBase with Store {
 
   Future<void> onInitAndListenStream(String idChat) async {
     connectionStatus = ConnectionStatus.WAITING;
-    connection = Connection(
-      "$WSS_BASE_URL/ws/chat/$idChat/",
-      _username,
-      _avatarUrl,
+    connection = ChatConnection(
+      url: "$WSS_BASE_URL/ws/chat/$idChat/",
+      username: _username,
+      avatarUrl: _avatarUrl,
     );
     omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
     streamController = await connection.onInitSession();
