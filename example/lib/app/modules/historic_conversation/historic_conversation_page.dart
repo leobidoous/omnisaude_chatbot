@@ -26,13 +26,24 @@ class _HistoricConversationPageState extends State<HistoricConversationPage> {
   String _token = "";
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_configLoaded) {
       final settingsUri = Uri.parse(ModalRoute.of(context).settings.name);
       _token = settingsUri.queryParameters["token"] ?? TOKEN;
       store.getHistoricConversation(sessionId: widget.sessionId, token: _token);
-      _configLoaded = true;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    Future.delayed(Duration()).then((value) {
+      if (!_configLoaded) {
+        store.appController.getQueryParams(context);
+        _configLoaded = true;
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text("Histórico de conversa"),

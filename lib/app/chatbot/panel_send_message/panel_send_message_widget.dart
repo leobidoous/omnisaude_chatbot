@@ -96,6 +96,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       switch (_message.inputContent.inputType) {
         case InputType.DATE:
           _dateEnabled = true;
+          _textEnabled = true;
+          _mask = MaskTextInputFormatter(mask: "##/##/####");
           break;
         case InputType.TEXT:
           _textEnabled = true;
@@ -110,7 +112,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
       switch (_message.inputContent.keyboardType) {
         case KeyboardType.DATE:
-          _textInputType = TextInputType.datetime;
+          _textInputType = TextInputType.number;
           break;
         case KeyboardType.EMAIL:
           _textInputType = TextInputType.emailAddress;

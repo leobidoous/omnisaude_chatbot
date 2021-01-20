@@ -51,12 +51,14 @@ class _EventContentWidgetState extends State<EventContentWidget> {
         return _eventMessageWidget(_message);
       case EventType.USER_LEFT:
         final EventContent _message = EventContent(
-          message: "${widget.message.username} saiu da conversa",
+          message:
+              "${widget.message.username ?? "Usuário(a)"} saiu da conversa",
         );
         return _eventMessageWidget(_message);
       case EventType.ATTENDANT_LEFT:
         final EventContent _message = EventContent(
-          message: "${widget.message.username} saiu da conversa",
+          message:
+              "${widget.message.username ?? "Usuário(a)"} saiu da conversa",
         );
         return _eventMessageWidget(_message);
       case EventType.INIT_ATTENDANCE:
@@ -64,7 +66,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
         if (widget.myPeer == widget.message.peer) _label = "Você";
 
         final EventContent _message = EventContent(
-          message: "$_label assumiu a conversa",
+          message: "${_label ?? "Atendente"} assumiu a conversa",
         );
         return _eventMessageWidget(_message);
       case EventType.FINISH_ATTENDANCE:
@@ -80,7 +82,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
 
   Widget _eventMessageWidget(EventContent message) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

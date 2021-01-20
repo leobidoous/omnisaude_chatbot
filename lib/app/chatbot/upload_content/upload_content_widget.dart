@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../core/enums/enums.dart';
 import '../../core/models/file_content_model.dart';
@@ -41,7 +41,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                 WsMessage _message = WsMessage(
                   fileContent: FileContent(
                     fileType: ContentFileType.ANY,
-                    name: basename(file),
+                    name: Uuid().v4(),
                     value: file,
                   ),
                 );

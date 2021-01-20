@@ -27,12 +27,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   }
 
   @override
-  void dispose() {
-    store.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Future.delayed(Duration()).then((value) {
       if (!_configLoaded) {

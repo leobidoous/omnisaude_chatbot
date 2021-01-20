@@ -16,6 +16,8 @@ class ChatConnection extends Disposable {
   ChatConnection({this.url, this.username, this.avatarUrl});
 
   final StreamController<WsMessage> _streamController = StreamController();
+  StreamSubscription _streamSubscription;
+
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
@@ -23,8 +25,9 @@ class ChatConnection extends Disposable {
     _channel = WebSocketChannel.connect(Uri.parse(url));
 
     connectionStatus = ConnectionStatus.WAITING;
-    _channel.stream.listen(
-      (event) {
+    _streamSubscription = _channel.stream.listen(
+      (event) async {
+        _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(event));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
@@ -32,12 +35,13 @@ class ChatConnection extends Disposable {
         }
         _onMessageReceived(_message);
         _streamController.add(_message);
+        await Future.delayed(Duration(milliseconds: 50));
+        _streamSubscription.resume();
       },
       onError: (onError) async {
         print("Erro de conexão: $onError");
         connectionStatus = ConnectionStatus.ERROR;
         _streamController.addError(onError);
-        await _onCloseSession();
       },
       onDone: () async {
         print("Conexão encerrada!");
@@ -77,19 +81,16 @@ class ChatConnection extends Disposable {
 
   void setUserPeer(String peer) => _myPeer = peer;
 
-  Future<void> _onCloseSession() async {
-    try {
-      await _channel.sink.close(status.normalClosure, "Conexão encerrada");
-      _channel.sink.close();
-      _streamController.close();
-      print("\t--##: CONEXÃO ENCERRADA!");
-    } catch (e) {
-      print("Erro ao encerrar sessão: $e");
-    }
-  }
-
   @override
   void dispose() async {
-    await _onCloseSession();
+    try {
+    await _channel.sink.close(status.normalClosure, "Conexão encerrada");
+    _channel.sink.close();
+    _streamController?.close();
+    await _streamSubscription?.cancel();
+    print("--##: CONEXÃO ENCERRADA!");
+  } catch (e) {
+    print("Erro ao encerrar sessão: $e");
+  }
   }
 }

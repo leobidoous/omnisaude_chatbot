@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
@@ -6,9 +8,12 @@ import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
+import '../../app_controller.dart';
 import 'historic_conversation_repository.dart';
 
 class HistoricConversationController extends Disposable {
+  final AppController appController = Modular.get<AppController>();
+
   final RxList<WsMessage> messages = RxList(List.empty(growable: true));
   RxNotifier<ConnectionStatus> connectionStatus =
       RxNotifier(ConnectionStatus.NONE);
@@ -36,6 +41,7 @@ class HistoricConversationController extends Disposable {
       connectionStatus.value = ConnectionStatus.ACTIVE;
     } on DioError catch (e) {
       connectionStatus.value = ConnectionStatus.ERROR;
+      log("$e");
     }
   }
 

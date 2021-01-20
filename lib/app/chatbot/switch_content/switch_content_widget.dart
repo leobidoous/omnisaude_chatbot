@@ -95,8 +95,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   Widget _btnSendMultiplesOptions(MultiSelection multiSelection) {
     return RxBuilder(
       builder: (_) {
-        final bool _enabled = _controller.selectedOptions.isNotEmpty;
         if (!multiSelection.enabled) return Container();
+        final bool _enabled =
+            _controller.selectedOptions.length >= multiSelection.min;
         return Padding(
           padding: EdgeInsets.all(5.0),
           child: Column(
@@ -709,7 +710,35 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     if (_controller.selectedOptions.contains(option)) {
       _controller.selectedOptions.remove(option);
     } else {
-      _controller.selectedOptions.add(option);
+      if (multiSelection.max != null) {
+        if (_controller.selectedOptions.length < multiSelection.max) {
+          _controller.selectedOptions.add(option);
+        } else {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          final String _label = multiSelection.max > 1 ? "opções" : "opção";
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(milliseconds: 2000),
+            backgroundColor:
+            Theme.of(context).backgroundColor.withOpacity(0.95),
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.all(15.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            content: Text(
+              "É possível selecionar apenas ${multiSelection.max} $_label!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyText1.color,
+              ),
+            ),
+          ),);
+        }
+      } else {
+        _controller.selectedOptions.add(option);
+
+      }
     }
   }
 
