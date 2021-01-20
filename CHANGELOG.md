@@ -1,14 +1,14 @@
-## 0.0.6-dev.2+1
+## 0.0.6+1
 
-* Correção de warnings e melhorias de dependências.
+* Revisão de código, melhorias de desempenho e correção de bugs.
 
-## 0.0.6-dev.2
+## 0.0.6
 
-* Correção de warnings e melhorias de dependências.
+* Revisão de código, melhorias de desempenho e correção de bugs.
 
-## 0.0.6-dev.1
+## 0.0.5+2
 
-* Melhorias de performance e correção de bugs. Início da migração para o null-safety.
+* Lancamento da versão estável para utilização em aplicativos móveis, atualização de versões dos pacotes utilizados e otimizacões na gerencia de reatividade.
 
 ## 0.0.5+1
 

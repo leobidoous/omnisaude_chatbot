@@ -5,14 +5,25 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0
 
+## Slidy Scripts
+vars:
+  clean: flutter clean
+  get: flutter pub get
+  runner: flutter pub run build_runner
+scripts:
+  mobx_build: $runner build
+  mobx_watch: $clean & $get & $runner watch
+  mobx_build_clean: $clean & $get & $runner build --delete-conflicting-outputs
+
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   dio: ^3.0.10
   mobx: ^1.2.1+4
+  rx_notifier: ^0.0.8
   flutter_mobx: ^1.1.0+2
-  flutter_modular: ^3.0.0-nullsafety.36
+  flutter_modular: ^2.0.1
 
   flutter:
     sdk: flutter
@@ -20,12 +31,11 @@ dependencies:
   omnisaude_chatbot:
     path: ../
 
-
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
-  mockito: ^4.1.1
-  mobx_codegen: ^1.1.0+2
+  mockito: ^4.1.3
+  mobx_codegen: ^1.1.2
   build_runner: ^1.10.1
   flutter_test:
     sdk: flutter
@@ -33,12 +43,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-
-vars:
-  clean: flutter clean
-  get: flutter pub get
-  runner: flutter pub run build_runner
-scripts:
-  mobx_build: $clean & $get & $runner build --delete-conflicting-outputs
-  mobx_watch: $clean & $get & $runner watch --delete-conflicting-outputs

@@ -1,23 +1,27 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../chatbot/choose_widget_to_render/choose_widget_to_render_widget.dart';
-import '../connection/connection.dart';
-import '../core/models/ws_message_model.dart';
+import '../video_call/outcoming_call/outcoming_call_widget.dart';
 
 class OmnisaudeVideoCall extends Disposable {
-  final Connection connection;
+  OverlayEntry _overlayEntry;
+  OverlayState _overlayState;
 
-  OmnisaudeVideoCall({@required this.connection}) : assert(connection != null);
+  OmnisaudeVideoCall();
 
-  Widget initVideoCall(WsMessage message) {
-    return ChooseWidgetToRenderWidget(message: message, connection: connection);
+  void initVideoCall(BuildContext context) {
+    _overlayState = Overlay.of(context);
+    _overlayEntry = new OverlayEntry(builder: (_) => OutcomingCallWidget());
+    _overlayState.insert(_overlayEntry);
+  }
+
+  void closePipMode() {
+    _overlayEntry.remove();
   }
 
   @override
   void dispose() {
-    connection.dispose();
+    _overlayState.dispose();
   }
 }

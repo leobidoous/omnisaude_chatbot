@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../components/components.dart';
-import '../../connection/connection.dart';
+import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
@@ -14,13 +13,15 @@ import '../switch_content/switch_content_widget.dart';
 import '../upload_content/upload_content_widget.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
-  final WsMessage message;
-  final Connection connection;
+  final WsMessage lastMessage;
+  final ChatConnection connection;
+  final bool safeArea;
 
   const PanelSendMessageWidget({
     Key key,
-    @required this.message,
+    @required this.lastMessage,
     @required this.connection,
+    this.safeArea: true,
   }) : super(key: key);
 
   @override
@@ -33,6 +34,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   TextInputType _textInputType = TextInputType.text;
   MaskTextInputFormatter _mask = MaskTextInputFormatter();
+  TextCapitalization _textCapitalization = TextCapitalization.sentences;
 
   bool _panelInputEnabled;
   bool _panelSwitchEnabled;
@@ -51,8 +53,8 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final WsMessage _message = widget.message;
-    final Connection _connection = widget.connection;
+    final WsMessage _message = widget.lastMessage;
+    final ChatConnection _connection = widget.connection;
 
     _panelSwitchEnabled = false;
     _panelInputEnabled = false;
@@ -82,7 +84,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           _humanAttendant = false;
           break;
         case EventType.UPDATE_QUEUE:
-          _humanAttendant = true;
+          _humanAttendant = false;
           break;
         default:
           break;
@@ -92,6 +94,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     if (_message.inputContent != null) {
       _panelInputEnabled = true;
       _mask = MaskTextInputFormatter(mask: _message.inputContent.mask);
+      _textCapitalization = TextCapitalization.sentences;
 
       switch (_message.inputContent.inputType) {
         case InputType.DATE:
@@ -105,6 +108,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           break;
         case InputType.EMAIL:
           _textEnabled = true;
+          _textCapitalization = TextCapitalization.none;
           break;
       }
 
@@ -143,33 +147,37 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     );
   }
 
-  Widget _panelSwitch(Connection connection, WsMessage message) {
+  Widget _panelSwitch(ChatConnection connection, WsMessage message) {
     if (message.switchContent == null) return Container();
-    return Padding(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          constraints: BoxConstraints(
-            maxHeight: _panelSwitchEnabled ? 250.0 : 0.0,
-          ),
-          curve: Curves.easeIn,
-          height: _panelSwitchEnabled ? null : 0.0,
-          color: Theme.of(context).textTheme.headline5.color,
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  constraints: BoxConstraints(maxHeight: 250),
-                  child: SwitchContentWidget(
-                    connection: connection,
-                    message: message,
+    return SafeArea(
+      bottom: widget.safeArea,
+      top: widget.safeArea,
+      child: Padding(
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 500),
+            constraints: BoxConstraints(
+              maxHeight: _panelSwitchEnabled ? 250.0 : 0.0,
+            ),
+            curve: Curves.easeIn,
+            height: _panelSwitchEnabled ? null : 0.0,
+            color: Theme.of(context).textTheme.headline5.color,
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    constraints: BoxConstraints(maxHeight: 250),
+                    child: SwitchContentWidget(
+                      connection: connection,
+                      message: message,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -186,14 +194,18 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         Container(
           color: Theme.of(context).textTheme.headline4.color,
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _btnChooseDateWidget(),
-              _btnChooseFileWidget(message),
-              Expanded(child: _textFormFieldWidget()),
-              _btnSendTextMessageWidget(),
-            ],
+          child: SafeArea(
+            bottom: widget.safeArea,
+            top: widget.safeArea,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _btnChooseDateWidget(),
+                _btnChooseFileWidget(message),
+                Expanded(child: _textFormFieldWidget()),
+                _btnSendTextMessageWidget(),
+              ],
+            ),
           ),
         ),
       ],
@@ -257,17 +269,17 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           ),
           child: TextFormField(
             minLines: 1,
-            maxLines: kIsWeb ? 1 : 5,
+            maxLines: 5,
             autofocus: true,
+            enabled: _enabled,
             focusNode: _messageFocus,
             controller: _messageText,
-            enabled: _enabled,
             inputFormatters: [_mask],
             keyboardType: _textInputType,
             scrollPhysics: BouncingScrollPhysics(),
-            textInputAction: TextInputAction.newline,
+            textInputAction: TextInputAction.send,
             cursorColor: Theme.of(context).primaryColor,
-            textCapitalization: TextCapitalization.sentences,
+            textCapitalization: _textCapitalization,
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",

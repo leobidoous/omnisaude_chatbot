@@ -1,96 +1,70 @@
 import 'dart:async';
 
-import 'package:flutter/animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:mobx/mobx.dart';
-import 'package:omnisaude_chatbot/app/connection/connection.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
+import 'package:omnisaude_chatbot/app/src/omnisaude_video_call.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../app_controller.dart';
 import '../../core/constants/constants.dart';
 
-part 'chat_bot_controller.g.dart';
-
-@Injectable()
-class ChatBotController = _ChatBotControllerBase with _$ChatBotController;
-
-abstract class _ChatBotControllerBase with Store {
+class ChatBotController extends Disposable {
   final AppController appController = Modular.get<AppController>();
+
+  final OmnisaudeVideoCall omnisaudeVideoCall = new OmnisaudeVideoCall();
 
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;
 
-  Connection connection;
+  ChatConnection connection;
   OmnisaudeChatbot omnisaudeChatbot;
-  final ScrollController scrollController = ScrollController();
 
   StreamController streamController;
 
-  @observable
-  ConnectionStatus connectionStatus = ConnectionStatus.NONE;
-  @observable
-  String botUsername = "Bot";
-  @observable
-  bool botTyping = false;
-  @observable
-  ObservableList<WsMessage> messages = new ObservableList();
+  RxNotifier<ConnectionStatus> connectionStatus = new RxNotifier(
+    ConnectionStatus.NONE,
+  );
+  RxNotifier<String> botUsername = new RxNotifier("Bot");
+  RxNotifier<bool> botTyping = new RxNotifier(false);
+  RxList<WsMessage> messages = new RxList(List());
 
   Future<void> onInitAndListenStream(String idChat) async {
-    connectionStatus = ConnectionStatus.WAITING;
-    connection = Connection(
-      "$WSS_BASE_URL/ws/chat/$idChat/",
-      _username,
-      _avatarUrl,
+    connectionStatus.value = ConnectionStatus.WAITING;
+    connection = ChatConnection(
+      url: "$WSS_BASE_URL/ws/chat/$idChat/",
+      username: _username,
+      avatarUrl: _avatarUrl,
     );
     omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
     streamController = await connection.onInitSession();
     streamController.stream.listen(
-      (message) {
+      (message) async {
         messages.insert(0, message);
-        onScrollListToBottom();
         _onChangeChatGlobalConfigs(message);
-        connectionStatus = ConnectionStatus.ACTIVE;
+        connectionStatus.value = ConnectionStatus.ACTIVE;
       },
       onError: ((onError) {
-        connectionStatus = ConnectionStatus.ERROR;
+        connectionStatus.value = ConnectionStatus.ERROR;
       }),
       onDone: () {
-        connectionStatus = ConnectionStatus.DONE;
+        connectionStatus.value = ConnectionStatus.DONE;
       },
     );
   }
 
-  @action
-  Future<void> onScrollListToBottom() async {
-    if (scrollController.hasClients) {
-      Future.delayed(Duration(milliseconds: 300)).whenComplete(
-        () {
-          scrollController.animateTo(
-            0.0,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.decelerate,
-          );
-        },
-      );
-    }
-  }
-
-  @action
   Future<void> _onChangeChatGlobalConfigs(WsMessage message) async {
     if (message.eventContent?.eventType == EventType.TYPING)
-      botTyping = true;
+      botTyping.value = true;
     else
-      botTyping = false;
+      botTyping.value = false;
   }
 
+  @override
   void dispose() {
-    messages.clear();
-    scrollController.dispose();
-    omnisaudeChatbot.dispose();
-    streamController.close();
+    streamController?.close();
     connection.dispose();
   }
 }

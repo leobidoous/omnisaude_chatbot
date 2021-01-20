@@ -1,3 +1,4 @@
+enum Status { LOADING, SUCCESS, ERROR, NONE }
 enum UploadInputType { GALERY, FILE, CAMERA }
 enum SwitchType { HORIZONTAL, SLIDE, VERTICAL }
 enum RenderType { LIST, SEARCH }
@@ -95,4 +96,12 @@ class EnumValues<T> {
     }
     return reverseMap;
   }
+}
+
+extension StatusExt on Status {
+  static dynamic _value;
+
+  get value => _value;
+
+  set value(dynamic value) => _value = value;
 }

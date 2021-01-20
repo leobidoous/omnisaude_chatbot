@@ -3,7 +3,7 @@ class MultiSelection {
   int min;
   int max;
 
-  MultiSelection({this.enabled: false, this.min, this.max});
+  MultiSelection({this.enabled: false, this.min: 1, this.max});
 
   MultiSelection.fromJson(Map<String, dynamic> json) {
     enabled = json['enabled'];

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:omnisaude_chatbot_example/app/core/constants/constants.dart';
-import 'package:omnisaude_chatbot_example/app/core/custom_dio/dio_interceptor.dart';
-import 'package:omnisaude_chatbot_example/app/core/models/bots_model.dart';
+import '../../core/constants/constants.dart';
+import '../../core/custom_dio/dio_interceptor.dart';
+import '../../core/models/bots_model.dart';
 
 @Injectable()
 class HomeRepository extends Disposable {

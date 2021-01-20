@@ -9,6 +9,7 @@ class LoadingWidget extends StatelessWidget {
   final double radius;
   final double opacity;
   final String message;
+  final bool showShadow;
 
   const LoadingWidget({
     this.background: Colors.transparent,
@@ -17,6 +18,7 @@ class LoadingWidget extends StatelessWidget {
     this.margin: 0.0,
     this.radius: 0.0,
     this.opacity: 0.0,
+    this.showShadow: true,
     this.message,
   });
 
@@ -41,13 +43,13 @@ class LoadingWidget extends StatelessWidget {
               padding: EdgeInsets.all(margin),
               child: Container(
                 decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
+                  boxShadow: showShadow ?[
+                     BoxShadow(
                       color: Theme.of(context).canvasColor.withOpacity(0.5),
                       blurRadius: 15.0,
                       spreadRadius: 1.0,
                     ),
-                  ],
+                  ] : null,
                   color: background,
                   borderRadius: BorderRadius.circular(radius),
                   border: Border.all(width: 0.5, color: borderColor),
