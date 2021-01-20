@@ -1,3 +1,15 @@
+## 0.0.6+4
+
+* Revisão de código, melhorias de desempenho e correção de bugs.
+
+## 0.0.6+3
+
+* Revisão de código, melhorias de desempenho e correção de bugs.
+
+## 0.0.6+2
+
+* Revisão de código, melhorias de desempenho e correção de bugs.
+
 ## 0.0.6+1
 
 * Revisão de código, melhorias de desempenho e correção de bugs.
