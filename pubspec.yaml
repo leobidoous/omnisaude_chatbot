@@ -1,7 +1,10 @@
 name: omnisaude_chatbot
 description: Pacote de integração do chatbot para aplicativos móveis.
-version: 0.0.6+2
-homepage: "https://www.omnisaude.co/"
+homepage: https://leonardobido.me/
+repository: https://github.com/leobidoous/omnisaude_chatbot
+issue_tracker: https://github.com/leobidoous/omnisaude_chatbot/issues
+author: leonardobido.me
+version: 0.0.6+3
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
