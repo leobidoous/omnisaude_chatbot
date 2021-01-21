@@ -55,7 +55,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
             await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).textTheme.headline5.color,
               enableDrag: false,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -70,18 +70,42 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                     children: [
                       ListTile(
                         onTap: _openCamera,
-                        title: Text("Câmera"),
-                        leading: Icon(Icons.camera_alt_rounded),
+                        title: Text(
+                          "Câmera",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                        ),
+                        leading: Icon(
+                          Icons.camera_alt_rounded,
+                          color: Theme.of(context).textTheme.bodyText1.color,
+                        ),
                       ),
                       ListTile(
                         onTap: _openGallery,
-                        title: Text("Galeria"),
-                        leading: Icon(Icons.photo_rounded),
+                        title: Text(
+                          "Galeria",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                        ),
+                        leading: Icon(
+                          Icons.photo_rounded,
+                          color: Theme.of(context).textTheme.bodyText1.color,
+                        ),
                       ),
                       ListTile(
                         onTap: _openFilePicker,
-                        title: Text("Documentos"),
-                        leading: Icon(Icons.insert_drive_file_rounded),
+                        title: Text(
+                          "Documentos",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                        ),
+                        leading: Icon(
+                          Icons.insert_drive_file_rounded,
+                          color: Theme.of(context).textTheme.bodyText1.color,
+                        ),
                       ),
                     ],
                   ),

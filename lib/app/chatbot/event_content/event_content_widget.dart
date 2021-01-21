@@ -86,7 +86,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
             padding: const EdgeInsets.symmetric(
               vertical: 5.0,
@@ -149,7 +149,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
                       bottomRight: Radius.circular(20.0),
                     ),
                     child: Container(
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).secondaryHeaderColor,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 5.0
@@ -157,7 +157,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
                         child: Image.asset(
                           "assets/shared/typing.gif",
                           alignment: Alignment.centerLeft,
-                          color: Theme.of(context).cardColor,
+                          color: Theme.of(context).secondaryHeaderColor,
                           colorBlendMode: BlendMode.modulate,
                           package: "omnisaude_chatbot",
                           height: 40.0,

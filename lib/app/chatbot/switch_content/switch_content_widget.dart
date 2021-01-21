@@ -770,7 +770,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color:
-                                  Theme.of(context).cardColor.withOpacity(0.2),
+                                  Theme.of(context).secondaryHeaderColor.withOpacity(0.2),
                             ),
                             child: IconButton(
                               onPressed: () => Navigator.pop(context),
@@ -917,7 +917,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                 ),
                 color: _selected || !multiSelection.enabled
                     ? Theme.of(context).primaryColor
-                    : Theme.of(context).cardColor,
+                    : Theme.of(context).secondaryHeaderColor,
                 textColor: Colors.white,
                 child: Text(_label),
               ),
