@@ -25,7 +25,7 @@ abstract class _HomeControllerBase with Store {
       final HomeRepository _repository = HomeRepository();
       chatBots = await _repository.getChatBots();
     } on DioError catch (e) {
-      print(e);
+      throw e;
     }
   }
 }

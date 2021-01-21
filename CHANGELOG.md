@@ -1,3 +1,7 @@
+## 0.0.6+6
+
+* FIX: Update colors from themes;
+
 ## 0.0.6+5
 
 * FIX: Remove unused imports;

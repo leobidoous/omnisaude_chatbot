@@ -17,8 +17,8 @@ class AppWidget extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      // themeMode: ThemeMode.dark,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
+      // themeMode: ThemeMode.light,
       theme: ThemeData(
         primaryColor: Color(0xFF139ECC),
         backgroundColor: Colors.white,
@@ -47,6 +47,8 @@ class AppWidget extends StatelessWidget {
         hoverColor: Colors.transparent,
         fontFamily: "Helvetica Neue",
         textTheme: TextTheme(
+          bodyText1: TextStyle(color: Colors.white),
+          bodyText2: TextStyle(color: Colors.black),
           headline4: TextStyle(color: Colors.grey.shade900),
           headline5: TextStyle(color: Colors.grey.shade800),
           headline6: TextStyle(color: Colors.grey.shade300),

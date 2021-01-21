@@ -36,7 +36,7 @@ class ChatConnection extends Disposable {
         }
         _streamController.sink.add(_message);
         _onMessageReceived(_message);
-        await Future.delayed(Duration(milliseconds: 1));
+        await Future.delayed(Duration(milliseconds: 50));
         _streamSubscription.resume();
       },
       onError: (onError) {

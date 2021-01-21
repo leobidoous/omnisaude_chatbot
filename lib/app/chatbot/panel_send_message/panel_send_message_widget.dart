@@ -83,9 +83,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         case EventType.FINISH_ATTENDANCE:
           _humanAttendant = false;
           break;
-        case EventType.UPDATE_QUEUE:
-          _humanAttendant = false;
-          break;
         default:
           break;
       }
@@ -283,10 +280,16 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             cursorColor: Theme.of(context).primaryColor,
             textCapitalization: _textCapitalization,
             onFieldSubmitted: (String input) => _onSendTextMessage(input),
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color,
+            ),
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
               contentPadding: EdgeInsets.all(15.0),
               labelStyle: TextStyle(
+                color: Theme.of(context).textTheme.bodyText1.color,
+              ),
+              hintStyle: TextStyle(
                 color: Theme.of(context).textTheme.bodyText1.color,
               ),
               border: outlineInputBorder(),

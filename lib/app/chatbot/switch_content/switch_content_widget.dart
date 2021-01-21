@@ -444,7 +444,15 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                               "${option.title}",
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 18.0),
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: _enabled
+                                    ? Colors.white
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                              ),
                             ),
                           ),
                           _iconDetailsOption(option, multiSelection),
@@ -495,15 +503,23 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                         Text(
                           "${option.title}",
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 18.0),
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: _enabled
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyText1.color,
+                          ),
                         ),
                         const SizedBox(height: 5.0),
                         Text(
                           "${option.subtitle}",
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14.0,
                             fontStyle: FontStyle.italic,
+                            color: _enabled
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyText1.color,
                           ),
                         ),
                       ],
@@ -559,7 +575,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                           child: Text(
                             "${option.title}",
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 18.0),
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: _enabled
+                                  ? Colors.white
+                                  : Theme.of(context).textTheme.bodyText1.color,
+                            ),
                           ),
                         ),
                         Padding(
@@ -567,9 +588,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                           child: Text(
                             "${option.subtitle}",
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14.0,
                               fontStyle: FontStyle.italic,
+                              color: _enabled
+                                  ? Colors.white
+                                  : Theme.of(context).textTheme.bodyText1.color,
                             ),
                           ),
                         ),
@@ -665,7 +689,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                             "${option.title}",
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20.0),
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: _enabled
+                                  ? Colors.white
+                                  : Theme.of(context).textTheme.bodyText1.color,
+                            ),
                           ),
                         ),
                         Padding(
@@ -677,6 +706,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                             style: TextStyle(
                               fontSize: 14.0,
                               fontStyle: FontStyle.italic,
+                              color: _enabled
+                                  ? Colors.white
+                                  : Theme.of(context).textTheme.bodyText1.color,
                             ),
                           ),
                         ),
@@ -769,8 +801,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color:
-                                  Theme.of(context).secondaryHeaderColor.withOpacity(0.2),
+                              color: Theme.of(context)
+                                  .secondaryHeaderColor
+                                  .withOpacity(0.2),
                             ),
                             child: IconButton(
                               onPressed: () => Navigator.pop(context),
