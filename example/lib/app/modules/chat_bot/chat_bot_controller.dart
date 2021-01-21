@@ -4,8 +4,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
-import 'package:omnisaude_chatbot/app/src/omnisaude_chatbot.dart';
-import 'package:omnisaude_chatbot/app/src/omnisaude_video_call.dart';
+import 'package:omnisaude_chatbot/app/src/omni_bot.dart';
+import 'package:omnisaude_chatbot/app/src/omni_video_call.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../app_controller.dart';
@@ -20,7 +20,7 @@ class ChatBotController extends Disposable {
   static String _avatarUrl = AVATAR_URL;
 
   ChatConnection connection;
-  OmnisaudeChatbot omnisaudeChatbot;
+  OmniBot omnisaudeChatbot;
 
   StreamController streamController;
 
@@ -38,7 +38,7 @@ class ChatBotController extends Disposable {
       username: _username,
       avatarUrl: _avatarUrl,
     );
-    omnisaudeChatbot = OmnisaudeChatbot(connection: connection);
+    omnisaudeChatbot = OmniBot(connection: connection);
     streamController = await connection.onInitSession();
     streamController.stream.listen(
       (message) async {

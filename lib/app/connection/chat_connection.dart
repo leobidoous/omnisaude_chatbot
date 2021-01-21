@@ -27,7 +27,7 @@ class ChatConnection extends Disposable {
 
     connectionStatus = ConnectionStatus.WAITING;
     _streamSubscription = _channel.stream.listen(
-      (onMessage) async {
+          (onMessage) async {
         _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(onMessage));
@@ -47,8 +47,8 @@ class ChatConnection extends Disposable {
       onDone: () {
         log("Conexão encerrada!");
         connectionStatus = ConnectionStatus.DONE;
+        _streamController?.close();
       },
-      cancelOnError: true,
     );
     return _streamController;
   }
@@ -90,8 +90,8 @@ class ChatConnection extends Disposable {
     try {
       await _channel.sink.close(status.normalClosure, "Conexão encerrada");
       _channel.sink.close();
-      _streamController.close();
-      _streamSubscription.cancel();
+      _streamController?.close();
+      await _streamSubscription?.cancel();
       log("--##: CONEXÃO ENCERRADA!");
     } catch (e) {
       log("Erro ao encerrar sessão: $e");

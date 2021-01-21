@@ -153,7 +153,7 @@ class _ChooseWidgetToRenderWidgetState
                       bottomRight: Radius.circular(20.0),
                     ),
                     child: Container(
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).secondaryHeaderColor,
                       child: child,
                     ),
                   ),

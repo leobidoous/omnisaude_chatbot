@@ -153,7 +153,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     if (message.switchContent == null) return Container();
     return SafeArea(
       bottom: widget.safeArea,
-      top: widget.safeArea,
+      top: false,
       child: Padding(
         padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
         child: ClipRRect(
@@ -198,7 +198,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           child: SafeArea(
             bottom: widget.safeArea,
-            top: widget.safeArea,
+            top: false,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -286,6 +286,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             decoration: InputDecoration(
               hintText: "Escreva uma mensagem",
               contentPadding: EdgeInsets.all(15.0),
+              labelStyle: TextStyle(
+                color: Theme.of(context).textTheme.bodyText1.color,
+              ),
               border: outlineInputBorder(),
               focusedBorder: outlineInputBorder(),
               enabledBorder: outlineInputBorder(),

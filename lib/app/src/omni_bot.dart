@@ -8,10 +8,10 @@ import '../chatbot/panel_send_message/panel_send_message_widget.dart';
 import '../connection/chat_connection.dart';
 import '../core/models/ws_message_model.dart';
 
-class OmnisaudeChatbot extends Disposable {
+class OmniBot extends Disposable {
   final ChatConnection connection;
 
-  OmnisaudeChatbot({@required this.connection}) : assert(connection != null);
+  OmniBot({@required this.connection}) : assert(connection != null);
 
   Widget chooseWidgetToRender({WsMessage message, WsMessage lastMessage}) {
     return ChooseWidgetToRenderWidget(
@@ -21,14 +21,14 @@ class OmnisaudeChatbot extends Disposable {
     );
   }
 
-  Widget panelSendMessage({WsMessage lastMessage, bool safeArea}) {
+  Widget panelSendMessage({WsMessage lastMessage, bool safeArea: true}) {
     return PanelSendMessageWidget(
       lastMessage: lastMessage,
+      safeArea: safeArea,
       connection: connection,
     );
   }
 
   @override
-  void dispose() {
-  }
+  void dispose() {}
 }

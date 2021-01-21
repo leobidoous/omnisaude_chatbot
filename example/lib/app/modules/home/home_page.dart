@@ -60,7 +60,14 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               children: [
                 IconButton(
                   icon: Icon(Icons.refresh_rounded),
-                  onPressed: () async => await controller.getChatBots(),
+                  onPressed: () async {
+                    await controller.getChatBots().catchError((onError) {
+                      Navigator.pushNamed(
+                        context,
+                        '/chat_bot/b3ffda1c-b321-44b2-aceb-9ebab38a6f2c',
+                      );
+                    });
+                  },
                 ),
                 Text("Recarregar", textAlign: TextAlign.center),
               ],
@@ -95,7 +102,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
             borderRadius: BorderRadius.circular(10.0),
             color: _selected
                 ? Theme.of(context).primaryColor
-                : Theme.of(context).cardColor,
+                : Theme.of(context).secondaryHeaderColor,
           ),
           child: IconButton(
             onPressed: () {

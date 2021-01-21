@@ -23,7 +23,7 @@ class AppWidget extends StatelessWidget {
         primaryColor: Color(0xFF139ECC),
         backgroundColor: Colors.white,
         cardColor: Colors.grey,
-        secondaryHeaderColor: Colors.grey.shade300,
+        secondaryHeaderColor: Colors.grey,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,

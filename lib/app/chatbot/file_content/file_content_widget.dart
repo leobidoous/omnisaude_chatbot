@@ -154,7 +154,7 @@ class _FileContentWidgetState extends State<FileContentWidget>
             },
             child: Container(
               padding: EdgeInsets.all(10.0),
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).secondaryHeaderColor,
               child: Row(
                 children: [
                   Icon(Icons.insert_drive_file_rounded),
