@@ -1,3 +1,9 @@
+## 0.0.6+5
+
+* FIX: Remove unused imports;
+* FIX: Close connection after connection done;
+* FIX: Update colors from themes;
+
 ## 0.0.6+4
 
 * Revisão de código, melhorias de desempenho e correção de bugs.
