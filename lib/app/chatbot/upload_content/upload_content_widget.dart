@@ -138,7 +138,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                 ).toString();
                 final WsMessage _message = WsMessage(
                   fileContent: FileContent(
-                    fileType: widget.message.uploadContent.fileType,
+                    fileType: widget.message.uploadContent?.fileType,
                     name: _filename,
                     value: _base64,
                   ),
@@ -170,7 +170,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                 ).toString();
                 final WsMessage _message = WsMessage(
                   fileContent: FileContent(
-                    fileType: widget.message.uploadContent.fileType,
+                    fileType: widget.message.uploadContent?.fileType,
                     name: _filename,
                     value: _base64,
                   ),
@@ -202,7 +202,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                 ).toString();
                 final WsMessage _message = WsMessage(
                   fileContent: FileContent(
-                    fileType: widget.message.uploadContent.fileType,
+                    fileType: widget.message.uploadContent?.fileType,
                     name: _filename,
                     value: _base64,
                   ),

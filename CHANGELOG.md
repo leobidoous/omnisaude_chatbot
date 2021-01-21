@@ -1,3 +1,7 @@
+## 0.0.6+7
+
+* FIX: fix bug send files in human attendance;
+
 ## 0.0.6+6
 
 * FIX: Update colors from themes;
