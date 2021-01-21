@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../core/models/ws_message_model.dart';
 
+import '../../core/models/ws_message_model.dart';
 
 class DatetimeOnMessageWidget extends StatefulWidget {
   final WsMessage message;
 
-  const DatetimeOnMessageWidget(
-      {Key key, @required this.message})
+  const DatetimeOnMessageWidget({Key key, @required this.message})
       : super(key: key);
 
   @override
@@ -16,7 +15,6 @@ class DatetimeOnMessageWidget extends StatefulWidget {
 }
 
 class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
-
   @override
   Widget build(BuildContext context) {
     final String _time = DateFormat("jm", "PT_br").format(
@@ -29,7 +27,11 @@ class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
       children: [
         Text(
           "$_time",
-          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10.0),
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+            color: Theme.of(context).textTheme.bodyText1.color,
+            fontSize: 10.0,
+          ),
         ),
         const SizedBox(height: 1.0),
         Container(
