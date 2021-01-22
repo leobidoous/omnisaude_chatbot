@@ -69,7 +69,13 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                     });
                   },
                 ),
-                Text("Recarregar", textAlign: TextAlign.center),
+                Text(
+                  "Recarregar",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
+                ),
               ],
             );
           return GridView.builder(
