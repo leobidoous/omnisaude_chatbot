@@ -2,7 +2,7 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:flutter/material.dart';
 import 'package:omnisaude_chatbot/app/core/constants/constants.dart';
-import 'package:picture_in_picture/picture_in_picture.dart';
+import 'package:picture_in_picture/classes/picture_in_picture.dart';
 
 class OutcomingCallWidget extends StatefulWidget {
   @override

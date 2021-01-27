@@ -1,3 +1,7 @@
+## 0.0.7
+
+* RELEASE: add automatic authentication to system events;
+
 ## 0.0.6+7
 
 * FIX: fix bug send files in human attendance;

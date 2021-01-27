@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -27,7 +28,7 @@ class ChatConnection extends Disposable {
 
     connectionStatus = ConnectionStatus.WAITING;
     _streamSubscription = _channel.stream.listen(
-          (onMessage) async {
+      (onMessage) async {
         _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
         final WsMessage _message = WsMessage.fromJson(jsonDecode(onMessage));
@@ -59,6 +60,29 @@ class ChatConnection extends Disposable {
     } catch (e) {
       log("Erro ao receber mensagem: $e");
     }
+  }
+
+  Future<void> authenticate({
+    String cpf,
+    String token,
+    String userId,
+    String username,
+    String avatarUrl,
+    Map<String, dynamic> metadata,
+  }) async {
+    final WsMessage _message = new WsMessage(
+      messageContent: MessageContent(
+        extras: {
+          "cpf": cpf,
+          "token": token,
+          "name": username,
+          "avatar": avatarUrl,
+          "metadata": metadata,
+          "external_id": userId,
+        },
+      ),
+    );
+    await onSendMessage(_message);
   }
 
   Future<void> onSendMessage(WsMessage message) async {

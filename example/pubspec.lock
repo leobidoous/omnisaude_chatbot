@@ -566,7 +566,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.6+6"
+    version: "0.0.7"
   package_config:
     dependency: transitive
     description:
@@ -657,7 +657,7 @@ packages:
       name: picture_in_picture
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   platform:
     dependency: transitive
     description:

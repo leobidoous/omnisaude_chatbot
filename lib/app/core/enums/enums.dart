@@ -16,6 +16,7 @@ enum EventType {
   INIT_ATTENDANCE,
   UPDATE_QUEUE,
   FINISH_ATTENDANCE,
+  AUTHENTICATION,
 }
 enum MessageType { HTML, IMAGE, TEXT }
 enum Layout { AVATAR_CARD, BUTTON, CARD, IMAGE_CARD }
@@ -61,6 +62,7 @@ final eventTypeValues = EnumValues({
   "init_attendance": EventType.INIT_ATTENDANCE,
   "attendant_left": EventType.ATTENDANT_LEFT,
   "finish_attendance": EventType.FINISH_ATTENDANCE,
+  "authentication": EventType.AUTHENTICATION,
 });
 
 final contentFileTypeValues = EnumValues({

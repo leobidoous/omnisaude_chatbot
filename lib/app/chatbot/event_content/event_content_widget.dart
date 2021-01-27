@@ -37,6 +37,9 @@ class _EventContentWidgetState extends State<EventContentWidget> {
       case EventType.CONNECTED:
         // TODO: Handle this case.
         break;
+      case EventType.AUTHENTICATION:
+        // TODO: Handle this case.
+        break;
       case EventType.NLU_START:
         // TODO: Handle this case.
         break;
@@ -79,7 +82,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
 
   Widget _eventMessageWidget(EventContent event) {
     return Padding(
-      padding: const EdgeInsets.only( bottom: 10.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -151,9 +154,7 @@ class _EventContentWidgetState extends State<EventContentWidget> {
                     child: Container(
                       color: Theme.of(context).secondaryHeaderColor,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5.0
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: Image.asset(
                           "assets/shared/typing.gif",
                           alignment: Alignment.centerLeft,

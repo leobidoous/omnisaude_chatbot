@@ -131,7 +131,11 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       padding: const EdgeInsets.all(5.0),
       child: Text(
         "* Selecione ao menos ${multiSelection.min} $_label.",
-        style: TextStyle(fontSize: 10.0, fontStyle: FontStyle.italic),
+        style: TextStyle(
+          fontSize: 10.0,
+          fontStyle: FontStyle.italic,
+          color: Theme.of(context).textTheme.bodyText1.color,
+        ),
       ),
     );
   }
