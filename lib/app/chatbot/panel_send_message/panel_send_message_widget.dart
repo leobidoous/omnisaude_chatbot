@@ -148,6 +148,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   Widget _panelSwitch(ChatConnection connection, WsMessage message) {
     if (message.switchContent == null) return Container();
+    if (widget.connection.connectionStatus != ConnectionStatus.ACTIVE) {
+      return Container();
+    }
     return SafeArea(
       bottom: widget.safeArea,
       top: false,
@@ -187,6 +190,9 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
   Widget _panelSendMessage(WsMessage message) {
     final bool _enabled = _nluEnabled || _panelInputEnabled || _humanAttendant;
     if (!_enabled) return Container();
+    if (widget.connection.connectionStatus != ConnectionStatus.ACTIVE) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

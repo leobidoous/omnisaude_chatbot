@@ -1,3 +1,7 @@
+## 0.0.7+1
+
+* FIX: don't allow send message if connection is broken (inactive);
+
 ## 0.0.7
 
 * RELEASE: add automatic authentication to system events;

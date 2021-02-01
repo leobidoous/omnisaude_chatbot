@@ -7,7 +7,7 @@ import '../../core/models/option_model.dart';
 import '../../core/models/ws_message_model.dart';
 
 class SwitchContentController extends Disposable {
-  final RxList<Option> selectedOptions = RxList();
+  RxList<Option> selectedOptions = RxList();
   RxList<Option> filteredOptions = RxList();
 
   Future<void> onSendOptionsMessage(ChatConnection connection) async {

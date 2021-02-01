@@ -27,43 +27,6 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0.0,
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   title: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.stretch,
-      //     children: [
-      //       Text("Chatbot"),
-      //       RxBuilder(
-      //         builder: (_) {
-      //           if (controller.botTyping.value) {
-      //             return Text(
-      //               "${controller.botUsername.value} está digitando...",
-      //               style: TextStyle(
-      //                 fontStyle: FontStyle.italic,
-      //                 fontWeight: FontWeight.w300,
-      //                 fontSize: 12.0,
-      //               ),
-      //             );
-      //           }
-      //           return Text(
-      //             "${controller.botUsername.value}",
-      //             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.0),
-      //           );
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.videocam_rounded),
-      //       onPressed: () {
-      //         controller.omnisaudeVideoCall.initVideoCall(context);
-      //       },
-      //     ),
-      //   ],
-      // ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
         decoration: BoxDecoration(
