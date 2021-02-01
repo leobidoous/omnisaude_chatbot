@@ -95,8 +95,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   }
 
   Widget _btnSendMultiplesOptions(MultiSelection multiSelection) {
+    if (!multiSelection.enabled) return Container();
     return RxBuilder(builder: (_) {
-      if (!multiSelection.enabled) return Container();
       final bool _enabled =
           _controller.selectedOptions.length >= multiSelection.min;
       return Padding(
@@ -659,9 +659,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                                           topRight: Radius.circular(10.0),
                                         ),
                                         child: Container(
-                                          color: Theme.of(context)
-                                              .cardColor
-                                              .withOpacity(0.5),
+                                          color: Theme.of(context).textTheme.headline4.color,
                                           child: ImageWidget(
                                             url: option.image,
                                             fit: BoxFit.cover,
@@ -811,7 +809,11 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                             ),
                             child: IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: const Icon(Icons.close),
+                              icon: Icon(
+                                Icons.close,
+                                color:
+                                    Theme.of(context).textTheme.bodyText1.color,
+                              ),
                             ),
                           ),
                         ],
@@ -831,6 +833,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                           radius: 10.0,
                           width: 200.0,
                           height: 200.0,
+                          showNone: false,
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -871,7 +874,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: Theme.of(context).textTheme.headline4.color,
+        // color: Theme.of(context).textTheme.headline4.color,
+        color: Theme.of(context).cardColor,
       ),
       margin: const EdgeInsets.only(bottom: 15.0),
       child: TextFormField(
@@ -885,10 +889,14 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
         textInputAction: TextInputAction.newline,
         cursorColor: Theme.of(context).primaryColor,
         textCapitalization: TextCapitalization.sentences,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: const TextStyle(height: 3.0),
-          contentPadding: const EdgeInsets.fromLTRB(10.0, 35.0, 10.0, 15.0),
+          labelStyle: TextStyle(
+            height: 3.0,
+            color: Theme.of(context).primaryColor,
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(10.0, 50.0, 10.0, 0.0),
           border: outlineInputBorder(),
           focusedBorder: outlineInputBorder(),
           enabledBorder: outlineInputBorder(),
@@ -916,7 +924,10 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
         ),
         tooltip: "Detalhes",
         visualDensity: VisualDensity.compact,
-        icon: const Icon(Icons.info_outline_rounded),
+        icon: Icon(
+          Icons.info_outline_rounded,
+          color: Theme.of(context).textTheme.bodyText1.color,
+        ),
       ),
     );
   }

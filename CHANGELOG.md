@@ -1,3 +1,7 @@
+## 0.0.7+2
+
+* FIX: remove RxBuilder unused;
+
 ## 0.0.7+1
 
 * FIX: don't allow send message if connection is broken (inactive);
