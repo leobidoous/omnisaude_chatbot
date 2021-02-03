@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
@@ -12,8 +14,10 @@ import '../../shared/image/image_widget.dart';
 
 class MessageContentWidget extends StatefulWidget {
   final WsMessage message;
+  final ChatConnection connection;
 
-  const MessageContentWidget({Key key, @required this.message})
+  const MessageContentWidget(
+      {Key key, @required this.message, @required this.connection})
       : super(key: key);
 
   @override
@@ -39,7 +43,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   Widget _textWidget(String message) {
     return Container(
       padding: const EdgeInsets.all(10.0),
-      child: SelectableText(
+      child: Text(
         "${message?.trim()}",
         style: TextStyle(color: Colors.white),
       ),
@@ -55,9 +59,9 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 final ViewPhotoService _viewPhotoService = ViewPhotoService();
-                _viewPhotoService.onViewSinglePhoto(context, url);
+                await _viewPhotoService.onViewSinglePhoto(context, url);
                 _viewPhotoService.dispose();
               },
               child: Container(
@@ -105,5 +109,20 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
         print(exception);
       },
     );
+  }
+
+  RelativeRect buttonMenuPosition(BuildContext c) {
+    final RenderBox _obj = c.findRenderObject();
+    final RenderBox overlay = Overlay.of(c).context.findRenderObject();
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        _obj.localToGlobal(_obj.size.bottomLeft(Offset.zero),
+            ancestor: overlay),
+        _obj.localToGlobal(_obj.size.bottomLeft(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    return position;
   }
 }

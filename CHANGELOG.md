@@ -1,3 +1,7 @@
+## 0.0.7+3
+
+* FIX: fix show option detail;
+
 ## 0.0.7+2
 
 * FIX: remove RxBuilder unused;

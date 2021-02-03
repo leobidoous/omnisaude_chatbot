@@ -9,17 +9,16 @@ class ViewPhotoService extends Disposable {
     try {
       await showDialog(
         context: context,
+        useSafeArea: false,
         builder: (context) {
-          return SafeArea(
-            child: Scaffold(
-              backgroundColor: Colors.black87,
-              body: Stack(
+          return Scaffold(
+            backgroundColor: Colors.black87,
+            body: SafeArea(
+              child: Stack(
                 fit: StackFit.expand,
                 children: [
                   PhotoView(
-                    backgroundDecoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor.withOpacity(0.25),
-                    ),
+                    backgroundDecoration: BoxDecoration(color: Colors.black87),
                     imageProvider: CachedNetworkImageProvider(url),
                     loadingBuilder: (context, image) {
                       return Column(

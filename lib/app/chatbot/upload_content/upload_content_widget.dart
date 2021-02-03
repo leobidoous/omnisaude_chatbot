@@ -60,7 +60,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
-                      color: Theme.of(context).secondaryHeaderColor,
+                      color: Theme.of(context).cardColor,
                     ),
                     margin: const EdgeInsets.symmetric(
                       vertical: 10.0,
@@ -135,7 +135,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
               },
             );
           },
-          color: Theme.of(context).textTheme.headline1.color,
+          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
           icon: Icon(Icons.attach_file_rounded),
         );
       },

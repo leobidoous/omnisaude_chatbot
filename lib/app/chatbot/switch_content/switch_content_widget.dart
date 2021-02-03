@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rx_notifier/rx_notifier.dart';
@@ -115,6 +116,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
               ),
               textColor: _enabled ? Colors.white : null,
               color: Theme.of(context).primaryColor,
+              disabledTextColor: Theme.of(context).cardColor,
               disabledColor: Theme.of(context).backgroundColor,
               child: Text("Enviar"),
             ),
@@ -303,21 +305,6 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                   ),
                 );
               }
-              if (_controller.filteredOptions.isEmpty) {
-                return Padding(
-                  padding: EdgeInsets.only(top: 10.0, bottom: 5.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Nenhuma opção encontrada",
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ],
-                  ),
-                );
-              }
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: _controller.filteredOptions.length,
@@ -339,57 +326,49 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
             },
           ),
         ),
-        const SizedBox(height: 5.0),
-        Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Theme.of(context).backgroundColor,
-              ),
-              margin: EdgeInsets.all(5.0),
-              child: TextFormField(
-                autofocus: true,
-                focusNode: _messageFocus,
-                controller: _messageText,
-                scrollPhysics: BouncingScrollPhysics(),
-                onChanged: (String input) {
-                  _controller.onSearchIntoOptions(options, input);
-                },
-                textInputAction: TextInputAction.done,
-                cursorColor: Theme.of(context).primaryColor,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  hintText: "Informe a opção desejada",
-                  contentPadding: const EdgeInsets.fromLTRB(
-                    10.0,
-                    10.0,
-                    40.0,
-                    10.0,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+          child: CupertinoTextField(
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            autofocus: true,
+            focusNode: _messageFocus,
+            controller: _messageText,
+            placeholder: "Informe o nome da opção",
+            autocorrect: false,
+            padding: const EdgeInsets.all(10.0),
+            textCapitalization: TextCapitalization.sentences,
+            placeholderStyle: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color.withOpacity(
+                    0.5,
                   ),
-                  border: outlineInputBorder(),
-                  focusedBorder: outlineInputBorder(),
-                  enabledBorder: outlineInputBorder(),
-                  disabledBorder: outlineInputBorder(),
-                  focusedErrorBorder: outlineInputBorder(),
-                  errorBorder: outlineInputBorder(),
+            ),
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color,
+            ),
+            onChanged: (input) =>
+                _controller.onSearchIntoOptions(options, input),
+            suffixMode: OverlayVisibilityMode.editing,
+            suffix: GestureDetector(
+              onTap: () {
+                _messageText.clear();
+                _controller.onSearchIntoOptions(options, _messageText.text);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 16.0,
+                  color:
+                      Theme.of(context).textTheme.bodyText1.color.withOpacity(
+                            0.5,
+                          ),
                 ),
               ),
             ),
-            IconButton(
-              onPressed: () {
-                if (_messageText.text.trim().isNotEmpty) {
-                  _messageText.clear();
-                  _controller.onSearchIntoOptions(
-                    options,
-                    _messageText.text.trim(),
-                  );
-                }
-              },
-              icon: Icon(Icons.arrow_drop_up_rounded),
-            ),
-          ],
+          ),
         ),
       ],
     );
@@ -659,7 +638,10 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                                           topRight: Radius.circular(10.0),
                                         ),
                                         child: Container(
-                                          color: Theme.of(context).textTheme.headline4.color,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              .color,
                                           child: ImageWidget(
                                             url: option.image,
                                             fit: BoxFit.cover,
@@ -775,29 +757,41 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     await showDialog(
       context: context,
       barrierDismissible: true,
+      // barrierColor: Colors.red,
       builder: (context) {
         return Padding(
           padding: EdgeInsets.all(20.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Scaffold(
-              backgroundColor: Theme.of(context).backgroundColor,
-              body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Card(
+                elevation: 0.0,
+                color: Colors.transparent,
+                margin: EdgeInsets.zero,
                 child: Container(
-                  color: Theme.of(context).backgroundColor,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Theme.of(context).textTheme.headline4.color,
+                  ),
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 10.0,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         children: [
-                          const Expanded(
-                            child: const Text(
+                          Expanded(
+                            child: Text(
                               "Detalhes da opção",
-                              style: const TextStyle(fontSize: 25),
+                              style: TextStyle(
+                                fontSize: 25,
+                                color:
+                                    Theme.of(context).textTheme.bodyText1.color,
+                              ),
                             ),
                           ),
                           Container(
@@ -837,12 +831,13 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      Expanded(
+                      Flexible(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.only(top: 10.0),
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               _textFormFieldDetails(
                                 option.title,
@@ -862,7 +857,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         );
       },

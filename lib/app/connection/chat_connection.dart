@@ -23,6 +23,8 @@ class ChatConnection extends Disposable {
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
+  WsMessage _message;
+
   Future<StreamController> onInitSession() async {
     _channel = WebSocketChannel.connect(Uri.parse(url));
 
@@ -31,7 +33,7 @@ class ChatConnection extends Disposable {
       (onMessage) async {
         _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
-        final WsMessage _message = WsMessage.fromJson(jsonDecode(onMessage));
+        _message = WsMessage.fromJson(jsonDecode(onMessage));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           setUserPeer(_message.eventContent.message);
         }
@@ -103,6 +105,13 @@ class ChatConnection extends Disposable {
     } catch (e) {
       log("Erro ao enviar mensagem: $e");
     }
+  }
+
+  bool get showingPanel {
+    return _message?.uploadContent != null ||
+        _message?.switchContent != null ||
+        _message?.inputContent != null ||
+        connectionStatus == ConnectionStatus.DONE;
   }
 
   String get getUserPeer => _myPeer;

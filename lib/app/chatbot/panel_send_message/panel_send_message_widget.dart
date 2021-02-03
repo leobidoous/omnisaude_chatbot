@@ -8,7 +8,6 @@ import '../../core/enums/enums.dart';
 import '../../core/models/message_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../core/services/datetime_picker_service.dart';
-import '../../shared/widgets/outline_input_border.dart';
 import '../switch_content/switch_content_widget.dart';
 import '../upload_content/upload_content_widget.dart';
 
@@ -96,8 +95,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       switch (_message.inputContent.inputType) {
         case InputType.DATE:
           _dateEnabled = true;
-          _textEnabled = true;
-          _mask = MaskTextInputFormatter(mask: "##/##/####");
           break;
         case InputType.TEXT:
           _textEnabled = true;
@@ -193,27 +190,29 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
     if (widget.connection.connectionStatus != ConnectionStatus.ACTIVE) {
       return Container();
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          color: Theme.of(context).textTheme.headline4.color,
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          child: SafeArea(
-            bottom: widget.safeArea,
-            top: false,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _btnChooseDateWidget(),
-                _btnChooseFileWidget(message),
-                Expanded(child: _textFormFieldWidget()),
-                _btnSendTextMessageWidget(),
-              ],
-            ),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
         ),
-      ],
+        color: Theme.of(context).textTheme.headline4.color,
+        // color: Colors.red,
+      ),
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      child: SafeArea(
+        bottom: widget.safeArea,
+        top: false,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _btnChooseDateWidget(),
+            _btnChooseFileWidget(message),
+            Expanded(child: _textFormFieldWidget()),
+            _btnSendTextMessageWidget(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -239,7 +238,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
               },
             ).catchError((onError) => null);
           },
-          color: Theme.of(context).textTheme.headline1.color,
+          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
           icon: Icon(Icons.date_range_rounded),
         ),
       ),
@@ -248,7 +247,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
 
   Widget _btnChooseFileWidget(WsMessage message) {
     final bool _enabled = _attachEnabled || _humanAttendant;
-
     return IgnorePointer(
       ignoring: !_enabled,
       child: Opacity(
@@ -267,44 +265,36 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       ignoring: !_enabled,
       child: Opacity(
         opacity: _enabled ? 1.0 : 0.3,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0),
-            color: Theme.of(context).textTheme.headline5.color,
-          ),
-          child: TextFormField(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 5.0),
+          child: CupertinoTextField(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Theme.of(context).textTheme.headline5.color,
+            ),
             minLines: 1,
             maxLines: 5,
-            autofocus: true,
+            autofocus: _enabled,
             enabled: _enabled,
             focusNode: _messageFocus,
             controller: _messageText,
             inputFormatters: [_mask],
             keyboardType: _textInputType,
-            scrollPhysics: BouncingScrollPhysics(),
             textInputAction: TextInputAction.send,
-            cursorColor: Theme.of(context).primaryColor,
             textCapitalization: _textCapitalization,
-            onFieldSubmitted: (String input) => _onSendTextMessage(input),
+            cursorColor: Theme.of(context).primaryColor,
+            scrollPhysics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(10.0),
+            placeholder: "Escreva uma mensagem",
+            placeholderStyle: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color.withOpacity(
+                    0.5,
+                  ),
+            ),
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyText1.color,
             ),
-            decoration: InputDecoration(
-              hintText: "Escreva uma mensagem",
-              contentPadding: EdgeInsets.all(15.0),
-              labelStyle: TextStyle(
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              hintStyle: TextStyle(
-                color: Theme.of(context).textTheme.bodyText1.color,
-              ),
-              border: outlineInputBorder(),
-              focusedBorder: outlineInputBorder(),
-              enabledBorder: outlineInputBorder(),
-              disabledBorder: outlineInputBorder(),
-              focusedErrorBorder: outlineInputBorder(),
-              errorBorder: outlineInputBorder(),
-            ),
+            onSubmitted: (String input) => _onSendTextMessage(input),
           ),
         ),
       ),
@@ -320,7 +310,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         child: IconButton(
           iconSize: 30.0,
           onPressed: () => _onSendTextMessage(_messageText.text),
-          color: Theme.of(context).textTheme.headline1.color,
+          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
           icon: Icon(Icons.send_rounded),
         ),
       ),

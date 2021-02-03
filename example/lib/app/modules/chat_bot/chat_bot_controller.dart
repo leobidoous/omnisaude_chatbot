@@ -41,6 +41,7 @@ class ChatBotController extends Disposable {
     );
     omnisaudeChatbot = OmniBot(connection: connection);
     streamController = await connection.onInitSession();
+    messages.clear();
     _streamSubscription = streamController.stream.listen(
       (message) async {
         _streamSubscription.pause();
@@ -61,8 +62,9 @@ class ChatBotController extends Disposable {
         connectionStatus.value = ConnectionStatus.ERROR;
       }),
       onDone: () {
-        // connectionStatus.value = ConnectionStatus.DONE;
+        connectionStatus.value = ConnectionStatus.DONE;
       },
+      cancelOnError: true,
     );
   }
 

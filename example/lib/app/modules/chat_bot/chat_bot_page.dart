@@ -26,25 +26,28 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              "assets/shared/background_walpaper.png",
-              package: "omnisaude_chatbot",
-            ),
-            fit: BoxFit.cover,
-            scale: 0.1,
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).textTheme.headline6.color,
-              BlendMode.difference,
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            "assets/shared/background_walpaper.png",
+            package: "omnisaude_chatbot",
           ),
-          color: Theme.of(context).backgroundColor,
+          fit: BoxFit.cover,
+          scale: 0.1,
+          colorFilter: ColorFilter.mode(
+            Theme.of(context).textTheme.headline6.color,
+            BlendMode.difference,
+          ),
         ),
-        child: _buildListWidget(),
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _buildListWidget(),
+        ),
       ),
     );
   }
@@ -53,6 +56,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
     return RxBuilder(
       builder: (_) {
         Widget _popup = Container();
+        Widget _reconnect = Container();
         if (controller.connectionStatus.value == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
             background: Theme.of(context).primaryColor,
@@ -75,34 +79,45 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             opacity: 0.5,
           );
         } else if (controller.connectionStatus.value == ConnectionStatus.DONE) {
-          _popup = ContentErrorWidget(
-            messageLabel: "Sua conexào foi finalizada",
-            background: Theme.of(context).backgroundColor,
-            function: () => controller.onInitAndListenStream(widget.chatBotId),
-            buttonLabel: "Tentar novamente",
-            margin: 20.0,
-            padding: 20.0,
-            radius: 20.0,
-            opacity: 0.5,
+          _reconnect = SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: FlatButton(
+                onPressed: () => controller.onInitAndListenStream(
+                  widget.chatBotId,
+                ),
+                color: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                  "Reconectar",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           );
-        } else if (controller.connectionStatus.value ==
-            ConnectionStatus.ACTIVE) {
-          if (controller.messages.isNotEmpty) {
-            _popup = Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => FocusScope.of(context).requestFocus(
-                      FocusNode(),
-                    ),
+        }
+        if (controller.messages.isNotEmpty) {
+          _popup = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: SafeArea(
+                    bottom: !controller.connection.showingPanel,
                     child: ListView.builder(
                       reverse: true,
                       physics: const BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
                       itemCount: controller.messages.length,
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5.0,
+                        horizontal: 15.0,
+                      ),
                       itemBuilder: (BuildContext context, int index) {
                         return controller.omnisaudeChatbot.chooseWidgetToRender(
                           message: controller.messages[index],
@@ -112,12 +127,13 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                     ),
                   ),
                 ),
-                controller.omnisaudeChatbot.panelSendMessage(
-                  lastMessage: controller.messages.first,
-                ),
-              ],
-            );
-          }
+              ),
+              controller.omnisaudeChatbot.panelSendMessage(
+                lastMessage: controller.messages.first,
+              ),
+              _reconnect,
+            ],
+          );
         }
         return Stack(fit: StackFit.expand, children: [_popup]);
       },
