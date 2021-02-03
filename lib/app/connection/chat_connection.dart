@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -22,15 +23,17 @@ class ChatConnection extends Disposable {
   ConnectionStatus connectionStatus = ConnectionStatus.NONE;
   WebSocketChannel _channel;
 
+  WsMessage _message;
+
   Future<StreamController> onInitSession() async {
     _channel = WebSocketChannel.connect(Uri.parse(url));
 
     connectionStatus = ConnectionStatus.WAITING;
     _streamSubscription = _channel.stream.listen(
-          (onMessage) async {
+      (onMessage) async {
         _streamSubscription.pause();
         connectionStatus = ConnectionStatus.ACTIVE;
-        final WsMessage _message = WsMessage.fromJson(jsonDecode(onMessage));
+        _message = WsMessage.fromJson(jsonDecode(onMessage));
         if (_message.eventContent?.eventType == EventType.CONNECTED) {
           setUserPeer(_message.eventContent.message);
         }
@@ -61,6 +64,29 @@ class ChatConnection extends Disposable {
     }
   }
 
+  Future<void> authenticate({
+    String cpf,
+    String token,
+    String userId,
+    String username,
+    String avatarUrl,
+    Map<String, dynamic> metadata,
+  }) async {
+    final WsMessage _message = new WsMessage(
+      messageContent: MessageContent(
+        extras: {
+          "cpf": cpf,
+          "token": token,
+          "name": username,
+          "avatar": avatarUrl,
+          "metadata": metadata,
+          "external_id": userId,
+        },
+      ),
+    );
+    await onSendMessage(_message);
+  }
+
   Future<void> onSendMessage(WsMessage message) async {
     try {
       message.username = username;
@@ -79,6 +105,13 @@ class ChatConnection extends Disposable {
     } catch (e) {
       log("Erro ao enviar mensagem: $e");
     }
+  }
+
+  bool get showingPanel {
+    return _message?.uploadContent != null ||
+        _message?.switchContent != null ||
+        _message?.inputContent != null ||
+        connectionStatus == ConnectionStatus.DONE;
   }
 
   String get getUserPeer => _myPeer;

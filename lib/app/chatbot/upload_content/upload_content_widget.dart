@@ -54,66 +54,88 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
           onPressed: () async {
             await showModalBottomSheet(
               context: context,
-              isScrollControlled: true,
-              backgroundColor: Theme.of(context).textTheme.headline5.color,
-              enableDrag: false,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                ),
-              ),
+              backgroundColor: Colors.transparent,
               builder: (_) {
                 return SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        onTap: _openCamera,
-                        title: Text(
-                          "Câmera",
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Theme.of(context).cardColor,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 15.0,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ListTile(
+                          onTap: _openCamera,
+                          title: Text(
+                            "Câmera",
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                            ),
+                          ),
+                          leading: Icon(
+                            Icons.camera_alt_rounded,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        leading: Icon(
-                          Icons.camera_alt_rounded,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                      ),
-                      ListTile(
-                        onTap: _openGallery,
-                        title: Text(
-                          "Galeria",
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color,
+                        Divider(height: 0.0),
+                        ListTile(
+                          onTap: _openGallery,
+                          title: Text(
+                            "Galeria",
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                            ),
+                          ),
+                          leading: Icon(
+                            Icons.photo_rounded,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        leading: Icon(
-                          Icons.photo_rounded,
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                      ),
-                      ListTile(
-                        onTap: _openFilePicker,
-                        title: Text(
-                          "Documentos",
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color,
+                        Divider(height: 0.0),
+                        ListTile(
+                          onTap: _openFilePicker,
+                          title: Text(
+                            "Documentos",
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                            ),
+                          ),
+                          leading: Icon(
+                            Icons.insert_drive_file_rounded,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        leading: Icon(
-                          Icons.insert_drive_file_rounded,
-                          color: Theme.of(context).textTheme.bodyText1.color,
+                        Divider(height: 0.0),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 15.0),
+                          child: FlatButton(
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            textColor: Colors.white,
+                            child: Text("Cancelar"),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
             );
           },
-          color: Theme.of(context).textTheme.headline1.color,
+          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
           icon: Icon(Icons.attach_file_rounded),
         );
       },

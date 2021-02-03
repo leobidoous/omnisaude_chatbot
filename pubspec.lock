@@ -643,7 +643,7 @@ packages:
       name: picture_in_picture
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   platform:
     dependency: transitive
     description:

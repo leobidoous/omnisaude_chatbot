@@ -1,3 +1,19 @@
+## 0.0.7+3
+
+* FIX: fix show option detail;
+
+## 0.0.7+2
+
+* FIX: remove RxBuilder unused;
+
+## 0.0.7+1
+
+* FIX: don't allow send message if connection is broken (inactive);
+
+## 0.0.7
+
+* RELEASE: add automatic authentication to system events;
+
 ## 0.0.6+7
 
 * FIX: fix bug send files in human attendance;

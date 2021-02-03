@@ -23,6 +23,7 @@ class ChatBotController extends Disposable {
   OmniBot omnisaudeChatbot;
 
   StreamController streamController;
+  StreamSubscription _streamSubscription;
 
   RxNotifier<ConnectionStatus> connectionStatus = new RxNotifier(
     ConnectionStatus.NONE,
@@ -40,11 +41,22 @@ class ChatBotController extends Disposable {
     );
     omnisaudeChatbot = OmniBot(connection: connection);
     streamController = await connection.onInitSession();
-    streamController.stream.listen(
+    messages.clear();
+    _streamSubscription = streamController.stream.listen(
       (message) async {
+        _streamSubscription.pause();
         messages.insert(0, message);
+        if (message.eventContent?.eventType == EventType.AUTHENTICATION) {
+          await connection.authenticate(
+            cpf: "123.123.123.12",
+            username: "Leonardo",
+            token: "12312312312",
+            metadata: {"teste": "teste"},
+          );
+        }
         _onChangeChatGlobalConfigs(message);
         connectionStatus.value = ConnectionStatus.ACTIVE;
+        _streamSubscription.resume();
       },
       onError: ((onError) {
         connectionStatus.value = ConnectionStatus.ERROR;
@@ -52,6 +64,7 @@ class ChatBotController extends Disposable {
       onDone: () {
         connectionStatus.value = ConnectionStatus.DONE;
       },
+      cancelOnError: true,
     );
   }
 
@@ -63,8 +76,9 @@ class ChatBotController extends Disposable {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     streamController?.close();
+    await _streamSubscription?.cancel();
     connection.dispose();
   }
 }

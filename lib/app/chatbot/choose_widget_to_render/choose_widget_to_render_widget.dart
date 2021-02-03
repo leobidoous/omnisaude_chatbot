@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
 
 import '../../connection/chat_connection.dart';
@@ -28,6 +31,8 @@ class ChooseWidgetToRenderWidget extends StatefulWidget {
 
 class _ChooseWidgetToRenderWidgetState
     extends State<ChooseWidgetToRenderWidget> {
+  SlidableController _slidableController = new SlidableController();
+
   @override
   Widget build(BuildContext context) {
     final WsMessage _message = widget.message;
@@ -59,14 +64,73 @@ class _ChooseWidgetToRenderWidgetState
       if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _myPeer) {
-        return _myMessageWidget(
-          _message,
-          MessageContentWidget(message: _message),
+        return Slidable(
+          actionPane: SlidableDrawerActionPane(),
+          controller: _slidableController,
+          enabled: widget.connection.showingPanel,
+          actionExtentRatio: 0.15,
+          key: ObjectKey(_message),
+          // actions: <Widget>[
+          //   IconSlideAction(
+          //     color: Colors.transparent,
+          //     iconWidget: Icon(
+          //       Icons.reply_rounded,
+          //       color: Theme.of(context).primaryColor,
+          //     ),
+          //   ),
+          // ],
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              color: Colors.transparent,
+              iconWidget: Icon(
+                Icons.more_horiz_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
+              onTap: () async => await showMoreOptions(_message),
+            ),
+          ],
+          child: _myMessageWidget(
+            _message,
+            MessageContentWidget(
+              message: _message,
+              connection: widget.connection,
+            ),
+          ),
         );
       }
-      return _anotherMessageWidget(
-        _message,
-        MessageContentWidget(message: _message),
+      return Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        controller: _slidableController,
+        enabled: widget.connection.showingPanel,
+        actionExtentRatio: 0.15,
+        movementDuration: Duration(milliseconds: 100),
+        key: ObjectKey(_message),
+        // actions: <Widget>[
+        //   IconSlideAction(
+        //     color: Colors.transparent,
+        //     iconWidget: Icon(
+        //       Icons.reply_rounded,
+        //       color: Theme.of(context).primaryColor,
+        //     ),
+        //   ),
+        // ],
+        secondaryActions: <Widget>[
+          IconSlideAction(
+            color: Colors.transparent,
+            iconWidget: Icon(
+              Icons.more_horiz_rounded,
+              color: Theme.of(context).primaryColor,
+            ),
+            onTap: () async => await showMoreOptions(_message),
+          ),
+        ],
+        child: _anotherMessageWidget(
+          _message,
+          MessageContentWidget(
+            message: _message,
+            connection: widget.connection,
+          ),
+        ),
       );
     }
     return Column(mainAxisSize: MainAxisSize.min);
@@ -165,6 +229,100 @@ class _ChooseWidgetToRenderWidgetState
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> showMoreOptions(WsMessage message) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Theme.of(context).cardColor,
+            ),
+            margin: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 15.0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ListTile(
+                  onTap: () {
+                    Clipboard.setData(
+                      ClipboardData(text: message.messageContent.value),
+                    );
+                    Navigator.pop(_);
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(milliseconds: 2000),
+                        backgroundColor:
+                            Theme.of(context).backgroundColor.withOpacity(0.95),
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.all(15.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        content: Text(
+                          "Conteúdo copiado para área de transferência!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  title: Text(
+                    "Copiar",
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                  ),
+                  leading: Icon(
+                    Icons.copy_rounded,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                // Divider(height: 0.0),
+                // ListTile(
+                //   onTap: null,
+                //   title: Text(
+                //     "Apagar mensagem",
+                //     style: TextStyle(
+                //       color:
+                //           Theme.of(context).textTheme.bodyText1.color,
+                //     ),
+                //   ),
+                //   leading: Icon(
+                //     Icons.delete_rounded,
+                //     color: Theme.of(context).primaryColor,
+                //   ),
+                // ),
+                Divider(height: 0.0),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  child: FlatButton(
+                    onPressed: () => Navigator.pop(context),
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    textColor: Colors.white,
+                    child: Text("Cancelar"),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
