@@ -794,20 +794,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .secondaryHeaderColor
-                                  .withOpacity(0.2),
-                            ),
-                            child: IconButton(
-                              onPressed: () => Navigator.pop(context),
-                              icon: Icon(
-                                Icons.close,
-                                color:
-                                    Theme.of(context).textTheme.bodyText1.color,
-                              ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(
+                              Icons.close,
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
                             ),
                           ),
                         ],
@@ -869,8 +861,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        // color: Theme.of(context).textTheme.headline4.color,
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).textTheme.headline5.color,
       ),
       margin: const EdgeInsets.only(bottom: 15.0),
       child: TextFormField(

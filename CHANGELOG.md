@@ -1,3 +1,7 @@
+## 0.0.7+4
+
+* FIX: fix html image render on chatbot;
+
 ## 0.0.7+3
 
 * FIX: fix show option detail;

@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,6 +102,30 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
           padding: EdgeInsets.zero,
           whiteSpace: WhiteSpace.PRE,
         ),
+      },
+      customRender: {
+        "img": (RenderContext context, Widget child, attributes, _) {
+          final Uint8List _bytes = base64Decode(
+            attributes["src"].split("base64,").last,
+          );
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.memory(
+                _bytes,
+                width: double.tryParse(
+                  attributes["width"].replaceAll("px", ""),
+                ),
+                height: double.tryParse(
+                  attributes["height"].replaceAll("px", ""),
+                ),
+                // fit: BoxFit.fill,
+              ),
+            ],
+          );
+        }
       },
       onLinkTap: (url) async {
         await launch(url, forceWebView: true, enableJavaScript: true);
