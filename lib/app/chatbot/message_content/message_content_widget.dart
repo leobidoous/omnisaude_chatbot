@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
-import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../connection/chat_connection.dart';
@@ -92,68 +91,61 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   }
 
   Widget _htmlWidget(String message) {
-    return GestureDetector(
-      onLongPress: () {
-        final _document = parse(message);
-        final String _text = parse(_document.body.text).documentElement.text;
-        copyToClipboard(_text);
+    return Html(
+      data: message,
+      shrinkWrap: true,
+      style: {
+        "html": Style(
+          color: Colors.white,
+          margin: EdgeInsets.zero,
+          whiteSpace: WhiteSpace.PRE,
+          padding: const EdgeInsets.all(10.0),
+        ),
+        "body": Style(
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
+          whiteSpace: WhiteSpace.PRE,
+        ),
       },
-      child: Html(
-        data: message,
-        shrinkWrap: true,
-        style: {
-          "html": Style(
-            color: Colors.white,
-            margin: EdgeInsets.zero,
-            whiteSpace: WhiteSpace.PRE,
-            padding: const EdgeInsets.all(10.0),
-          ),
-          "body": Style(
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            whiteSpace: WhiteSpace.PRE,
-          ),
-        },
-        customRender: {
-          "img": (RenderContext renderContext, Widget child, attributes, _) {
-            try {
-              final Uint8List _bytes = base64Decode(
-                attributes["src"].split("base64,").last,
-              );
+      customRender: {
+        "img": (RenderContext renderContext, Widget child, attributes, _) {
+          try {
+            final Uint8List _bytes = base64Decode(
+              attributes["src"].split("base64,").last,
+            );
 
-              double _width;
-              double _height;
-              if (attributes["width"] != null) {
-                _width = double.tryParse(
-                  attributes["width"].replaceAll("px", ""),
-                );
-              }
-              if (attributes["height"] != null) {
-                _height = double.tryParse(
-                  attributes["height"].replaceAll("px", ""),
-                );
-              }
-              return Container(
-                color: Theme.of(context).secondaryHeaderColor,
-                child: Center(
-                  child: Image.memory(_bytes, width: _width, height: _height),
-                ),
+            double _width;
+            double _height;
+            if (attributes["width"] != null) {
+              _width = double.tryParse(
+                attributes["width"].replaceAll("px", ""),
               );
-            } catch (e) {
-              return child;
             }
+            if (attributes["height"] != null) {
+              _height = double.tryParse(
+                attributes["height"].replaceAll("px", ""),
+              );
+            }
+            return Container(
+              color: Theme.of(context).secondaryHeaderColor,
+              child: Center(
+                child: Image.memory(_bytes, width: _width, height: _height),
+              ),
+            );
+          } catch (e) {
+            return child;
           }
-        },
-        onLinkTap: (url) async {
-          await launch(url, forceWebView: true, enableJavaScript: true);
-        },
-        onImageTap: (src) {
-          print(src);
-        },
-        onImageError: (exception, stackTrace) {
-          print(exception);
-        },
-      ),
+        }
+      },
+      onLinkTap: (url) async {
+        await launch(url, forceWebView: true, enableJavaScript: true);
+      },
+      onImageTap: (src) {
+        print(src);
+      },
+      onImageError: (exception, stackTrace) {
+        print(exception);
+      },
     );
   }
 

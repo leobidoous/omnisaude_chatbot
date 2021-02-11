@@ -1,4 +1,4 @@
-## 0.0.7+5
+## 0.0.7+6
 
 * FIX: fix html image render on chatbot #2;
 
