@@ -4,7 +4,7 @@ homepage: https://leonardobido.me/
 repository: https://github.com/leobidoous/omnisaude_chatbot
 issue_tracker: https://github.com/leobidoous/omnisaude_chatbot/issues
 author: leonardobido.me
-version: 0.0.7+4
+version: 0.0.7+5
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

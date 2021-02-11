@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
+import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../connection/chat_connection.dart';
@@ -45,11 +47,14 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   }
 
   Widget _textWidget(String message) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      child: Text(
-        "${message?.trim()}",
-        style: TextStyle(color: Colors.white),
+    return GestureDetector(
+      onLongPress: () => copyToClipboard(message),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        child: Text(
+          "${message?.trim()}",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -87,55 +92,92 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   }
 
   Widget _htmlWidget(String message) {
-    return Html(
-      data: message,
-      shrinkWrap: true,
-      style: {
-        "html": Style(
-          color: Colors.white,
-          padding: const EdgeInsets.all(10.0),
-          margin: EdgeInsets.zero,
-          whiteSpace: WhiteSpace.PRE,
-        ),
-        "body": Style(
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.zero,
-          whiteSpace: WhiteSpace.PRE,
-        ),
+    return GestureDetector(
+      onLongPress: () {
+        final _document = parse(message);
+        final String _text = parse(_document.body.text).documentElement.text;
+        copyToClipboard(_text);
       },
-      customRender: {
-        "img": (RenderContext context, Widget child, attributes, _) {
-          final Uint8List _bytes = base64Decode(
-            attributes["src"].split("base64,").last,
-          );
+      child: Html(
+        data: message,
+        shrinkWrap: true,
+        style: {
+          "html": Style(
+            color: Colors.white,
+            margin: EdgeInsets.zero,
+            whiteSpace: WhiteSpace.PRE,
+            padding: const EdgeInsets.all(10.0),
+          ),
+          "body": Style(
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.zero,
+            whiteSpace: WhiteSpace.PRE,
+          ),
+        },
+        customRender: {
+          "img": (RenderContext renderContext, Widget child, attributes, _) {
+            try {
+              final Uint8List _bytes = base64Decode(
+                attributes["src"].split("base64,").last,
+              );
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.memory(
-                _bytes,
-                width: double.tryParse(
+              double _width;
+              double _height;
+              if (attributes["width"] != null) {
+                _width = double.tryParse(
                   attributes["width"].replaceAll("px", ""),
-                ),
-                height: double.tryParse(
+                );
+              }
+              if (attributes["height"] != null) {
+                _height = double.tryParse(
                   attributes["height"].replaceAll("px", ""),
+                );
+              }
+              return Container(
+                color: Theme.of(context).secondaryHeaderColor,
+                child: Center(
+                  child: Image.memory(_bytes, width: _width, height: _height),
                 ),
-                // fit: BoxFit.fill,
-              ),
-            ],
-          );
-        }
-      },
-      onLinkTap: (url) async {
-        await launch(url, forceWebView: true, enableJavaScript: true);
-      },
-      onImageTap: (src) {
-        print(src);
-      },
-      onImageError: (exception, stackTrace) {
-        print(exception);
-      },
+              );
+            } catch (e) {
+              return child;
+            }
+          }
+        },
+        onLinkTap: (url) async {
+          await launch(url, forceWebView: true, enableJavaScript: true);
+        },
+        onImageTap: (src) {
+          print(src);
+        },
+        onImageError: (exception, stackTrace) {
+          print(exception);
+        },
+      ),
+    );
+  }
+
+  void copyToClipboard(String message) {
+    Clipboard.setData(ClipboardData(text: message));
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 2000),
+        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.95),
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        content: Text(
+          "Conteúdo copiado para área de transferência!",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText1.color,
+          ),
+        ),
+      ),
     );
   }
 

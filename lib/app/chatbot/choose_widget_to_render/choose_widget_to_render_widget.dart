@@ -64,72 +64,19 @@ class _ChooseWidgetToRenderWidgetState
       if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _myPeer) {
-        return Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          controller: _slidableController,
-          enabled: widget.connection.showingPanel,
-          actionExtentRatio: 0.15,
-          key: ObjectKey(_message),
-          // actions: <Widget>[
-          //   IconSlideAction(
-          //     color: Colors.transparent,
-          //     iconWidget: Icon(
-          //       Icons.reply_rounded,
-          //       color: Theme.of(context).primaryColor,
-          //     ),
-          //   ),
-          // ],
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              color: Colors.transparent,
-              iconWidget: Icon(
-                Icons.more_horiz_rounded,
-                color: Theme.of(context).primaryColor,
-              ),
-              onTap: () async => await showMoreOptions(_message),
-            ),
-          ],
-          child: _myMessageWidget(
-            _message,
-            MessageContentWidget(
-              message: _message,
-              connection: widget.connection,
-            ),
-          ),
-        );
-      }
-      return Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        controller: _slidableController,
-        enabled: widget.connection.showingPanel,
-        actionExtentRatio: 0.15,
-        movementDuration: Duration(milliseconds: 100),
-        key: ObjectKey(_message),
-        // actions: <Widget>[
-        //   IconSlideAction(
-        //     color: Colors.transparent,
-        //     iconWidget: Icon(
-        //       Icons.reply_rounded,
-        //       color: Theme.of(context).primaryColor,
-        //     ),
-        //   ),
-        // ],
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            color: Colors.transparent,
-            iconWidget: Icon(
-              Icons.more_horiz_rounded,
-              color: Theme.of(context).primaryColor,
-            ),
-            onTap: () async => await showMoreOptions(_message),
-          ),
-        ],
-        child: _anotherMessageWidget(
+        return _myMessageWidget(
           _message,
           MessageContentWidget(
             message: _message,
             connection: widget.connection,
           ),
+        );
+      }
+      return _anotherMessageWidget(
+        _message,
+        MessageContentWidget(
+          message: _message,
+          connection: widget.connection,
         ),
       );
     }
