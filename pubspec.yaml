@@ -3,7 +3,6 @@ description: Pacote de integração do chatbot da Omnisaude para aplicativos mó
 homepage: https://leonardobido.me/
 repository: https://github.com/leobidoous/omnisaude_chatbot
 issue_tracker: https://github.com/leobidoous/omnisaude_chatbot/issues
-author: leonardobido.me
 version: 0.0.7+6
 
 environment:
@@ -17,6 +16,7 @@ dependencies:
 
   mime: ^0.9.7
   path: ^1.7.0
+  uuid: ^2.2.2
   intl: ^0.16.1
   share: ^0.6.5+4
   photo_view: ^0.10.3
