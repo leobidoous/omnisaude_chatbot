@@ -2,6 +2,10 @@
 
 * FIX: fix html image render on chatbot #2;
 
+## 0.0.7+5
+
+* FIX: fix bugs of version;
+
 ## 0.0.7+4
 
 * FIX: fix html image render on chatbot;
