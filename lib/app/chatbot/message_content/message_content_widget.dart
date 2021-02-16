@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
@@ -46,14 +45,11 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   }
 
   Widget _textWidget(String message) {
-    return GestureDetector(
-      onLongPress: () => copyToClipboard(message),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        child: Text(
-          "${message?.trim()}",
-          style: TextStyle(color: Colors.white),
-        ),
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      child: Text(
+        "${message.trim()}",
+        style: TextStyle(color: Colors.white),
       ),
     );
   }
@@ -61,7 +57,7 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
   Widget _imageWidget(String url) {
     return Container(
       constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(2.5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -75,13 +71,9 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).textTheme.headline4.color,
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: ImageWidget(
-                  url: url,
-                  radius: 10.0,
-                  fit: BoxFit.cover,
-                ),
+                child: ImageWidget(url: url, radius: 20.0, fit: BoxFit.cover),
               ),
             ),
           ),
@@ -146,30 +138,6 @@ class _MessageContentWidgetState extends State<MessageContentWidget> {
       onImageError: (exception, stackTrace) {
         print(exception);
       },
-    );
-  }
-
-  void copyToClipboard(String message) {
-    Clipboard.setData(ClipboardData(text: message));
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 2000),
-        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.95),
-        padding: EdgeInsets.zero,
-        margin: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        content: Text(
-          "Conteúdo copiado para área de transferência!",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.bodyText1.color,
-          ),
-        ),
-      ),
     );
   }
 

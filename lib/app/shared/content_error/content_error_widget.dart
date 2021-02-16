@@ -119,7 +119,8 @@ class ContentErrorWidget extends StatelessWidget {
           jsonDecode(jsonEncode(messageError.response.data["errors"]))
               .forEach((key, value) {
             if (value == null) return;
-            String _key = key.replaceAll(RegExp(r'[^a-zA-Z]'), "").toLowerCase();
+            String _key =
+                key.replaceAll(RegExp(r'[^a-zA-Z]'), "").toLowerCase();
             _messageErrors += "* $_key: $value\n";
           });
         }
@@ -157,16 +158,12 @@ class ContentErrorWidget extends StatelessWidget {
             "conexão com a internet ou tente novamente em instantes.";
         break;
       case DioErrorType.SEND_TIMEOUT:
-        // TODO: Handle this case.
         break;
       case DioErrorType.RECEIVE_TIMEOUT:
-        // TODO: Handle this case.
         break;
       case DioErrorType.RESPONSE:
-        // TODO: Handle this case.
         break;
       case DioErrorType.CANCEL:
-        // TODO: Handle this case.
         break;
       case DioErrorType.DEFAULT:
         _message = "[DEFAULT] Servidor não está respondendo.\nVerifique sua "

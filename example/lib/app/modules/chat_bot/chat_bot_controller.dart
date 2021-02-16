@@ -48,10 +48,12 @@ class ChatBotController extends Disposable {
         messages.insert(0, message);
         if (message.eventContent?.eventType == EventType.AUTHENTICATION) {
           await connection.authenticate(
-            cpf: "123.123.123.12",
-            username: "Leonardo",
-            token: "12312312312",
-            metadata: {"teste": "teste"},
+            cpf: "000.000.000-00",
+            username: "USERNAME",
+            token: "TOKEN",
+            avatarUrl: "URL",
+            userId: "USER_ID",
+            metadata: {"KEY": "VALUE"},
           );
         }
         _onChangeChatGlobalConfigs(message);

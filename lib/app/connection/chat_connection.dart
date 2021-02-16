@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
+import '../core/models/message_content_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -15,6 +15,9 @@ class ChatConnection extends Disposable {
   final String username;
   final String avatarUrl;
   String _myPeer;
+
+  bool _nluEnabled = false;
+  bool _humanAttendant = false;
 
   ChatConnection({this.url, this.username, this.avatarUrl});
 
@@ -108,10 +111,36 @@ class ChatConnection extends Disposable {
   }
 
   bool get showingPanel {
-    return _message?.uploadContent != null ||
+    bool _showingPanel = _message?.uploadContent != null ||
         _message?.switchContent != null ||
         _message?.inputContent != null ||
         connectionStatus == ConnectionStatus.DONE;
+
+    switch (_message.eventContent?.eventType) {
+      case EventType.NLU_START:
+        _nluEnabled = true;
+        _showingPanel = true;
+        break;
+      case EventType.NLU_END:
+        _nluEnabled = false;
+        break;
+      case EventType.USER_LEFT:
+        _humanAttendant = false;
+        break;
+      case EventType.ATTENDANT_LEFT:
+        _humanAttendant = false;
+        break;
+      case EventType.INIT_ATTENDANCE:
+        _humanAttendant = true;
+        _showingPanel = true;
+        break;
+      case EventType.FINISH_ATTENDANCE:
+        _humanAttendant = false;
+        break;
+      default:
+        break;
+    }
+    return _showingPanel || _humanAttendant || _nluEnabled;
   }
 
   String get getUserPeer => _myPeer;

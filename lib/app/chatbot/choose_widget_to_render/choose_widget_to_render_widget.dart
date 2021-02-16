@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:omnisaude_chatbot/app/core/models/event_content_model.dart';
+import '../../core/models/event_content_model.dart';
 
 import '../../connection/chat_connection.dart';
 import '../../core/models/ws_message_model.dart';
@@ -29,12 +28,34 @@ class ChooseWidgetToRenderWidget extends StatefulWidget {
       _ChooseWidgetToRenderWidgetState();
 }
 
-class _ChooseWidgetToRenderWidgetState
-    extends State<ChooseWidgetToRenderWidget> {
-  SlidableController _slidableController = new SlidableController();
+class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
+    with AutomaticKeepAliveClientMixin {
+  double _height;
+
+  @override
+  void initState() {
+    if (widget.message.messageContent?.value != null) {
+      if (widget.message.messageContent.value.trim().length > 500) {
+        _height = 200;
+      }
+    }
+    super.initState();
+  }
+
+  @override
+  bool get wantKeepAlive {
+    if (widget.message.messageContent?.value != null) {
+      if (widget.message.messageContent.value.trim().length > 500) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final WsMessage _message = widget.message;
     final WsMessage _lastMessage = widget.lastMessage;
     final String _myPeer = widget.connection.getUserPeer;
@@ -64,19 +85,25 @@ class _ChooseWidgetToRenderWidgetState
       if (_message.messageContent.value == null) return Container();
       if (_message.messageContent.value.trim().isEmpty) return Container();
       if (_message.peer == _myPeer) {
-        return _myMessageWidget(
+        return GestureDetector(
+          onLongPress: () => _copyToClipboard(_message.messageContent.value),
+          child: _myMessageWidget(
+            _message,
+            MessageContentWidget(
+              message: _message,
+              connection: widget.connection,
+            ),
+          ),
+        );
+      }
+      return GestureDetector(
+        onLongPress: () => _copyToClipboard(_message.messageContent.value),
+        child: _anotherMessageWidget(
           _message,
           MessageContentWidget(
             message: _message,
             connection: widget.connection,
           ),
-        );
-      }
-      return _anotherMessageWidget(
-        _message,
-        MessageContentWidget(
-          message: _message,
-          connection: widget.connection,
         ),
       );
     }
@@ -108,7 +135,18 @@ class _ChooseWidgetToRenderWidgetState
                     ),
                     child: Container(
                       color: Theme.of(context).primaryColor,
-                      child: child,
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: _height,
+                            child: child,
+                          ),
+                          _showMoreMessage(
+                            message,
+                            Theme.of(context).primaryColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -165,7 +203,15 @@ class _ChooseWidgetToRenderWidgetState
                     ),
                     child: Container(
                       color: Theme.of(context).secondaryHeaderColor,
-                      child: child,
+                      child: Stack(
+                        children: [
+                          Container(height: _height, child: child),
+                          _showMoreMessage(
+                            message,
+                            Theme.of(context).secondaryHeaderColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -179,97 +225,84 @@ class _ChooseWidgetToRenderWidgetState
     );
   }
 
-  Future<void> showMoreOptions(WsMessage message) async {
-    await showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) {
-        return SafeArea(
+  Widget _showMoreMessage(WsMessage message, Color color) {
+    if (_height == null) return Column();
+    return Positioned(
+      bottom: 0.0,
+      left: 0.0,
+      right: 0.0,
+      child: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: InkWell(
+          onTap: () => setState(() => _height = null),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5.0),
+                topRight: Radius.circular(5.0),
+              ),
+              // color: Theme.of(context).canvasColor,
+              gradient: LinearGradient(
+                begin: Alignment(0.0, 0.0),
+                end: Alignment(0.0, 0.8),
+                tileMode: TileMode.clamp,
+                colors: [
+                  color.withOpacity(0),
+                  color.withOpacity(0.3),
+                  color.withOpacity(0.35),
+                  color.withOpacity(0.4),
+                  color.withOpacity(0.45),
+                  color.withOpacity(0.5),
+                  color.withOpacity(0.55),
+                  color.withOpacity(0.6),
+                  color.withOpacity(0.65),
+                  color.withOpacity(0.7),
+                  color.withOpacity(0.75),
+                  color.withOpacity(0.8),
+                  color.withOpacity(0.85),
+                  color.withOpacity(0.9),
+                  color.withOpacity(0.95),
+                  color.withOpacity(1),
+                ],
+              ),
             ),
-            margin: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 15.0,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ListTile(
-                  onTap: () {
-                    Clipboard.setData(
-                      ClipboardData(text: message.messageContent.value),
-                    );
-                    Navigator.pop(_);
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(milliseconds: 2000),
-                        backgroundColor:
-                            Theme.of(context).backgroundColor.withOpacity(0.95),
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.all(15.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        content: Text(
-                          "Conteúdo copiado para área de transferência!",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  title: Text(
-                    "Copiar",
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  leading: Icon(
-                    Icons.copy_rounded,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                // Divider(height: 0.0),
-                // ListTile(
-                //   onTap: null,
-                //   title: Text(
-                //     "Apagar mensagem",
-                //     style: TextStyle(
-                //       color:
-                //           Theme.of(context).textTheme.bodyText1.color,
-                //     ),
-                //   ),
-                //   leading: Icon(
-                //     Icons.delete_rounded,
-                //     color: Theme.of(context).primaryColor,
-                //   ),
-                // ),
-                Divider(height: 0.0),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                  child: FlatButton(
-                    onPressed: () => Navigator.pop(context),
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    textColor: Colors.white,
-                    child: Text("Cancelar"),
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.only(top: 50.0, bottom: 5.0),
+            alignment: Alignment.center,
+            child: Text(
+              "Ver tudo",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                // color: Theme.of(context).primaryColor,
+                color: Colors.white,
+              ),
             ),
           ),
-        );
-      },
+        ),
+      ),
+    );
+  }
+
+  void _copyToClipboard(String message) {
+    Clipboard.setData(ClipboardData(text: message));
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 2000),
+        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.95),
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        content: Text(
+          "Conteúdo copiado para área de transferência!",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText1.color,
+          ),
+        ),
+      ),
     );
   }
 }

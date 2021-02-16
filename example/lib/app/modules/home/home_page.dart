@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../../core/models/bots_model.dart';
 import 'home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends ModularState<HomePage, HomeController> {
-  TextEditingController _textController = new TextEditingController();
+  TextEditingController _textController = new TextEditingController(
+    text: "b3ffda1c-b321-44b2-aceb-9ebab38a6f2c",
+  );
   final ScrollController _scrollController = new ScrollController();
   FocusNode _textFocus = new FocusNode();
 
@@ -57,7 +58,11 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
-                  color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .color
+                      .withOpacity(0.5),
                 ),
               ),
               FlatButton(

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
 import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
 
@@ -29,9 +30,15 @@ class ImageWidget extends StatefulWidget {
   _ImageWidgetState createState() => _ImageWidgetState();
 }
 
-class _ImageWidgetState extends State<ImageWidget> {
+class _ImageWidgetState extends State<ImageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     if (widget.url == null) {
       if (!widget.showNone) return Container();
       return ClipRRect(

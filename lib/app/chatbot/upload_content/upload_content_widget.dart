@@ -31,14 +31,13 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
   @override
   void dispose() {
     _service.dispose();
-    _store.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return RxBuilder(
-      builder: (_) {
+      builder: (context) {
         if (_store.uploadStatus.value == Status.LOADING) {
           return Padding(
             padding: const EdgeInsets.only(
@@ -55,12 +54,16 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
             await showModalBottomSheet(
               context: context,
               backgroundColor: Colors.transparent,
-              builder: (_) {
+              builder: (context) {
                 return SafeArea(
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
-                      color: Theme.of(context).cardColor,
+                      border: Border.all(
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        width: 0.1,
+                      ),
+                      color: Theme.of(context).backgroundColor,
                     ),
                     margin: const EdgeInsets.symmetric(
                       vertical: 10.0,
@@ -71,7 +74,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ListTile(
-                          onTap: _openCamera,
+                          onTap: () => _openCamera(context),
                           title: Text(
                             "Câmera",
                             style: TextStyle(
@@ -84,9 +87,12 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        Divider(height: 0.0),
+                        Divider(
+                          height: 0.0,
+                          color: Theme.of(context).cardColor,
+                        ),
                         ListTile(
-                          onTap: _openGallery,
+                          onTap: () => _openGallery(context),
                           title: Text(
                             "Galeria",
                             style: TextStyle(
@@ -99,9 +105,12 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        Divider(height: 0.0),
+                        Divider(
+                          height: 0.0,
+                          color: Theme.of(context).cardColor,
+                        ),
                         ListTile(
-                          onTap: _openFilePicker,
+                          onTap: () => _openFilePicker(context),
                           title: Text(
                             "Documentos",
                             style: TextStyle(
@@ -114,7 +123,10 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        Divider(height: 0.0),
+                        Divider(
+                          height: 0.0,
+                          color: Theme.of(context).cardColor,
+                        ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 15.0),
@@ -142,7 +154,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
     );
   }
 
-  Future<void> _openCamera() async {
+  Future<void> _openCamera(BuildContext context) async {
     await _service
         .openCamera()
         .then(
@@ -174,7 +186,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
         .whenComplete(() => _store.uploadStatus.value = Status.SUCCESS);
   }
 
-  Future<void> _openGallery() async {
+  Future<void> _openGallery(BuildContext context) async {
     await _service
         .openGallery()
         .then(
@@ -206,7 +218,7 @@ class _UploadContentWidgetState extends State<UploadContentWidget> {
         .whenComplete(() => _store.uploadStatus.value = Status.SUCCESS);
   }
 
-  Future<void> _openFilePicker() async {
+  Future<void> _openFilePicker(BuildContext context) async {
     await _service
         .openFileStorage()
         .then(

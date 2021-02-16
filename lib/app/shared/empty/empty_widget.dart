@@ -49,7 +49,7 @@ class EmptyWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16.0,
-                          color: Colors.white,
+                          color: Theme.of(context).textTheme.bodyText1.color,
                           fontFamily: "Comfortaa",
                         ),
                       ),

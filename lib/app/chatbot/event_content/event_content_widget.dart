@@ -35,16 +35,12 @@ class _EventContentWidgetState extends State<EventContentWidget> {
           widget.lastMessage.eventContent,
         );
       case EventType.CONNECTED:
-        // TODO: Handle this case.
         break;
       case EventType.AUTHENTICATION:
-        // TODO: Handle this case.
         break;
       case EventType.NLU_START:
-        // TODO: Handle this case.
         break;
       case EventType.NLU_END:
-        // TODO: Handle this case.
         break;
       case EventType.ENTRY_QUEUE:
         final EventContent _message = EventContent(

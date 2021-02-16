@@ -30,7 +30,8 @@ class SwitchContentWidget extends StatefulWidget {
   _SwitchContentWidgetState createState() => _SwitchContentWidgetState();
 }
 
-class _SwitchContentWidgetState extends State<SwitchContentWidget> {
+class _SwitchContentWidgetState extends State<SwitchContentWidget>
+    with AutomaticKeepAliveClientMixin {
   final SwitchContentController _controller = SwitchContentController();
   final CarouselController _carouselController = CarouselController();
   final TextEditingController _messageText = TextEditingController();
@@ -40,12 +41,16 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   void dispose() {
     _messageFocus.dispose();
     _messageText.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final Layout _layout = widget.message.switchContent.layout;
     final RenderType _renderType = widget.message.switchContent.renderType;
     final SwitchType _switchType = widget.message.switchContent.switchType;
@@ -220,7 +225,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
         scrollPhysics: BouncingScrollPhysics(),
       ),
       carouselController: _carouselController,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, index, realIndex) {
         return _chooseType(layout, options[index], multiSelection);
       },
     );
@@ -298,7 +303,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       EmptyWidget(
-                        message: "Nenhuma resultado encontrado!",
+                        message: "Nenhum resultado encontrado!",
                         padding: 10.0,
                       ),
                     ],
@@ -396,10 +401,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       children: [
         Flexible(
           child: RxBuilder(
-            builder: (_) {
-              final bool _enabled = _controller.selectedOptions.contains(
-                option,
-              );
+            builder: (context) {
+              final bool _enabled = _controller.selectedOptions
+                  .any((element) => option.id == element.id);
               return FlatButton(
                 onPressed: () => _onTapOption(option, multiSelection),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -458,8 +462,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         RxBuilder(
-          builder: (_) {
-            final bool _enabled = _controller.selectedOptions.contains(option);
+          builder: (context) {
+            final bool _enabled = _controller.selectedOptions
+                .any((element) => option.id == element.id);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -524,8 +529,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         RxBuilder(
-          builder: (_) {
-            final bool _enabled = _controller.selectedOptions.contains(option);
+          builder: (context) {
+            final bool _enabled = _controller.selectedOptions
+                .any((element) => option.id == element.id);
             return FlatButton(
               onPressed: () => _onTapOption(option, multiSelection),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -602,10 +608,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
           child: Padding(
             padding: EdgeInsets.all(5.0),
             child: RxBuilder(
-              builder: (_) {
-                final bool _enabled = _controller.selectedOptions.contains(
-                  option,
-                );
+              builder: (context) {
+                final bool _enabled = _controller.selectedOptions
+                    .any((element) => option.id == element.id);
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: FlatButton(
@@ -716,8 +721,10 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
       await _controller.onSendOptionsMessage(widget.connection);
       return;
     }
-    if (_controller.selectedOptions.contains(option)) {
-      _controller.selectedOptions.remove(option);
+    if (_controller.selectedOptions.any((element) => option.id == element.id)) {
+      _controller.selectedOptions.removeWhere((element) {
+        return element.id == option.id;
+      });
     } else {
       if (multiSelection.max != null) {
         if (_controller.selectedOptions.length < multiSelection.max) {
@@ -757,7 +764,6 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
     await showDialog(
       context: context,
       barrierDismissible: true,
-      // barrierColor: Colors.red,
       builder: (context) {
         return Padding(
           padding: EdgeInsets.all(20.0),
@@ -822,7 +828,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                           showNone: false,
                         ),
                       ),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 10.0),
                       Flexible(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.only(top: 10.0),
@@ -895,7 +901,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
   }
 
   Widget _iconDetailsOption(Option option, MultiSelection multiSelection) {
-    final _enabled = _controller.selectedOptions.contains(option);
+    final _enabled =
+        _controller.selectedOptions.any((element) => option.id == element.id);
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -920,8 +927,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
 
   Widget _btnSelectOption(Option option, MultiSelection multiSelection) {
     return RxBuilder(
-      builder: (_) {
-        final bool _selected = _controller.selectedOptions.contains(option);
+      builder: (context) {
+        final bool _selected = _controller.selectedOptions
+            .any((element) => option.id == element.id);
         String _label = "Selecionar";
         if (_selected) _label = "Selecionado";
         if (!multiSelection.enabled) _label = "Enviar";
@@ -939,7 +947,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget> {
                     return;
                   }
                   if (_selected) {
-                    _controller.selectedOptions.remove(option);
+                    _controller.selectedOptions.removeWhere((element) {
+                      return option.id == element.id;
+                    });
                   } else {
                     _controller.selectedOptions.add(option);
                   }

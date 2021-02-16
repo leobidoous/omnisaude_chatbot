@@ -41,7 +41,7 @@ class _FileContentWidgetState extends State<FileContentWidget>
   Widget _imageContent(String url, String filename, String comment) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 300.0, maxHeight: 200.0),
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(2.5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -54,9 +54,9 @@ class _FileContentWidgetState extends State<FileContentWidget>
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor.withOpacity(0.25),
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: ImageWidget(url: url, fit: BoxFit.cover, radius: 15.0),
+                child: ImageWidget(url: url, fit: BoxFit.cover, radius: 20.0),
               ),
             ),
           ),
@@ -120,8 +120,11 @@ class _FileContentWidgetState extends State<FileContentWidget>
                     padding: EdgeInsets.all(10.0),
                     child: Row(
                       children: [
-                        Icon(Icons.insert_drive_file_rounded),
-                        SizedBox(width: 10.0),
+                        const Icon(
+                          Icons.insert_drive_file_rounded,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 10.0),
                         Expanded(
                           child: Text(
                             "$filename",
@@ -150,23 +153,25 @@ class _FileContentWidgetState extends State<FileContentWidget>
         children: [
           GestureDetector(
             onTap: () async {
-              await launch(url, forceWebView: true, enableJavaScript: true);
+              await launch(url, forceWebView: true, enableJavaScript: true)
+                  .catchError((onError) => null);
             },
             child: Container(
-              padding: EdgeInsets.all(10.0),
-              color: Theme.of(context).secondaryHeaderColor,
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
-                  Icon(Icons.insert_drive_file_rounded),
-                  SizedBox(width: 10.0),
+                  const Icon(Icons.insert_drive_file_rounded,
+                      color: Colors.white),
+                  const SizedBox(width: 10.0),
                   Expanded(
                     child: Text(
                       "$filename",
                       overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: 10.0),
-                  Icon(Icons.download_rounded),
+                  const SizedBox(width: 10.0),
+                  const Icon(Icons.download_rounded, color: Colors.white),
                 ],
               ),
             ),
@@ -181,6 +186,11 @@ class _FileContentWidgetState extends State<FileContentWidget>
     if (comment == null)
       return Container();
     else if (comment.trim().isEmpty) return Container();
-    return SelectableText(comment);
+    return Text(
+      comment,
+      style: TextStyle(
+        color: Colors.white,
+      ),
+    );
   }
 }
