@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 import 'home_controller.dart';
 
@@ -33,7 +34,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         automaticallyImplyLeading: false,
         title: Text("Início"),
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -74,7 +75,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                     );
                   }
                 },
-                color: Theme.of(context).primaryColor,
+                color: AppColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),

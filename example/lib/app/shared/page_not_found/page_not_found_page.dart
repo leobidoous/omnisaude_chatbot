@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 import 'page_not_found_controller.dart';
 
 class PageNotFoundPage extends StatefulWidget {
-
-  const PageNotFoundPage({Key key})
-      : super(key: key);
+  const PageNotFoundPage({Key key}) : super(key: key);
 
   @override
   _PageNotFoundPageState createState() => _PageNotFoundPageState();
@@ -14,14 +13,13 @@ class PageNotFoundPage extends StatefulWidget {
 
 class _PageNotFoundPageState
     extends ModularState<PageNotFoundPage, PageNotFoundController> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Página não encontrada"),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: AppColors.primary,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 class DatetimePickerService extends Disposable {
   Future<DateTime> onShowDateTimePicker(BuildContext context) async {
@@ -18,19 +19,19 @@ class DatetimePickerService extends Disposable {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             colorScheme: ColorScheme(
-              background: Theme.of(context).primaryColor,
+              background: AppColors.primary,
               onPrimary: Colors.white,
               brightness: Theme.of(context).brightness,
               surface: Theme.of(context).secondaryHeaderColor,
               onSecondary: Theme.of(context).secondaryHeaderColor,
               onSurface: Theme.of(context).textTheme.headline1.color,
-              error: Theme.of(context).primaryColor,
-              secondaryVariant: Theme.of(context).primaryColor,
+              error: AppColors.primary,
+              secondaryVariant: AppColors.primary,
               onBackground: Theme.of(context).secondaryHeaderColor,
-              secondary: Theme.of(context).backgroundColor,
-              primary: Theme.of(context).primaryColor,
-              primaryVariant: Theme.of(context).primaryColor,
-              onError: Theme.of(context).primaryColor,
+              secondary: AppColors.background,
+              primary: AppColors.primary,
+              primaryVariant: AppColors.primary,
+              onError: AppColors.primary,
             ),
           ),
           child: child,

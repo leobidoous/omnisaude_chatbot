@@ -8,6 +8,7 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rx_notifier/rx_notifier.dart';
@@ -25,7 +26,7 @@ class ViewDocumentService extends Disposable {
           return Scaffold(
             appBar: AppBar(
               elevation: 0.0,
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: AppColors.primary,
               automaticallyImplyLeading: false,
               actions: [
                 RxBuilder(builder: (_) {
@@ -34,14 +35,14 @@ class ViewDocumentService extends Disposable {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: LoadingWidget(
                         opacity: 1.0,
-                        background: Theme.of(context).primaryColor,
+                        background: AppColors.primary,
                         showShadow: false,
                       ),
                     );
                   }
                   return FlatButton(
                     onPressed: () async => _onSharedPDF(context, url),
-                    color: Theme.of(context).primaryColor,
+                    color: AppColors.primary,
                     visualDensity: VisualDensity.compact,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     child: Icon(Icons.share_rounded, color: Colors.white),
@@ -49,7 +50,7 @@ class ViewDocumentService extends Disposable {
                 }),
                 FlatButton(
                   onPressed: () => Navigator.pop(context),
-                  color: Theme.of(context).primaryColor,
+                  color: AppColors.primary,
                   visualDensity: VisualDensity.compact,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   child: Icon(Icons.close_rounded, color: Colors.white),

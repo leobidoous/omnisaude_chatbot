@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/content_error/content_error_widget.dart';
@@ -40,7 +41,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             BlendMode.difference,
           ),
         ),
-        color: Theme.of(context).backgroundColor,
+        color: AppColors.background,
       ),
       child: SafeArea(
         bottom: false,
@@ -59,7 +60,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
         Widget _reconnect = Container();
         if (controller.connectionStatus.value == ConnectionStatus.WAITING) {
           _popup = LoadingWidget(
-            background: Theme.of(context).primaryColor,
+            background: AppColors.primary,
             message: "Iniciando conversa...",
             margin: 20.0,
             padding: 50.0,
@@ -70,7 +71,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
             ConnectionStatus.ERROR) {
           _popup = ContentErrorWidget(
             messageLabel: "Ocorreu um erro ao iniciar a conversa",
-            background: Theme.of(context).backgroundColor,
+            background: AppColors.background,
             function: () => controller.onInitAndListenStream(widget.chatBotId),
             buttonLabel: "Tentar novamente",
             margin: 20.0,
@@ -87,7 +88,7 @@ class _ChatBotPageState extends ModularState<ChatBotPage, ChatBotController> {
                 onPressed: () => controller.onInitAndListenStream(
                   widget.chatBotId,
                 ),
-                color: Theme.of(context).primaryColor,
+                color: AppColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

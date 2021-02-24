@@ -25,8 +25,8 @@ class _FileContentWidgetState extends State<FileContentWidget>
   bool get wantKeepAlive => true;
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
+    super.build(context);
     final FileContent _message = widget.message.fileContent;
     final String _mimeType = lookupMimeType(_message.value);
 
@@ -75,8 +75,9 @@ class _FileContentWidgetState extends State<FileContentWidget>
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                final ViewDocumentService _service = ViewDocumentService();
+                final ViewDocumentService _service = new ViewDocumentService();
                 await _service.onViewSingleDocument(context, url);
+                _service.dispose();
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -98,16 +99,10 @@ class _FileContentWidgetState extends State<FileContentWidget>
                               fitPolicy: FitPolicy.WIDTH,
                               swipeHorizontal: true,
                               pageSnap: false,
-                            ).fromUrl(
+                            ).cachedFromUrl(
                               url,
                               placeholder: (double progress) {
-                                return LoadingWidget(
-                                  message: "Carregando documento",
-                                  background: Theme.of(context).primaryColor,
-                                  radius: 20.0,
-                                  margin: 20.0,
-                                  padding: 20.0,
-                                );
+                                return new LoadingWidget(opacity: 0.25);
                               },
                             ),
                           ),
@@ -117,7 +112,7 @@ class _FileContentWidgetState extends State<FileContentWidget>
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Row(
                       children: [
                         const Icon(

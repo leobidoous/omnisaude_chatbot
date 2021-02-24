@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 import '../../core/models/ws_message_model.dart';
 
@@ -29,7 +30,7 @@ class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
           "$_time",
           style: TextStyle(
             fontStyle: FontStyle.italic,
-            color: Theme.of(context).textTheme.bodyText1.color,
+            color: AppColors.textColor,
             fontSize: 10.0,
           ),
         ),
@@ -37,7 +38,7 @@ class _DatetimeOnMessageWidgetState extends State<DatetimeOnMessageWidget> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50.0),
-            color: Theme.of(context).primaryColor,
+            color: AppColors.primary,
           ),
           height: 2.0,
           width: 25.0,

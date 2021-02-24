@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 class LoadingWidget extends StatelessWidget {
   final Color background;
@@ -27,9 +28,7 @@ class LoadingWidget extends StatelessWidget {
         Opacity(
           opacity: opacity,
           child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-            ),
+            decoration: BoxDecoration(color: AppColors.background),
           ),
         ),
         Column(
@@ -63,10 +62,10 @@ class LoadingWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: AppColors.primary,
                             strokeWidth: 1.5,
                             valueColor: new AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).backgroundColor,
+                              AppColors.background,
                             ),
                           ),
                           _buildMessageWidget(context),

@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../core/models/event_content_model.dart';
 
 import '../../connection/chat_connection.dart';
+import '../../core/models/event_content_model.dart';
 import '../../core/models/ws_message_model.dart';
 import '../../shared/image/image_widget.dart';
+import '../../shared/stylesheet/app_colors.dart';
 import '../datetime_on_message/datetime_on_message_widget.dart';
 import '../event_content/event_content_widget.dart';
 import '../file_content/file_content_widget.dart';
@@ -134,16 +135,13 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
                       bottomLeft: Radius.circular(20.0),
                     ),
                     child: Container(
-                      color: Theme.of(context).primaryColor,
+                      color: AppColors.primary,
                       child: Stack(
                         children: [
-                          Container(
-                            height: _height,
-                            child: child,
-                          ),
+                          new Container(height: _height, child: child),
                           _showMoreMessage(
                             message,
-                            Theme.of(context).primaryColor,
+                            AppColors.primary,
                           ),
                         ],
                       ),
@@ -151,18 +149,18 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
                   ),
                 ),
                 const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(message: message),
+                new DatetimeOnMessageWidget(message: message),
               ],
             ),
           ),
           const SizedBox(width: 10.0),
-          ImageWidget(
-            url: message.avatarUrl,
-            asset: "assets/avatar/user.png",
-            fit: BoxFit.cover,
+          new ImageWidget(
             width: 30.0,
             height: 30.0,
             radius: 10.0,
+            fit: BoxFit.cover,
+            url: message.avatarUrl,
+            asset: "assets/avatar/user.png",
           ),
         ],
       ),
@@ -180,13 +178,13 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageWidget(
-            url: message.avatarUrl,
-            asset: "assets/avatar/bot.png",
-            fit: BoxFit.cover,
+          new ImageWidget(
             width: 30.0,
             height: 30.0,
             radius: 10.0,
+            fit: BoxFit.cover,
+            url: message.avatarUrl,
+            asset: "assets/avatar/bot.png",
           ),
           const SizedBox(width: 10.0),
           Expanded(
@@ -194,8 +192,8 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Flexible(
-                  child: ClipRRect(
+                new Flexible(
+                  child: new ClipRRect(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0),
@@ -205,7 +203,7 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
                       color: Theme.of(context).secondaryHeaderColor,
                       child: Stack(
                         children: [
-                          Container(height: _height, child: child),
+                          new Container(height: _height, child: child),
                           _showMoreMessage(
                             message,
                             Theme.of(context).secondaryHeaderColor,
@@ -216,7 +214,7 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
                   ),
                 ),
                 const SizedBox(height: 1.0),
-                DatetimeOnMessageWidget(message: message),
+                new DatetimeOnMessageWidget(message: message),
               ],
             ),
           ),
@@ -241,7 +239,6 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
                 topLeft: Radius.circular(5.0),
                 topRight: Radius.circular(5.0),
               ),
-              // color: Theme.of(context).canvasColor,
               gradient: LinearGradient(
                 begin: Alignment(0.0, 0.0),
                 end: Alignment(0.0, 0.8),
@@ -272,7 +269,6 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
               "Ver tudo",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                // color: Theme.of(context).primaryColor,
                 color: Colors.white,
               ),
             ),
@@ -289,7 +285,7 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
       SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: Duration(milliseconds: 2000),
-        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.95),
+        backgroundColor: AppColors.background.withOpacity(0.95),
         padding: EdgeInsets.zero,
         margin: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -299,7 +295,7 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
           "Conteúdo copiado para área de transferência!",
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).textTheme.bodyText1.color,
+            color: AppColors.textColor,
           ),
         ),
       ),

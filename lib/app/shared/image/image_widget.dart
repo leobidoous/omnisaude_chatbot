@@ -59,9 +59,10 @@ class _ImageWidgetState extends State<ImageWidget>
         height: widget.height,
         placeholder: (BuildContext context, String url) {
           return LoadingWidget(
-            opacity: 0.85,
-            background: Colors.transparent,
+            width: widget.width,
+            height: widget.height,
             radius: widget.radius,
+            background: Colors.transparent,
           );
         },
         errorWidget: (BuildContext context, String url, dynamic error) {

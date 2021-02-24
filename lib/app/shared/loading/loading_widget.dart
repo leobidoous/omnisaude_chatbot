@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 class LoadingWidget extends StatelessWidget {
   final Color background;
@@ -10,6 +11,8 @@ class LoadingWidget extends StatelessWidget {
   final double opacity;
   final String message;
   final bool showShadow;
+  final double width;
+  final double height;
 
   const LoadingWidget({
     this.background: Colors.transparent,
@@ -20,6 +23,8 @@ class LoadingWidget extends StatelessWidget {
     this.opacity: 0.0,
     this.showShadow: true,
     this.message,
+    this.width,
+    this.height,
   });
 
   @override
@@ -30,9 +35,7 @@ class LoadingWidget extends StatelessWidget {
         Opacity(
           opacity: opacity,
           child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-            ),
+            decoration: BoxDecoration(color: AppColors.background),
           ),
         ),
         Column(
@@ -43,13 +46,16 @@ class LoadingWidget extends StatelessWidget {
               padding: EdgeInsets.all(margin),
               child: Container(
                 decoration: BoxDecoration(
-                  boxShadow: showShadow ?[
-                     BoxShadow(
-                      color: Theme.of(context).canvasColor.withOpacity(0.5),
-                      blurRadius: 15.0,
-                      spreadRadius: 1.0,
-                    ),
-                  ] : null,
+                  boxShadow: showShadow
+                      ? [
+                          BoxShadow(
+                            color:
+                                Theme.of(context).canvasColor.withOpacity(0.5),
+                            blurRadius: 15.0,
+                            spreadRadius: 1.0,
+                          ),
+                        ]
+                      : null,
                   color: background,
                   borderRadius: BorderRadius.circular(radius),
                   border: Border.all(width: 0.5, color: borderColor),
@@ -66,7 +72,22 @@ class LoadingWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CupertinoActivityIndicator(),
+                          new Container(
+                            height: height != null
+                                ? height - (height > 1 ? 1 : 0)
+                                : null,
+                            width: width != null
+                                ? width - (width > 1 ? 1 : 0)
+                                : null,
+                            padding: const EdgeInsets.all(1.0),
+                            child: new CircularProgressIndicator(
+                              backgroundColor: AppColors.primary,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.background,
+                              ),
+                              strokeWidth: 1.5,
+                            ),
+                          ),
                           _buildMessageWidget(context),
                         ],
                       ),

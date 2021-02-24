@@ -1,3 +1,8 @@
+## 0.0.7+7
+
+* FIX: fix stylesheet;
+* FEATURE: add loading status on upload file screen;
+
 ## 0.0.7+6
 
 * FIX: fix html image render on chatbot #2;

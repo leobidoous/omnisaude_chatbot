@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 class ContentErrorWidget extends StatelessWidget {
   final Color background;
@@ -31,7 +32,7 @@ class ContentErrorWidget extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
-              color: Theme.of(context).backgroundColor,
+              color: AppColors.background,
             ),
           ),
         ),
@@ -95,7 +96,7 @@ class ContentErrorWidget extends StatelessWidget {
         messageLabel,
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: Theme.of(context).textTheme.bodyText1.color,
+          color: AppColors.textColor,
           fontFamily: "Comfortaa",
         ),
       ),
@@ -111,7 +112,7 @@ class ContentErrorWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
         ),
         disabledColor: Theme.of(context).canvasColor,
-        color: Theme.of(context).primaryColor,
+        color: AppColors.primary,
         disabledTextColor: Colors.white,
         textColor: Colors.white,
         child: Text(buttonLabel),

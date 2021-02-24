@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 class EmptyWidget extends StatelessWidget {
   final double padding;
@@ -12,7 +13,9 @@ class EmptyWidget extends StatelessWidget {
     this.padding: 0.0,
     this.margin: 0.0,
     this.radius: 0.0,
-    this.message, this.function, this.buttonLabel,
+    this.message,
+    this.function,
+    this.buttonLabel,
   });
 
   @override
@@ -71,7 +74,7 @@ class EmptyWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
         ),
         disabledColor: Theme.of(context).canvasColor,
-        color: Theme.of(context).primaryColor,
+        color: AppColors.primary,
         disabledTextColor: Colors.white,
         textColor: Colors.white,
         child: Text(buttonLabel),

@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../connection/chat_connection.dart';
@@ -120,9 +121,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                 borderRadius: BorderRadius.circular(10.0),
               ),
               textColor: _enabled ? Colors.white : null,
-              color: Theme.of(context).primaryColor,
+              color: AppColors.primary,
               disabledTextColor: Theme.of(context).cardColor,
-              disabledColor: Theme.of(context).backgroundColor,
+              disabledColor: AppColors.background,
               child: Text("Enviar"),
             ),
             _minMaxOptionsWidget(multiSelection),
@@ -141,7 +142,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
         style: TextStyle(
           fontSize: 10.0,
           fontStyle: FontStyle.italic,
-          color: Theme.of(context).textTheme.bodyText1.color,
+          color: AppColors.textColor,
         ),
       ),
     );
@@ -239,7 +240,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).primaryColor,
+                  color: AppColors.primary,
                 ),
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                 child: IconButton(
@@ -261,7 +262,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).primaryColor,
+                  color: AppColors.primary,
                 ),
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                 child: IconButton(
@@ -335,7 +336,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
           padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
           child: CupertinoTextField(
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(10.0),
             ),
             autofocus: true,
@@ -346,12 +347,12 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
             padding: const EdgeInsets.all(10.0),
             textCapitalization: TextCapitalization.sentences,
             placeholderStyle: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color.withOpacity(
-                    0.5,
-                  ),
+              color: AppColors.textColor.withOpacity(
+                0.5,
+              ),
             ),
             style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color,
+              color: AppColors.textColor,
             ),
             onChanged: (input) =>
                 _controller.onSearchIntoOptions(options, input),
@@ -366,10 +367,9 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                 child: Icon(
                   Icons.close_rounded,
                   size: 16.0,
-                  color:
-                      Theme.of(context).textTheme.bodyText1.color.withOpacity(
-                            0.5,
-                          ),
+                  color: AppColors.textColor.withOpacity(
+                    0.5,
+                  ),
                 ),
               ),
             ),
@@ -412,7 +412,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 color: _enabled
-                    ? Theme.of(context).primaryColor
+                    ? AppColors.primary
                     : Theme.of(context).textTheme.headline4.color,
                 textColor: _enabled ? Colors.white : null,
                 padding: const EdgeInsets.all(15.0),
@@ -477,7 +477,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                 vertical: 15.0,
               ),
               color: _enabled
-                  ? Theme.of(context).primaryColor
+                  ? AppColors.primary
                   : Theme.of(context).textTheme.headline4.color,
               textColor: _enabled ? Colors.white : null,
               child: Row(
@@ -493,9 +493,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 18.0,
-                            color: _enabled
-                                ? Colors.white
-                                : Theme.of(context).textTheme.bodyText1.color,
+                            color:
+                                _enabled ? Colors.white : AppColors.textColor,
                           ),
                         ),
                         const SizedBox(height: 5.0),
@@ -505,9 +504,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                           style: TextStyle(
                             fontSize: 14.0,
                             fontStyle: FontStyle.italic,
-                            color: _enabled
-                                ? Colors.white
-                                : Theme.of(context).textTheme.bodyText1.color,
+                            color:
+                                _enabled ? Colors.white : AppColors.textColor,
                           ),
                         ),
                       ],
@@ -541,7 +539,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
               ),
               padding: const EdgeInsets.all(15.0),
               color: _enabled
-                  ? Theme.of(context).primaryColor
+                  ? AppColors.primary
                   : Theme.of(context).textTheme.headline4.color,
               textColor: _enabled ? Colors.white : null,
               child: Row(
@@ -566,9 +564,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 18.0,
-                              color: _enabled
-                                  ? Colors.white
-                                  : Theme.of(context).textTheme.bodyText1.color,
+                              color:
+                                  _enabled ? Colors.white : AppColors.textColor,
                             ),
                           ),
                         ),
@@ -580,9 +577,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                             style: TextStyle(
                               fontSize: 14.0,
                               fontStyle: FontStyle.italic,
-                              color: _enabled
-                                  ? Colors.white
-                                  : Theme.of(context).textTheme.bodyText1.color,
+                              color:
+                                  _enabled ? Colors.white : AppColors.textColor,
                             ),
                           ),
                         ),
@@ -622,7 +618,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                     ),
                     padding: const EdgeInsets.all(0.0),
                     color: _enabled
-                        ? Theme.of(context).primaryColor
+                        ? AppColors.primary
                         : Theme.of(context).textTheme.headline4.color,
                     textColor: _enabled ? Colors.white : null,
                     child: Column(
@@ -680,9 +676,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20.0,
-                              color: _enabled
-                                  ? Colors.white
-                                  : Theme.of(context).textTheme.bodyText1.color,
+                              color:
+                                  _enabled ? Colors.white : AppColors.textColor,
                             ),
                           ),
                         ),
@@ -695,9 +690,8 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                             style: TextStyle(
                               fontSize: 14.0,
                               fontStyle: FontStyle.italic,
-                              color: _enabled
-                                  ? Colors.white
-                                  : Theme.of(context).textTheme.bodyText1.color,
+                              color:
+                                  _enabled ? Colors.white : AppColors.textColor,
                             ),
                           ),
                         ),
@@ -736,8 +730,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
             SnackBar(
               behavior: SnackBarBehavior.floating,
               duration: Duration(milliseconds: 2000),
-              backgroundColor:
-                  Theme.of(context).backgroundColor.withOpacity(0.95),
+              backgroundColor: AppColors.background.withOpacity(0.95),
               padding: EdgeInsets.zero,
               margin: EdgeInsets.all(15.0),
               shape: RoundedRectangleBorder(
@@ -747,7 +740,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                 "É possível selecionar apenas ${multiSelection.max} $_label!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyText1.color,
+                  color: AppColors.textColor,
                 ),
               ),
             ),
@@ -795,8 +788,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                               "Detalhes da opção",
                               style: TextStyle(
                                 fontSize: 25,
-                                color:
-                                    Theme.of(context).textTheme.bodyText1.color,
+                                color: AppColors.textColor,
                               ),
                             ),
                           ),
@@ -804,14 +796,13 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                             onPressed: () => Navigator.pop(context),
                             icon: Icon(
                               Icons.close,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1.color,
+                              color: AppColors.textColor,
                             ),
                           ),
                         ],
                       ),
                       Divider(
-                        color: Theme.of(context).textTheme.bodyText1.color,
+                        color: AppColors.textColor,
                       ),
                       const SizedBox(height: 10.0),
                       Container(
@@ -879,14 +870,14 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
           parent: const AlwaysScrollableScrollPhysics(),
         ),
         textInputAction: TextInputAction.newline,
-        cursorColor: Theme.of(context).primaryColor,
+        cursorColor: AppColors.primary,
         textCapitalization: TextCapitalization.sentences,
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+        style: TextStyle(color: AppColors.textColor),
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(
             height: 3.0,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.primary,
           ),
           contentPadding: const EdgeInsets.fromLTRB(10.0, 50.0, 10.0, 0.0),
           border: outlineInputBorder(),
@@ -907,7 +898,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: _enabled
-            ? Theme.of(context).primaryColor.withOpacity(0.5)
+            ? AppColors.primary.withOpacity(0.5)
             : Theme.of(context).textTheme.headline4.color.withOpacity(0.5),
       ),
       child: IconButton(
@@ -919,7 +910,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
         visualDensity: VisualDensity.compact,
         icon: Icon(
           Icons.info_outline_rounded,
-          color: Theme.of(context).textTheme.bodyText1.color,
+          color: _enabled ? Colors.white : AppColors.textColor,
         ),
       ),
     );
@@ -960,7 +951,7 @@ class _SwitchContentWidgetState extends State<SwitchContentWidget>
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 color: _selected || !multiSelection.enabled
-                    ? Theme.of(context).primaryColor
+                    ? AppColors.primary
                     : Theme.of(context).secondaryHeaderColor,
                 textColor: Colors.white,
                 child: Text(_label),

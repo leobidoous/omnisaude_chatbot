@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
 import '../../connection/chat_connection.dart';
 import '../../core/enums/enums.dart';
@@ -197,7 +198,6 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
           topRight: Radius.circular(10.0),
         ),
         color: Theme.of(context).textTheme.headline4.color,
-        // color: Colors.red,
       ),
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       child: SafeArea(
@@ -238,7 +238,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
               },
             ).catchError((onError) => null);
           },
-          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
+          color: AppColors.textColor.withOpacity(0.5),
           icon: Icon(Icons.date_range_rounded),
         ),
       ),
@@ -252,6 +252,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
       child: Opacity(
         opacity: _enabled ? 1.0 : 0.3,
         child: UploadContentWidget(
+          key: ObjectKey(message),
           onSendMessage: widget.connection.onSendMessage,
           message: message,
         ),
@@ -278,22 +279,18 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
             enabled: _enabled,
             focusNode: _messageFocus,
             controller: _messageText,
-            inputFormatters: [_mask],
+            inputFormatters: _mask.isFill() != null ? [_mask] : null,
             keyboardType: _textInputType,
             textInputAction: TextInputAction.send,
             textCapitalization: _textCapitalization,
-            cursorColor: Theme.of(context).primaryColor,
+            cursorColor: AppColors.primary,
             scrollPhysics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(10.0),
             placeholder: "Escreva uma mensagem",
             placeholderStyle: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color.withOpacity(
-                    0.5,
-                  ),
+              color: AppColors.textColor.withOpacity(0.5),
             ),
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color,
-            ),
+            style: TextStyle(color: AppColors.textColor),
             onSubmitted: (String input) => _onSendTextMessage(input),
           ),
         ),
@@ -310,7 +307,7 @@ class _PanelSendMessageWidgetState extends State<PanelSendMessageWidget> {
         child: IconButton(
           iconSize: 30.0,
           onPressed: () => _onSendTextMessage(_messageText.text),
-          color: Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
+          color: AppColors.textColor.withOpacity(0.5),
           icon: Icon(Icons.send_rounded),
         ),
       ),
