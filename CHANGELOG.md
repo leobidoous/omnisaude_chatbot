@@ -1,3 +1,7 @@
+## 0.0.7+8
+
+* FIX: cancelOnError on chat_connection;
+
 ## 0.0.7+7
 
 * FIX: fix stylesheet;

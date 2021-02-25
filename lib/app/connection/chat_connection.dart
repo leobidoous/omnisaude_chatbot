@@ -55,6 +55,7 @@ class ChatConnection extends Disposable {
         connectionStatus = ConnectionStatus.DONE;
         _streamController?.close();
       },
+      cancelOnError: true,
     );
     return _streamController;
   }
