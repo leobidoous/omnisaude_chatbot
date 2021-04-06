@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import '../video_call/outcoming_call/outcoming_call_widget.dart';
+import 'package:omnisaude_chatbot/app/video_call/outcoming_call/outcoming_call_widget.dart';
 
 class OmnisaudeVideoCall extends Disposable {
   OverlayEntry _overlayEntry;

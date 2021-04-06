@@ -9,12 +9,12 @@ import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../connection/chat_connection.dart';
-import '../../core/enums/enums.dart';
-import '../../core/models/message_content_model.dart';
-import '../../core/models/ws_message_model.dart';
-import '../../core/services/view_photo_service.dart';
-import '../../shared/image/image_widget.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
+import 'package:omnisaude_chatbot/app/shared/image/image_widget.dart';
 
 class MessageContentWidget extends StatefulWidget {
   final WsMessage message;

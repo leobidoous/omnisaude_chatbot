@@ -1,10 +1,10 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
-import '../../connection/chat_connection.dart';
-import '../../core/models/message_content_model.dart';
-import '../../core/models/option_model.dart';
-import '../../core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 class SwitchContentController extends Disposable {
   RxList<Option> selectedOptions = RxList();

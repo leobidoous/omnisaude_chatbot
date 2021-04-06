@@ -7,14 +7,14 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
-import '../../connection/chat_connection.dart';
-import '../../core/enums/enums.dart';
-import '../../core/models/multi_selection_model.dart';
-import '../../core/models/option_model.dart';
-import '../../core/models/ws_message_model.dart';
-import '../../shared/empty/empty_widget.dart';
-import '../../shared/image/image_widget.dart';
-import '../../shared/widgets/outline_input_border.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/multi_selection_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/option_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/shared/empty/empty_widget.dart';
+import 'package:omnisaude_chatbot/app/shared/image/image_widget.dart';
+import 'package:omnisaude_chatbot/app/shared/widgets/outline_input_border.dart';
 import 'switch_content_controller.dart';
 
 class SwitchContentWidget extends StatefulWidget {

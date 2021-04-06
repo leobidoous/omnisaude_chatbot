@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
-import '../../core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 class DatetimeOnMessageWidget extends StatefulWidget {
   final WsMessage message;

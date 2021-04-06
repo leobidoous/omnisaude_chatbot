@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:mime/mime.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/file_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/services/view_pdf_service.dart';
+import 'package:omnisaude_chatbot/app/core/services/view_photo_service.dart';
+import 'package:omnisaude_chatbot/app/shared/image/image_widget.dart';
+import 'package:omnisaude_chatbot/app/shared/loading/loading_widget.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../core/models/file_content_model.dart';
-import '../../core/models/ws_message_model.dart';
-import '../../core/services/view_document_service.dart';
-import '../../core/services/view_photo_service.dart';
-import '../../shared/image/image_widget.dart';
-import '../../shared/loading/loading_widget.dart';
 
 class FileContentWidget extends StatefulWidget {
   final WsMessage message;
@@ -21,6 +21,14 @@ class FileContentWidget extends StatefulWidget {
 
 class _FileContentWidgetState extends State<FileContentWidget>
     with AutomaticKeepAliveClientMixin {
+  final RxNotifier<Status> _status = new RxNotifier(Status.NONE);
+
+  @override
+  dispose() {
+    _status.dispose();
+    super.dispose();
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -28,14 +36,15 @@ class _FileContentWidgetState extends State<FileContentWidget>
   Widget build(BuildContext context) {
     super.build(context);
     final FileContent _message = widget.message.fileContent;
-    final String _mimeType = lookupMimeType(_message.value);
 
-    if (lookupMimeType(_message.value).contains("image")) {
-      return _imageContent(_message.value, _message.name, _message.comment);
-    } else if (_mimeType == "application/pdf") {
-      return _pdfContent(_message.value, _message.name, _message.comment);
+    switch (_message.fileType) {
+      case ContentFileType.IMAGE:
+        return _imageContent(_message.value, _message.name, _message.comment);
+      case ContentFileType.PDF:
+        return _pdfContent(_message.value, _message.name, _message.comment);
+      default:
+        return _anyContent(_message.value, _message.name, _message.comment);
     }
-    return _anyContent(_message.value, _message.name, _message.comment);
   }
 
   Widget _imageContent(String url, String filename, String comment) {
@@ -75,8 +84,17 @@ class _FileContentWidgetState extends State<FileContentWidget>
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                final ViewDocumentService _service = new ViewDocumentService();
-                await _service.onViewSingleDocument(context, url);
+                final ViewPDFService _service = new ViewPDFService();
+                _service.showPDFViwer(
+                  context,
+                  fromPDFType: FromPDFType.URL,
+                  title: filename,
+                  url: url,
+                  changeStatus: ([Status status]) {
+                    if (status == null) return _status.value;
+                    return _status.value = status;
+                  },
+                );
                 _service.dispose();
               },
               child: Column(
@@ -181,10 +199,13 @@ class _FileContentWidgetState extends State<FileContentWidget>
     if (comment == null)
       return Container();
     else if (comment.trim().isEmpty) return Container();
-    return Text(
-      comment,
-      style: TextStyle(
-        color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Text(
+        comment,
+        style: TextStyle(
+          color: Colors.white,
+        ),
       ),
     );
   }

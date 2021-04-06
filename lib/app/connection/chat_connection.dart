@@ -7,8 +7,8 @@ import '../core/models/message_content_model.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../core/enums/enums.dart';
-import '../core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 
 class ChatConnection extends Disposable {
   final String url;
@@ -53,7 +53,6 @@ class ChatConnection extends Disposable {
       onDone: () {
         log("Conexão encerrada!");
         connectionStatus = ConnectionStatus.DONE;
-        _streamController?.close();
       },
       cancelOnError: true,
     );
@@ -117,7 +116,7 @@ class ChatConnection extends Disposable {
         _message?.inputContent != null ||
         connectionStatus == ConnectionStatus.DONE;
 
-    switch (_message.eventContent?.eventType) {
+    switch (_message?.eventContent?.eventType) {
       case EventType.NLU_START:
         _nluEnabled = true;
         _showingPanel = true;

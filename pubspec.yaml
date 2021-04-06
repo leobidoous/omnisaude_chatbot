@@ -3,7 +3,7 @@ description: Pacote de integração do chatbot da Omnisaude para aplicativos mó
 homepage: https://leonardobido.me/
 repository: https://github.com/leobidoous/omnisaude_chatbot
 issue_tracker: https://github.com/leobidoous/omnisaude_chatbot/issues
-version: 0.0.7+8
+version: 0.0.8
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -36,6 +36,8 @@ dependencies:
   flutter_datetime_picker: ^1.4.0
   mask_text_input_formatter: ^1.2.1
   flutter_staggered_grid_view: ^0.3.3
+  advance_pdf_viewer: ^1.2.2
+  permission_handler: ^5.0.1+1
 
   flutter:
     sdk: flutter

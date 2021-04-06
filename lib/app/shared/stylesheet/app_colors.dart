@@ -20,4 +20,11 @@ class AppColors {
     return Theme.of(_context).textTheme.bodyText2.color;
   }
 
+  static Color get card {
+    return Theme.of(_context).cardColor;
+  }
+
+  static Color get header {
+    return Theme.of(_context).secondaryHeaderColor;
+  }
 }

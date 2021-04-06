@@ -224,7 +224,7 @@ class _ChooseWidgetToRenderWidgetState extends State<ChooseWidgetToRenderWidget>
   }
 
   Widget _showMoreMessage(WsMessage message, Color color) {
-    if (_height == null) return Column();
+    if (_height == null) return Column(mainAxisSize: MainAxisSize.min);
     return Positioned(
       bottom: 0.0,
       left: 0.0,

@@ -4,13 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:omnisaude_chatbot/app/shared/stylesheet/app_colors.dart';
 
-import '../../connection/chat_connection.dart';
-import '../../core/enums/enums.dart';
-import '../../core/models/message_content_model.dart';
-import '../../core/models/ws_message_model.dart';
-import '../../core/services/datetime_picker_service.dart';
-import '../switch_content/switch_content_widget.dart';
-import '../upload_content/upload_content_widget.dart';
+import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
+import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
+import 'package:omnisaude_chatbot/app/core/models/message_content_model.dart';
+import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
+import 'package:omnisaude_chatbot/app/core/services/datetime_picker_service.dart';
+import 'package:omnisaude_chatbot/app/chatbot/switch_content/switch_content_widget.dart';
+import 'package:omnisaude_chatbot/app/chatbot/upload_content/upload_content_widget.dart';
 
 class PanelSendMessageWidget extends StatefulWidget {
   final WsMessage lastMessage;
