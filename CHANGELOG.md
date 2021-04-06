@@ -1,3 +1,7 @@
+## 0.0.8+1
+
+* FIX: add support to new packages versions;
+
 ## 0.0.7+8
 
 * FIX: cancelOnError on chat_connection;
