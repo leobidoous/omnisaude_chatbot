@@ -5,7 +5,6 @@ import 'package:omnisaude_chatbot/app/connection/chat_connection.dart';
 import 'package:omnisaude_chatbot/app/core/enums/enums.dart';
 import 'package:omnisaude_chatbot/app/core/models/ws_message_model.dart';
 import 'package:omnisaude_chatbot/app/src/omni_bot.dart';
-import 'package:omnisaude_chatbot/app/src/omni_video_call.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../app_controller.dart';
@@ -13,8 +12,6 @@ import '../../core/constants/constants.dart';
 
 class ChatBotController extends Disposable {
   final AppController appController = Modular.get<AppController>();
-
-  final OmnisaudeVideoCall omnisaudeVideoCall = new OmnisaudeVideoCall();
 
   static String _username = USERNAME;
   static String _avatarUrl = AVATAR_URL;

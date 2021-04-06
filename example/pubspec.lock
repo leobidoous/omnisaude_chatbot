@@ -15,13 +15,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.2"
-  agora_rtc_engine:
-    dependency: transitive
-    description:
-      name: agora_rtc_engine
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.1"
   analyzer:
     dependency: transitive
     description:
@@ -312,13 +305,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.11"
-  flutter_slidable:
-    dependency: transitive
-    description:
-      name: flutter_slidable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.7"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -427,13 +413,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.1"
   logging:
     dependency: transitive
     description:
@@ -517,7 +496,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.7+8"
+    version: "0.0.8+2"
   package_config:
     dependency: transitive
     description:
@@ -616,13 +595,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.3"
-  picture_in_picture:
-    dependency: transitive
-    description:
-      name: picture_in_picture
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
   platform:
     dependency: transitive
     description:
